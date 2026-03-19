@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fonksiyon Grafiği</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 24px; }
+    .card {
+      max-width: 980px; margin: 0 auto; padding: 16px 20px; border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.35));
+      backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    h1 { font-size: 20px; margin: 0 0 12px; }
+    .row { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 12px; align-items: end; }
+    label { font-size: 12px; color: #555; display: block; margin-bottom: 6px; }
+    input, button { height: 36px; border-radius: 10px; border: 1px solid #ccc; padding: 6px 10px; font-size: 14px; }
+    input:focus { outline: 2px solid #8ab4f8; border-color: transparent; }
+    button { background: #0f766e; color: white; border: none; cursor: pointer; }
+    button:hover { background: #115e59; }
+    .canvas-wrap { position: relative; margin-top: 16px; }
+    canvas { width: 100%; height: 520px; border-radius: 12px; background: #f7f7f9; }
+    .error { margin-top: 10px; color: #b00020; min-height: 20px; font-size: 13px; }
+    .legend { margin-top: 8px; font-size: 12px; color: #666; }
+    .controls { display: flex; gap: 8px; margin-top: 10px; }
+    .controls button { background: #334155; }
+    .controls button.secondary { background: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Fonksiyon grafiği çiz</h1>
+    <div class="row">
+      <div>
+        <label>Fonksiyon f(x)</label>
+        <input id="fn" placeholder="Ör: sin(x) + 0.5*x" value="sin(x)"/>
+      </div>
+      <div>
+        <label>Min x</label>
+        <input id="xmin" type="number" step="any" value="-10"/>
+      </div>
+      <div>
+        <label>Max x</label>
+        <input id="xmax" type="number" step="any" value="10"/>
+      </div>
+      <div>
+        <label>Örnek sayısı</label>
+        <input id="samples" type="number" min="100" max="5000" value="1000"/>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="plot">Çiz</button>
+      <button id="resetView" class="secondary">Görünümü sıfırla</button>
+      <button id="zoomIn" class="secondary">Yakınlaştır</button>
+      <button id="zoomOut" class="secondary">Uzaklaştır</button>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="canvas" width="1000" height="520"></canvas>
+    </div>
+    <div class="legend">Desteklenen fonksiyonlar: sin, cos, tan, asin, acos, atan, exp, ln/log, sqrt, abs. İşleçler: + - * / ^ ve parantez.</div>
+    <div id="error" class="error"></div>
+  </div>
+
+  <script>
+    // Basit ve güvenli bir ifade değerlendirme: tokenize + parse + evaluate
+    // Destek: sayılar, x, parantez, + - * / ^ ve belirli fonksiyonlar.
+    const ALLOWED_FUNCS = {
+      sin: Math.sin, cos: Math.cos, tan: Math.tan,
+      asin: Math.asin, acos: Math.acos, atan: Math.atan,
+      exp: Math.exp, ln: Math.log, log: Math.log,
+      sqrt: Math.sqrt, abs: Math.abs
+    };
+
+    function tokenize(expr) {
+      const tokens = [];
+      const re = /\s*([A-Za-z]+|\d*\.\d+|\d+|[()+\-*/^])\s*/g;
+      let m; let idx = 0;
+      while ((m = re.exec(expr)) !== null) {
+        const t = m[1];
+        tokens.push(t);
+        idx = re.lastIndex;
+      }
+      // Hatalı karakter kontrolü
+      if (idx !== expr.length) {
+        throw new Error("Geçersiz karakter: '" + expr.slice(idx, idx+1) + "'");
+      }
+      return tokens;
+    }
+
+    // Shunting-yard ile infix -> RPN (Reverse Polish Notation)
+    function toRPN(tokens) {
+      const output = [];
+      const ops = [];
+      const prec = { "+":1, "-":1, "*":2, "/":2, "^":3 };
+      const rightAssoc = { "^": true };
+
+      function isNumber(t) { return /^[0-9]*\.?[0-9]+$/.test(t); }
+      function isName(t) { return /^[A-Za-z]+$/.test(t); }
+
+      for (let i=0; i<tokens.length; i++) {
+        const t = tokens[i];
+        if (isNumber(t) || t === "x") {
+          output.push(t);
+        } else if (isName(t)) {
+          // Fonksiyon adı
+          if (!ALLOWED_FUNCS[t]) throw new Error("Desteklenmeyen fonksiyon: " + t);
+          ops.push(t);
+        } else if (t === ",") {
+          // Çok argümanlı fonksiyon yok; kullanılmıyor
+          while (ops.length && ops[ops.length-1] !== "(") output.push(ops.pop());
+        } else if (t in prec) {
+          while (ops.length) {
+            const top = ops[ops.length-1];
+            if (top in prec &&
+               ((rightAssoc[t] && prec[t] < prec[top]) ||
+                (!rightAssoc[t] && prec[t] <= prec[top]))) {
+              output.push(ops.pop());
+            } else break;
+          }
+          ops.push(t);
+        } else if (t === "(") {
+          ops.push(t);
+        } else if (t === ")") {
+          while (ops.length && ops[ops.length-1] !== "(") output.push(ops.pop());
+          if (!ops.length) throw new Error("Eşleşmeyen parantez");
+          ops.pop(); // "("
+          // Eğer üstte fonksiyon varsa, onu da çıkart
+          if (ops.length && ALLOWED_FUNCS[ops[ops.length-1]]) output.push(ops.pop());
+        } else {
+          throw new Error("Beklenmeyen token: " + t);
+        }
+      }
+      while (ops.length) {
+        const top = ops.pop();
+        if (top === "(" || top === ")") throw new Error("Eşleşmeyen parantez");
+        output.push(top);
+      }
+      return output;
+    }
+
+    function evalRPN(rpn, x) {
+      const stack = [];
+      const isNumber = (t) => /^[0-9]*\.?[0-9]+$/.test(t);
+
+      for (const t of rpn) {
+        if (isNumber(t)) {
+          stack.push(parseFloat(t));
+        } else if (t === "x") {
+          stack.push(x);
+        } else if (t in ALLOWED_FUNCS) {
+          if (stack.length < 1) throw new Error("Fonksiyon için argüman eksik");
+          const a = stack.pop();
+          const res = ALLOWED_FUNCS[t](a);
+          if (!isFinite(res)) throw new Error("Sonuç sonsuz/NaN");
+          stack.push(res);
+        } else if (t === "+" || t === "-" || t === "*" || t === "/" || t === "^") {
+          if (stack.length < 2) throw new Error("İşlem için argüman eksik");
+          const b = stack.pop();
+          const a = stack.pop();
+          let c;
+          switch (t) {
+            case "+": c = a + b; break;
+            case "-": c = a - b; break;
+            case "*": c = a * b; break;
+            case "/": c = a / b; break;
+            case "^": c = Math.pow(a, b); break;
+          }
+          if (!isFinite(c)) throw new Error("Sonuç sonsuz/NaN");
+          stack.push(c);
+        } else {
+          throw new Error("Bilinmeyen token: " + t);
+        }
+      }
+      if (stack.length !== 1) throw new Error("İfade değerlendirilemedi");
+      return stack[0];
+    }
+
+    function parseExpression(expr) {
+      const tokens = tokenize(expr);
+      // Unary minus desteği: (0 - expr) şeklinde ele almak yerine token düzeyinde ele alalım
+      // Basit yöntem: "-" öncesinde sayı/x/")" yoksa unary kabul edip "0" ekleyelim
+      const normalized = [];
+      for (let i=0; i<tokens.length; i++) {
+        const t = tokens[i];
+        if (t === "-" && (i === 0 || ["+","-","*","/","^","("].includes(tokens[i-1]))) {
+          normalized.push("0");
+          normalized.push("-");
+        } else {
+          normalized.push(t);
+        }
+      }
+      return toRPN(normalized);
+    }
+
+    // Canvas çizim yardımcıları
+    function drawGrid(ctx, W, H, xScale, yScale, origin) {
+      ctx.save();
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = getComputedStyle(document.body).colorScheme.includes("dark") ? "#0b0f1a" : "#ffffff";
+      ctx.fillRect(0,0,W,H);
+
+      // Küçük grid
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1;
+      const stepX = xScale; // 1 birim x
+      const stepY = yScale; // 1 birim y
+      // Dikey çizgiler
+      for (let x = origin.x % stepX; x < W; x += stepX) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+      }
+      // Yatay çizgiler
+      for (let y = origin.y % stepY; y < H; y += stepY) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+
+      // Eksenler
+      ctx.strokeStyle = "#94a3b8";
+      ctx.lineWidth = 1.5;
+      // x-ekseni
+      ctx.beginPath(); ctx.moveTo(0, origin.y); ctx.lineTo(W, origin.y); ctx.stroke();
+      // y-ekseni
+      ctx.beginPath(); ctx.moveTo(origin.x, 0); ctx.lineTo(origin.x, H); ctx.stroke();
+
+      // Tick ve etiketler
+      ctx.fillStyle = "#475569";
+      ctx.font = "12px system-ui";
+      for (let x = origin.x % stepX; x < W; x += stepX) {
+        ctx.beginPath();
+        ctx.moveTo(x, origin.y - 4); ctx.lineTo(x, origin.y + 4); ctx.stroke();
+        const val = ((x - origin.x) / stepX).toFixed(0);
+        if (Math.abs(val) % 5 === 0) ctx.fillText(val, x + 4, origin.y + 14);
+      }
+      for (let y = origin.y % stepY; y < H; y += stepY) {
+        ctx.beginPath();
+        ctx.moveTo(origin.x - 4, y); ctx.lineTo(origin.x + 4, y); ctx.stroke();
+        const val = ((origin.y - y) / stepY).toFixed(0);
+        if (Math.abs(val) % 5 === 0) ctx.fillText(val, origin.x + 6, y - 6);
+      }
+      ctx.restore();
+    }
+
+    function plotFunction(ctx, rpn, domainMin, domainMax, samples, viewport) {
+      const { W, H, origin, unitX, unitY } = viewport;
+      ctx.save();
+      ctx.strokeStyle = "#0ea5e9";
+      ctx.lineWidth = 2;
+
+      let lastValid = null;
+      for (let i=0; i<=samples; i++) {
+        const t = i / samples;
+        const x = domainMin + t * (domainMax - domainMin);
+        let y;
+        try {
+          y = evalRPN(rpn, x);
+        } catch (_) {
+          y = NaN;
+        }
+        const sx = origin.x + x * unitX;
+        const sy = origin.y - y * unitY;
+
+        if (isFinite(y) && Math.abs(y) < 1e8) {
+          if (lastValid === null) {
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+          } else {
+            // Asimptot/atlama tespiti: pikler arası çok büyükse kes
+            const [lx, ly] = lastValid;
+            const jump = Math.hypot(sx - lx, sy - ly);
+            if (jump > 80) {
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.moveTo(sx, sy);
+            } else {
+              ctx.lineTo(sx, sy);
+            }
+          }
+          lastValid = [sx, sy];
+        } else {
+          if (lastValid !== null) {
+            ctx.stroke();
+            lastValid = null;
+          }
+        }
+      }
+      if (lastValid !== null) ctx.stroke();
+      ctx.restore();
+    }
+
+    // Etkileşim: viewport ve zoom
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let viewport = {
+      W: canvas.width,
+      H: canvas.height,
+      origin: { x: canvas.width/2, y: canvas.height/2 },
+      unitX: 40, // px per 1 x-unit
+      unitY: 40  // px per 1 y-unit
+    };
+
+    function render(rpn, xmin, xmax, samples) {
+      const xScale = viewport.unitX;
+      const yScale = viewport.unitY;
+      drawGrid(ctx, viewport.W, viewport.H, xScale, yScale, viewport.origin);
+      plotFunction(ctx, rpn, xmin, xmax, samples, viewport);
+    }
+
+    function setError(msg) {
+      document.getElementById("error").textContent = msg || "";
+    }
+
+    function parseInputs() {
+      const expr = document.getElementById("fn").value.trim();
+      const xmin = parseFloat(document.getElementById("xmin").value);
+      const xmax = parseFloat(document.getElementById("xmax").value);
+      const samples = parseInt(document.getElementById("samples").value, 10);
+
+      if (!expr) throw new Error("Fonksiyon boş olamaz.");
+      if (!isFinite(xmin) || !isFinite(xmax) || xmin >= xmax) {
+        throw new Error("Geçerli bir x aralığı gir (min < max).");
+      }
+      if (samples < 100 || samples > 5000) {
+        throw new Error("Örnek sayısı 100–5000 aralığında olmalı.");
+      }
+      return { expr, xmin, xmax, samples };
+    }
+
+    document.getElementById("plot").addEventListener("click", () => {
+      try {
+        setError("");
+        const { expr, xmin, xmax, samples } = parseInputs();
+        const rpn = parseExpression(expr);
+        render(rpn, xmin, xmax, samples);
+      } catch (e) {
+        setError(e.message);
+      }
+    });
+
+    document.getElementById("resetView").addEventListener("click", () => {
+      viewport.origin = { x: canvas.width/2, y: canvas.height/2 };
+      viewport.unitX = 40;
+      viewport.unitY = 40;
+      document.getElementById("plot").click();
+    });
+
+    document.getElementById("zoomIn").addEventListener("click", () => {
+      viewport.unitX *= 1.2;
+      viewport.unitY *= 1.2;
+      document.getElementById("plot").click();
+    });
+
+    document.getElementById("zoomOut").addEventListener("click", () => {
+      viewport.unitX /= 1.2;
+      viewport.unitY /= 1.2;
+      document.getElementById("plot").click();
+    });
+
+    // Pan (sürükle)
+    let dragging = false, last = null;
+    canvas.addEventListener("mousedown", (e) => { dragging = true; last = { x: e.clientX, y: e.clientY }; });
+    window.addEventListener("mouseup", () => { dragging = false; last = null; });
+    window.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - last.x;
+      const dy = e.clientY - last.y;
+      last = { x: e.clientX, y: e.clientY };
+      viewport.origin.x += dx;
+      viewport.origin.y += dy;
+      document.getElementById("plot").click();
+    });
+
+    // Mouse wheel ile zoom (odak noktası etrafında)
+    canvas.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.1 : 0.9;
+      // İmleç konumunu korumaya çalış: ölçek değişimini origin'e yedir
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const beforeXUnits = (mx - viewport.origin.x) / viewport.unitX;
+      const beforeYUnits = (viewport.origin.y - my) / viewport.unitY;
+      viewport.unitX *= factor;
+      viewport.unitY *= factor;
+      const afterX = viewport.origin.x + beforeXUnits * viewport.unitX;
+      const afterY = viewport.origin.y - beforeYUnits * viewport.unitY;
+      viewport.origin.x += (mx - afterX);
+      viewport.origin.y += (my - afterY);
+      document.getElementById("plot").click();
+    }, { passive: false });
+
+    // İlk çizim
+    document.getElementById("plot").click();
+  </script>
+</body>
+</html>

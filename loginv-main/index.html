@@ -1,0 +1,1931 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OrayNet Modem Paneli — Demo UI/UX</title>
+
+  <!-- İsteğe bağlı: Modern font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font icon (CDN) -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        referrerpolicy="no-referrer"/>
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --bg2:#0e1930;
+      --card:#101b34cc;
+      --card2:#0f1a33;
+      --text:#e8eefc;
+      --muted:#a9b7dd;
+      --border:#223055;
+      --brand:#67b7ff;
+      --brand2:#7c5cff;
+      --ok:#41d19e;
+      --warn:#ffcc66;
+      --bad:#ff6b6b;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 12px;
+      --focus: 0 0 0 4px rgba(103,183,255,.22);
+    }
+
+    [data-theme="light"]{
+      --bg:#f4f7ff;
+      --bg2:#eef2ff;
+      --card:#ffffffd9;
+      --card2:#ffffff;
+      --text:#0c1430;
+      --muted:#4f5f8e;
+      --border:#d9e2ff;
+      --brand:#1b76ff;
+      --brand2:#6a4cff;
+      --shadow: 0 18px 60px rgba(16,30,80,.12);
+      --focus: 0 0 0 4px rgba(27,118,255,.16);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1100px 700px at 20% 10%, rgba(124,92,255,.22), transparent 60%),
+        radial-gradient(900px 600px at 85% 15%, rgba(103,183,255,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    a{color:inherit}
+    button, input, select{font:inherit}
+    .hidden{display:none !important}
+
+    /* Layout */
+    .shell{
+      min-height:100%;
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap:18px;
+      padding:18px;
+    }
+
+    .sidebar{
+      position:sticky;
+      top:18px;
+      align-self:start;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .side-top{
+      padding:18px 18px 12px 18px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .brand-badge{
+      width:42px;height:42px;border-radius:14px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      display:grid;place-items:center;
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .brand-badge i{color:white}
+    .brand-name{
+      display:flex;flex-direction:column;line-height:1.1;
+    }
+    .brand-name b{font-size:14px}
+    .brand-name span{font-size:12px;color:var(--muted)}
+    .side-img{
+      padding:0 18px 14px;
+    }
+    .side-img img{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+    }
+
+    .nav{
+      padding: 8px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .nav button{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      width:100%;
+      border:1px solid transparent;
+      background:transparent;
+      color:var(--text);
+      padding:11px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      transition:.18s ease;
+      text-align:left;
+    }
+    .nav button i{width:18px;color:var(--muted)}
+    .nav button:hover{
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.06);
+    }
+    .nav button.active{
+      background: linear-gradient(135deg, rgba(103,183,255,.18), rgba(124,92,255,.14));
+      border-color: rgba(103,183,255,.22);
+    }
+    .nav button.active i{color:var(--brand)}
+    .side-footer{
+      padding: 12px 14px 16px;
+      border-top:1px solid var(--border);
+      display:flex;
+      gap:10px;
+    }
+    .pill{
+      flex:1;
+      border:1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      cursor:pointer;
+      transition:.18s ease;
+      color:var(--text);
+    }
+    .pill:hover{transform: translateY(-1px); box-shadow: 0 10px 30px rgba(0,0,0,.18)}
+    .pill i{color:var(--muted)}
+
+    /* Main */
+    .main{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      min-height: calc(100vh - 36px);
+    }
+    .topbar{
+      padding:14px 16px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background: rgba(255,255,255,.02);
+    }
+    .crumbs{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width: 240px;
+    }
+    .crumbs b{font-size:14px}
+    .crumbs span{font-size:12px;color:var(--muted)}
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(65,209,158,.12);
+    }
+    .btn{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      transition:.18s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(103,183,255,.22), rgba(124,92,255,.18));
+      border-color: rgba(103,183,255,.22);
+    }
+    .btn.danger{
+      background: rgba(255,107,107,.12);
+      border-color: rgba(255,107,107,.22);
+    }
+
+    .content{
+      padding:16px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:14px;
+      box-shadow: 0 10px 35px rgba(0,0,0,.18);
+      backdrop-filter: blur(8px);
+    }
+    .card h3{
+      margin:0 0 10px;
+      font-size:14px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .card h3 i{color:var(--muted)}
+    .muted{color:var(--muted)}
+    .kpi{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .kpi .val{font-size:26px;font-weight:700;letter-spacing:-.02em}
+    .kpi .sub{font-size:12px;color:var(--muted)}
+    .badge{
+      font-size:12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding:6px 10px;
+      border-radius:999px;
+      color:var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .badge.ok i{color:var(--ok)}
+    .badge.warn i{color:var(--warn)}
+    .badge.bad i{color:var(--bad)}
+
+    /* Forms */
+    .form{
+      display:grid;
+      gap:12px;
+      margin-top:8px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 980px){
+      .shell{grid-template-columns: 1fr}
+      .sidebar{position:relative; top:0}
+      .row{grid-template-columns: 1fr}
+    }
+
+    .field{
+      display:grid;
+      gap:6px;
+    }
+    label{font-size:12px;color:var(--muted)}
+    .control{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding:10px 12px;
+      transition:.18s ease;
+    }
+    .control:focus-within{box-shadow: var(--focus); border-color: rgba(103,183,255,.35)}
+    .control i{color:var(--muted)}
+    input[type="text"], input[type="password"], input[type="number"], select{
+      width:100%;
+      border:0;
+      outline:0;
+      background:transparent;
+      color:var(--text);
+      font-size:14px;
+    }
+    input::placeholder{color: rgba(169,183,221,.7)}
+    .help{
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .help.error{color: var(--bad)}
+    .help.ok{color: var(--ok)}
+    .help i{opacity:.9}
+
+    /* Switch */
+    .switch{
+      display:flex;align-items:center;justify-content:space-between;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding:12px;
+      gap:10px;
+    }
+    .switch .meta{
+      display:flex;flex-direction:column;gap:2px;
+    }
+    .switch .meta b{font-size:13px}
+    .switch .meta span{font-size:12px;color:var(--muted)}
+    .toggle{
+      width:46px;height:26px;border-radius:999px;
+      background: rgba(255,255,255,.12);
+      border:1px solid var(--border);
+      position:relative;
+      cursor:pointer;
+      transition:.18s ease;
+      flex: 0 0 auto;
+    }
+    .toggle::after{
+      content:"";
+      position:absolute;top:50%;left:3px;
+      width:20px;height:20px;border-radius:999px;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,.9);
+      transition:.18s ease;
+      box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    }
+    .toggle.on{
+      background: rgba(65,209,158,.22);
+      border-color: rgba(65,209,158,.35);
+    }
+    .toggle.on::after{left:22px;background: #dffaf0}
+
+    /* Tables */
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+    }
+    th,td{
+      padding:10px 12px;
+      font-size:12px;
+      border-bottom:1px solid var(--border);
+      color:var(--muted);
+      text-align:left;
+    }
+    th{color:var(--text); font-weight:600; background: rgba(255,255,255,.03)}
+    tr:last-child td{border-bottom:0}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+
+    /* Login screen */
+    .auth-wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .auth{
+      width:min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){
+      .auth{grid-template-columns: 1fr}
+    }
+
+    .hero{
+      border-radius: var(--radius);
+      border:1px solid var(--border);
+      background: linear-gradient(135deg, rgba(103,183,255,.14), rgba(124,92,255,.12));
+      padding:18px;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;inset:-40%;
+      background: radial-gradient(circle at 40% 35%, rgba(103,183,255,.18), transparent 55%),
+                  radial-gradient(circle at 70% 60%, rgba(124,92,255,.18), transparent 55%);
+      filter: blur(18px);
+      transform: rotate(8deg);
+    }
+    .hero > *{position:relative}
+    .hero h1{
+      margin:0 0 8px;
+      font-size:22px;
+      letter-spacing:-.02em;
+    }
+    .hero p{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+    .hero-card{
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .hero-card i{color:var(--brand)}
+    .hero-card b{font-size:13px}
+    .hero-card span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+
+    .auth-card{
+      border-radius: var(--radius);
+      border:1px solid var(--border);
+      background: var(--card);
+      padding:18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .auth-head{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:8px;
+    }
+    .auth-head b{font-size:14px}
+    .auth-sub{font-size:12px;color:var(--muted);margin-top:4px}
+    .auth-actions{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .checkline{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      color:var(--muted);
+      user-select:none;
+    }
+    .checkline input{accent-color: var(--brand)}
+    .progress{
+      height:10px;border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--border);
+      overflow:hidden;
+    }
+    .bar{
+      height:100%;
+      width:20%;
+      background: linear-gradient(90deg, var(--bad), var(--warn), var(--ok));
+      border-radius:999px;
+      transition:.18s ease;
+    }
+
+    /* Toast */
+    .toasts{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index: 9999;
+      width: min(360px, calc(100% - 32px));
+    }
+    .toast{
+      border-radius: 16px;
+      border:1px solid var(--border);
+      background: rgba(16,27,52,.92);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      padding:12px 12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      animation: pop .18s ease both;
+    }
+    [data-theme="light"] .toast{
+      background: rgba(255,255,255,.92);
+    }
+    @keyframes pop{
+      from{transform: translateY(8px); opacity:0}
+      to{transform: translateY(0); opacity:1}
+    }
+    .toast i{margin-top:2px}
+    .toast b{display:block;font-size:13px}
+    .toast span{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
+    .toast.ok i{color:var(--ok)}
+    .toast.warn i{color:var(--warn)}
+    .toast.bad i{color:var(--bad)}
+    .toast .x{
+      margin-left:auto;
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      cursor:pointer;
+      padding:6px;
+      border-radius:10px;
+    }
+    .toast .x:hover{background: rgba(255,255,255,.06); color:var(--text)}
+
+    /* Canvas chart */
+    .chartWrap{
+      border:1px solid var(--border);
+      border-radius: 16px;
+      padding:12px;
+      background: rgba(255,255,255,.03);
+    }
+    canvas{width:100%; height:180px}
+
+    /* Small helpers */
+    .split{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .hr{
+      height:1px;background: var(--border); margin:12px 0;
+    }
+    .note{
+      font-size:12px;color:var(--muted);line-height:1.55;
+      border:1px dashed rgba(103,183,255,.25);
+      background: rgba(103,183,255,.06);
+      padding:10px 12px;
+      border-radius: 14px;
+    }
+  </style>
+</head>
+
+<body data-theme="dark">
+
+  <!-- LOGIN VIEW -->
+  <section id="loginView" class="auth-wrap">
+    <div class="auth">
+      <div class="hero">
+        <h1>OrayNet Modem Yönetim Paneli</h1>
+        <p>
+          Bu ekran, gerçek bir modem arayüzünü taklit eden modern bir UI/UX demodur.
+          Login doğrulama, görselleştirme (grafik), durum kartları ve temel ayar sayfalarını içerir.
+        </p>
+
+        <!-- Görsel (img): inline SVG data-uri -->
+        <div class="side-img" style="padding:0;margin-top:10px">
+          <img alt="Router görseli" id="routerHeroImg">
+        </div>
+
+        <div class="hero-grid">
+          <div class="hero-card">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+              <b>Güvenlik</b>
+              <span>Form check, parola güç göstergesi ve oturum yönetimi.</span>
+            </div>
+          </div>
+          <div class="hero-card">
+            <i class="fa-solid fa-wifi"></i>
+            <div>
+              <b>Kablosuz Ayarlar</b>
+              <span>SSID, şifre, kanal ve misafir ağı örnek ekranı.</span>
+            </div>
+          </div>
+          <div class="hero-card">
+            <i class="fa-solid fa-chart-line"></i>
+            <div>
+              <b>Performans</b>
+              <span>WAN hız grafiği ve anlık durum kartları.</span>
+            </div>
+          </div>
+          <div class="hero-card">
+            <i class="fa-solid fa-users"></i>
+            <div>
+              <b>Cihazlar</b>
+              <span>Bağlı cihaz listesi, IP/MAC ve trafik bilgisi.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top:12px">
+          Demo giriş bilgisi: <span class="mono">admin / admin123</span>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <div>
+          <div class="auth-head">
+            <div>
+              <b>Oturum Aç</b>
+              <div class="auth-sub">Modem arayüzüne erişmek için bilgilerinizi girin.</div>
+            </div>
+            <button class="btn" id="themeBtnLogin" type="button" title="Tema Değiştir">
+              <i class="fa-solid fa-moon"></i>
+              <span>Tema</span>
+            </button>
+          </div>
+
+          <form id="loginForm" class="form" novalidate>
+            <div class="field">
+              <label for="username">Kullanıcı Adı</label>
+              <div class="control">
+                <i class="fa-solid fa-user"></i>
+                <input id="username" name="username" type="text" placeholder="örn. admin" autocomplete="username" required>
+              </div>
+              <div class="help" id="userHelp"><i class="fa-regular fa-circle-info"></i> Varsayılan: admin</div>
+            </div>
+
+            <div class="field">
+              <label for="password">Parola</label>
+              <div class="control">
+                <i class="fa-solid fa-key"></i>
+                <input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required minlength="6">
+                <button class="btn" type="button" id="pwToggle" title="Göster/Gizle" style="padding:8px 10px;border-radius:12px">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+
+              <div class="split">
+                <div class="help" id="pwHelp">
+                  <i class="fa-regular fa-circle-info"></i> En az 6 karakter önerilir.
+                </div>
+                <div style="min-width:160px">
+                  <div class="help"><i class="fa-solid fa-signal"></i> Parola Gücü</div>
+                  <div class="progress" aria-label="Parola gücü">
+                    <div id="pwBar" class="bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="auth-actions">
+              <label class="checkline">
+                <input type="checkbox" id="rememberMe">
+                Beni hatırla
+              </label>
+
+              <button class="btn primary" type="submit" id="loginBtn">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Giriş Yap
+              </button>
+            </div>
+
+            <div class="help" id="formHelp"></div>
+          </form>
+        </div>
+
+        <div class="note">
+          Bu demo gerçek cihazı yönetmez. Amaç; modem UI/UX tasarım dili, ikonlu form alanları,
+          doğrulama ve sayfa akışı (login → panel → logout) örneği sunmaktır.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP VIEW -->
+  <section id="appView" class="shell hidden" aria-hidden="true">
+    <aside class="sidebar">
+      <div class="side-top">
+        <div class="brand-badge"><i class="fa-solid fa-router"></i></div>
+        <div class="brand-name">
+          <b>OrayNet</b>
+          <span>Modem UI — Demo</span>
+        </div>
+      </div>
+
+      <!-- Görsel (img): network map -->
+      <div class="side-img">
+        <img alt="Ağ topolojisi görseli" id="netMapImg">
+      </div>
+
+      <nav class="nav" aria-label="Menü">
+        <button class="active" data-page="dashboard">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </button>
+        <button data-page="wifi">
+          <i class="fa-solid fa-wifi"></i> Wi-Fi Ayarları
+        </button>
+        <button data-page="security">
+          <i class="fa-solid fa-shield-halved"></i> Güvenlik
+        </button>
+        <button data-page="logs">
+          <i class="fa-solid fa-clipboard-list"></i> Sistem Logları
+        </button>
+      </nav>
+
+      <div class="side-footer">
+        <button class="pill" id="themeBtnApp" type="button" title="Tema Değiştir">
+          <i class="fa-solid fa-circle-half-stroke"></i>
+          Tema
+        </button>
+        <button class="pill" id="logoutBtn" type="button" title="Çıkış Yap">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Çıkış
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="crumbs">
+          <b id="pageTitle">Dashboard</b>
+          <span id="pageSubtitle">Bağlantı durumu ve genel özet</span>
+        </div>
+        <div class="top-actions">
+          <span class="chip"><span class="dot"></span> WAN: Bağlı</span>
+          <span class="chip"><i class="fa-solid fa-globe"></i> IP: <span class="mono" id="wanIp">—</span></span>
+          <span class="chip"><i class="fa-solid fa-clock"></i> Uptime: <span class="mono" id="uptime">—</span></span>
+          <button class="btn" id="rebootBtn" type="button">
+            <i class="fa-solid fa-power-off"></i> Yeniden Başlat
+          </button>
+          <button class="btn primary" id="updateBtn" type="button">
+            <i class="fa-solid fa-cloud-arrow-down"></i> Firmware Kontrol
+          </button>
+        </div>
+      </header>
+
+      <section class="content">
+        <!-- DASHBOARD -->
+        <div id="page-dashboard">
+          <div class="grid">
+            <div class="card" style="grid-column: span 4;">
+              <h3><i class="fa-solid fa-tower-broadcast"></i> Hat Durumu</h3>
+              <div class="kpi">
+                <div>
+                  <div class="val" id="dslRate">—</div>
+                  <div class="sub">DSL Senkron (Down/Up)</div>
+                </div>
+                <span class="badge ok"><i class="fa-solid fa-circle-check"></i> Stabil</span>
+              </div>
+              <div class="hr"></div>
+              <div class="muted" style="font-size:12px;display:grid;gap:6px">
+                <div>Gecikme: <span class="mono" id="latency">—</span></div>
+                <div>SNR: <span class="mono" id="snr">—</span></div>
+                <div>Hat Zayıflaması: <span class="mono" id="attn">—</span></div>
+              </div>
+            </div>
+
+            <div class="card" style="grid-column: span 4;">
+              <h3><i class="fa-solid fa-wifi"></i> Kablosuz</h3>
+              <div class="kpi">
+                <div>
+                  <div class="val" id="ssidName">—</div>
+                  <div class="sub">SSID (2.4 / 5 GHz)</div>
+                </div>
+                <span class="badge warn"><i class="fa-solid fa-triangle-exclamation"></i> Misafir: Kapalı</span>
+              </div>
+              <div class="hr"></div>
+              <div class="muted" style="font-size:12px;display:grid;gap:6px">
+                <div>Bağlı Cihaz: <span class="mono" id="devCount">—</span></div>
+                <div>Kanal: <span class="mono" id="wifiCh">—</span></div>
+                <div>Güç: <span class="mono" id="wifiPwr">—</span></div>
+              </div>
+            </div>
+
+            <div class="card" style="grid-column: span 4;">
+              <h3><i class="fa-solid fa-shield"></i> Güvenlik Özeti</h3>
+              <div class="kpi">
+                <div>
+                  <div class="val" id="fwState">—</div>
+                  <div class="sub">Firewall / WPS</div>
+                </div>
+                <span class="badge ok"><i class="fa-solid fa-lock"></i> WPA2/WPA3</span>
+              </div>
+              <div class="hr"></div>
+              <div class="muted" style="font-size:12px;display:grid;gap:6px">
+                <div>Admin Oturumu: <span class="mono" id="whoami">—</span></div>
+                <div>Son Giriş: <span class="mono" id="lastLogin">—</span></div>
+                <div>Şüpheli Deneme: <span class="mono" id="badTry">0</span></div>
+              </div>
+            </div>
+
+            <div class="card" style="grid-column: span 7;">
+              <h3><i class="fa-solid fa-chart-line"></i> Trafik / Hız Grafiği</h3>
+              <div class="chartWrap">
+                <canvas id="speedChart" width="900" height="220" aria-label="Hız grafiği"></canvas>
+                <div class="muted" style="font-size:12px;margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
+                  <span class="badge"><i class="fa-solid fa-download"></i> Down: <span class="mono" id="downNow">—</span></span>
+                  <span class="badge"><i class="fa-solid fa-upload"></i> Up: <span class="mono" id="upNow">—</span></span>
+                  <span class="badge"><i class="fa-solid fa-wave-square"></i> Jitter: <span class="mono" id="jitterNow">—</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="grid-column: span 5;">
+              <h3><i class="fa-solid fa-bolt"></i> Hızlı İşlemler</h3>
+              <div class="form">
+                <button class="btn" type="button" id="wpsBtn">
+                  <i class="fa-solid fa-handshake"></i> WPS (Demo)
+                </button>
+                <button class="btn" type="button" id="guestBtn">
+                  <i class="fa-solid fa-user-plus"></i> Misafir Ağı Aç/Kapat
+                </button>
+                <button class="btn danger" type="button" id="factoryBtn">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Fabrika Ayarları (Demo)
+                </button>
+                <div class="note">
+                  Bu butonlar demo amaçlıdır. Gerçek modem üzerinde işlem yapmaz; yalnızca UI akışını gösterir.
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="grid-column: span 12;">
+              <h3><i class="fa-solid fa-laptop"></i> Bağlı Cihazlar</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cihaz</th>
+                    <th>IP</th>
+                    <th>MAC</th>
+                    <th>Bağlantı</th>
+                    <th>RX/TX</th>
+                    <th>Durum</th>
+                  </tr>
+                </thead>
+                <tbody id="devicesTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- WIFI -->
+        <div id="page-wifi" class="hidden">
+          <div class="grid">
+            <div class="card" style="grid-column: span 7;">
+              <h3><i class="fa-solid fa-wifi"></i> Wi-Fi Ayarları</h3>
+
+              <form id="wifiForm" class="form" novalidate>
+                <div class="row">
+                  <div class="field">
+                    <label>SSID (2.4 GHz)</label>
+                    <div class="control">
+                      <i class="fa-solid fa-signal"></i>
+                      <input id="ssid24" type="text" placeholder="OrayNet_24G" required minlength="3" maxlength="32">
+                    </div>
+                    <div class="help" id="ssid24Help"></div>
+                  </div>
+                  <div class="field">
+                    <label>SSID (5 GHz)</label>
+                    <div class="control">
+                      <i class="fa-solid fa-broadcast-tower"></i>
+                      <input id="ssid5" type="text" placeholder="OrayNet_5G" required minlength="3" maxlength="32">
+                    </div>
+                    <div class="help" id="ssid5Help"></div>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label>Wi-Fi Parolası</label>
+                  <div class="control">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="wifiPass" type="password" placeholder="En az 8 karakter" required minlength="8">
+                    <button class="btn" type="button" id="wifiPwToggle" style="padding:8px 10px;border-radius:12px">
+                      <i class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+                  <div class="help" id="wifiPassHelp"></div>
+                </div>
+
+                <div class="row">
+                  <div class="field">
+                    <label>Kanal</label>
+                    <div class="control">
+                      <i class="fa-solid fa-list-ol"></i>
+                      <select id="wifiChannel">
+                        <option value="auto">Otomatik</option>
+                        <option>1</option><option>6</option><option>11</option>
+                        <option>36</option><option>40</option><option>44</option><option>48</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label>Bant Genişliği</label>
+                    <div class="control">
+                      <i class="fa-solid fa-sliders"></i>
+                      <select id="wifiBw">
+                        <option>20 MHz</option>
+                        <option selected>40 MHz</option>
+                        <option>80 MHz</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="switch">
+                  <div class="meta">
+                    <b>Misafir Ağı</b>
+                    <span>Misafirler için ayrı SSID, izole erişim (demo).</span>
+                  </div>
+                  <div class="toggle" id="guestToggle" role="switch" aria-checked="false" tabindex="0"></div>
+                </div>
+
+                <div class="switch">
+                  <div class="meta">
+                    <b>WPS</b>
+                    <span>Kolay eşleşme (güvenlik açısından genelde önerilmez).</span>
+                  </div>
+                  <div class="toggle" id="wpsToggle" role="switch" aria-checked="false" tabindex="0"></div>
+                </div>
+
+                <div class="split" style="margin-top:6px">
+                  <span class="muted" style="font-size:12px">
+                    <i class="fa-regular fa-circle-info"></i> Kaydet dediğinizde demo olarak lokal hafızaya yazılır.
+                  </span>
+                  <button class="btn primary" type="submit">
+                    <i class="fa-solid fa-floppy-disk"></i> Kaydet (Demo)
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div class="card" style="grid-column: span 5;">
+              <h3><i class="fa-solid fa-image"></i> Kablosuz Kapsama Görseli</h3>
+              <div class="note" style="margin-bottom:10px">
+                Bu görsel temsili bir kapsama/yerleşim şemasıdır. Gerçek ölçüm yapmaz; UI/UX görselleştirme örneğidir.
+              </div>
+              <img id="coverageImg" alt="Kapsama haritası görseli" style="width:100%;border-radius:16px;border:1px solid var(--border);background:rgba(255,255,255,.04)">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECURITY -->
+        <div id="page-security" class="hidden">
+          <div class="grid">
+            <div class="card" style="grid-column: span 7;">
+              <h3><i class="fa-solid fa-shield-halved"></i> Güvenlik Ayarları</h3>
+
+              <div class="switch">
+                <div class="meta">
+                  <b>Firewall</b>
+                  <span>Gelen bağlantıları filtreler (demo).</span>
+                </div>
+                <div class="toggle on" id="fwToggle" role="switch" aria-checked="true" tabindex="0"></div>
+              </div>
+
+              <div class="switch">
+                <div class="meta">
+                  <b>Uzak Yönetim</b>
+                  <span>WAN üzerinden yönetim (kapalı önerilir).</span>
+                </div>
+                <div class="toggle" id="remoteToggle" role="switch" aria-checked="false" tabindex="0"></div>
+              </div>
+
+              <div class="hr"></div>
+
+              <form id="adminPassForm" class="form" novalidate>
+                <div class="field">
+                  <label>Yeni Admin Parolası</label>
+                  <div class="control">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <input id="newAdminPass" type="password" placeholder="En az 10 karakter önerilir" minlength="10" required>
+                    <button class="btn" type="button" id="adminPwToggle" style="padding:8px 10px;border-radius:12px">
+                      <i class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+                  <div class="help" id="adminPassHelp"></div>
+                </div>
+
+                <div class="field">
+                  <label>Tekrar</label>
+                  <div class="control">
+                    <i class="fa-solid fa-repeat"></i>
+                    <input id="newAdminPass2" type="password" placeholder="Parolayı tekrar girin" required>
+                  </div>
+                  <div class="help" id="adminPass2Help"></div>
+                </div>
+
+                <div class="split">
+                  <span class="muted" style="font-size:12px">
+                    <i class="fa-regular fa-circle-info"></i> Demo: Parola sadece bu tarayıcıda saklanır.
+                  </span>
+                  <button class="btn primary" type="submit">
+                    <i class="fa-solid fa-check"></i> Uygula (Demo)
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div class="card" style="grid-column: span 5;">
+              <h3><i class="fa-solid fa-triangle-exclamation"></i> Güvenlik Önerileri</h3>
+              <ul class="muted" style="margin:0;padding-left:18px;font-size:12px;line-height:1.8">
+                <li>Admin parolasını güçlü yapın: uzun, benzersiz ve tahmin edilemez.</li>
+                <li>Uzak yönetimi kapalı tutun; gerekirse IP kısıtı ve VPN kullanın.</li>
+                <li>WPS çoğu senaryoda kapalı önerilir.</li>
+                <li>Misafir ağı ile ev/iş cihazlarınızı ayırın.</li>
+                <li>Firmware güncellemelerini düzenli kontrol edin.</li>
+              </ul>
+              <div class="hr"></div>
+              <div class="note">
+                Bu liste, modem UI/UX panelinde sık görülen içerik bloklarına örnektir.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOGS -->
+        <div id="page-logs" class="hidden">
+          <div class="grid">
+            <div class="card" style="grid-column: span 12;">
+              <h3><i class="fa-solid fa-clipboard-list"></i> Sistem Logları</h3>
+              <div class="split">
+                <span class="muted" style="font-size:12px">
+                  <i class="fa-regular fa-circle-info"></i> Demo logları her sayfa açılışında simüle edilir.
+                </span>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn" id="genLogBtn" type="button">
+                    <i class="fa-solid fa-plus"></i> Log Üret
+                  </button>
+                  <button class="btn danger" id="clearLogBtn" type="button">
+                    <i class="fa-solid fa-trash"></i> Temizle
+                  </button>
+                </div>
+              </div>
+              <div class="hr"></div>
+              <div id="logBox" class="mono" style="font-size:12px;color:var(--muted);line-height:1.65;white-space:pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </section>
+
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    /***********************
+     * SELF-CONTAINED IMAGES
+     ***********************/
+    // Basit, modern SVG illüstrasyonları data-uri olarak üretelim (img kullanımı istenmişti).
+    function svgToDataUri(svg){
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg.trim());
+    }
+
+    const routerSvg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#67b7ff" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#7c5cff" stop-opacity="0.9"/>
+          </linearGradient>
+          <linearGradient id="p" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0f1a33"/>
+            <stop offset="1" stop-color="#0b1220"/>
+          </linearGradient>
+          <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity="0.35"/>
+          </filter>
+        </defs>
+        <rect x="0" y="0" width="1200" height="500" rx="32" fill="url(#p)"/>
+        <circle cx="260" cy="140" r="180" fill="#67b7ff" fill-opacity="0.10"/>
+        <circle cx="980" cy="120" r="210" fill="#7c5cff" fill-opacity="0.10"/>
+        <g filter="url(#s)">
+          <rect x="220" y="210" width="760" height="170" rx="26" fill="#101b34" stroke="#223055"/>
+          <rect x="260" y="246" width="680" height="18" rx="9" fill="#223055"/>
+          <rect x="260" y="280" width="220" height="72" rx="18" fill="url(#g)" opacity="0.22" stroke="#223055"/>
+          <g opacity="0.95">
+            <circle cx="560" cy="316" r="7" fill="#41d19e"/>
+            <circle cx="590" cy="316" r="7" fill="#ffcc66"/>
+            <circle cx="620" cy="316" r="7" fill="#ff6b6b"/>
+          </g>
+          <g>
+            <rect x="700" y="292" width="220" height="48" rx="14" fill="#0f1a33" stroke="#223055"/>
+            <path d="M742 330c22-40 58-40 80 0" fill="none" stroke="#67b7ff" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+            <path d="M756 330c14-26 38-26 52 0" fill="none" stroke="#7c5cff" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+            <path d="M770 330c7-13 20-13 26 0" fill="none" stroke="#41d19e" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+          </g>
+          <g stroke="#223055" stroke-width="10" stroke-linecap="round">
+            <path d="M380 210 L340 120"/>
+            <path d="M820 210 L860 120"/>
+          </g>
+        </g>
+        <text x="260" y="120" font-family="Inter, Arial" font-size="34" fill="#e8eefc" opacity="0.95">OrayNet Router</text>
+        <text x="260" y="160" font-family="Inter, Arial" font-size="18" fill="#a9b7dd" opacity="0.9">Modern UI/UX Demo • Login • Dashboard • Wi-Fi</text>
+      </svg>
+    `;
+
+    const netMapSvg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#0f1a33"/>
+            <stop offset="1" stop-color="#0b1220"/>
+          </linearGradient>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#67b7ff"/>
+            <stop offset="1" stop-color="#7c5cff"/>
+          </linearGradient>
+          <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.35"/>
+          </filter>
+        </defs>
+        <rect x="0" y="0" width="900" height="520" rx="28" fill="url(#bg)"/>
+        <g opacity="0.12">
+          <circle cx="180" cy="120" r="140" fill="#67b7ff"/>
+          <circle cx="730" cy="120" r="160" fill="#7c5cff"/>
+          <circle cx="480" cy="420" r="190" fill="#41d19e"/>
+        </g>
+
+        <g filter="url(#s)">
+          <rect x="360" y="210" width="180" height="96" rx="18" fill="#101b34" stroke="#223055"/>
+          <text x="450" y="268" text-anchor="middle" font-family="Inter, Arial" font-size="16" fill="#e8eefc">ROUTER</text>
+          <rect x="330" y="232" width="24" height="52" rx="10" fill="url(#g)" opacity="0.45"/>
+          <rect x="546" y="232" width="24" height="52" rx="10" fill="url(#g)" opacity="0.45"/>
+        </g>
+
+        <g stroke="#223055" stroke-width="6" stroke-linecap="round" opacity="0.95">
+          <path d="M450 210 C450 140 260 140 260 160"/>
+          <path d="M450 210 C450 140 640 140 640 160"/>
+          <path d="M450 306 C450 360 260 360 260 380"/>
+          <path d="M450 306 C450 360 640 360 640 380"/>
+        </g>
+
+        <g>
+          <g filter="url(#s)">
+            <rect x="190" y="140" width="140" height="62" rx="16" fill="#0f1a33" stroke="#223055"/>
+            <text x="260" y="178" text-anchor="middle" font-family="Inter, Arial" font-size="13" fill="#a9b7dd">INTERNET</text>
+          </g>
+
+          <g filter="url(#s)">
+            <rect x="570" y="140" width="140" height="62" rx="16" fill="#0f1a33" stroke="#223055"/>
+            <text x="640" y="178" text-anchor="middle" font-family="Inter, Arial" font-size="13" fill="#a9b7dd">NAS / PC</text>
+          </g>
+
+          <g filter="url(#s)">
+            <rect x="190" y="360" width="140" height="62" rx="16" fill="#0f1a33" stroke="#223055"/>
+            <text x="260" y="398" text-anchor="middle" font-family="Inter, Arial" font-size="13" fill="#a9b7dd">PHONE</text>
+          </g>
+
+          <g filter="url(#s)">
+            <rect x="570" y="360" width="140" height="62" rx="16" fill="#0f1a33" stroke="#223055"/>
+            <text x="640" y="398" text-anchor="middle" font-family="Inter, Arial" font-size="13" fill="#a9b7dd">TV / IoT</text>
+          </g>
+        </g>
+
+        <text x="28" y="48" font-family="Inter, Arial" font-size="16" fill="#e8eefc">Ağ Topolojisi (Demo)</text>
+        <text x="28" y="74" font-family="Inter, Arial" font-size="12" fill="#a9b7dd">Bağlı cihazları görselleştiren temsili şema</text>
+      </svg>
+    `;
+
+    const coverageSvg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#0f1a33"/>
+            <stop offset="1" stop-color="#0b1220"/>
+          </linearGradient>
+          <radialGradient id="r1" cx="45%" cy="55%" r="55%">
+            <stop offset="0" stop-color="#41d19e" stop-opacity="0.26"/>
+            <stop offset="0.5" stop-color="#67b7ff" stop-opacity="0.16"/>
+            <stop offset="1" stop-color="#7c5cff" stop-opacity="0.0"/>
+          </radialGradient>
+        </defs>
+        <rect width="900" height="620" rx="28" fill="url(#bg)"/>
+        <rect x="90" y="110" width="720" height="420" rx="26" fill="#101b34" stroke="#223055"/>
+        <rect x="120" y="140" width="210" height="150" rx="18" fill="#0f1a33" stroke="#223055"/>
+        <rect x="355" y="140" width="415" height="120" rx="18" fill="#0f1a33" stroke="#223055"/>
+        <rect x="355" y="285" width="240" height="220" rx="18" fill="#0f1a33" stroke="#223055"/>
+        <rect x="620" y="285" width="150" height="220" rx="18" fill="#0f1a33" stroke="#223055"/>
+
+        <circle cx="450" cy="350" r="240" fill="url(#r1)"/>
+        <circle cx="450" cy="350" r="32" fill="#67b7ff" fill-opacity="0.55"/>
+        <circle cx="450" cy="350" r="10" fill="#e8eefc"/>
+
+        <text x="120" y="86" font-family="Inter, Arial" font-size="16" fill="#e8eefc">Wi-Fi Kapsama (Temsili)</text>
+        <text x="120" y="108" font-family="Inter, Arial" font-size="12" fill="#a9b7dd">Kapsama halkaları UI/UX görselleştirme amaçlıdır</text>
+
+        <text x="150" y="205" font-family="Inter, Arial" font-size="12" fill="#a9b7dd">Oda 1</text>
+        <text x="385" y="205" font-family="Inter, Arial" font-size="12" fill="#a9b7dd">Salon</text>
+        <text x="385" y="365" font-family="Inter, Arial" font-size="12" fill="#a9b7dd">Çalışma</text>
+        <text x="650" y="365" font-family="Inter, Arial" font-size="12" fill="#a9b7dd">Mutfak</text>
+      </svg>
+    `;
+
+    // img'leri bağlayalım
+    const routerHeroImg = document.getElementById("routerHeroImg");
+    const netMapImg = document.getElementById("netMapImg");
+    const coverageImg = document.getElementById("coverageImg");
+
+    routerHeroImg.src = svgToDataUri(routerSvg);
+    netMapImg.src = svgToDataUri(netMapSvg);
+    if (coverageImg) coverageImg.src = svgToDataUri(coverageSvg);
+
+    /***********************
+     * SIMPLE STATE + UTILS
+     ***********************/
+    const $ = (q, root=document) => root.querySelector(q);
+    const $$ = (q, root=document) => Array.from(root.querySelectorAll(q));
+
+    const KEY_SESSION = "oraynet.session";
+    const KEY_THEME = "oraynet.theme";
+    const KEY_WIFI = "oraynet.wifi";
+    const KEY_ADMINPASS = "oraynet.adminpass";
+
+    function nowTR(){
+      const d = new Date();
+      return d.toLocaleString("tr-TR", { hour12:false });
+    }
+
+    function toast(type, title, msg){
+      const wrap = $("#toasts");
+      const el = document.createElement("div");
+      el.className = `toast ${type}`;
+      el.innerHTML = `
+        <i class="fa-solid ${type==="ok"?"fa-circle-check":type==="warn"?"fa-triangle-exclamation":"fa-circle-xmark"}"></i>
+        <div>
+          <b>${escapeHtml(title)}</b>
+          <span>${escapeHtml(msg)}</span>
+        </div>
+        <button class="x" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      `;
+      wrap.appendChild(el);
+      const kill = () => { el.style.opacity = "0"; el.style.transform = "translateY(8px)"; setTimeout(()=>el.remove(), 180); };
+      el.querySelector(".x").addEventListener("click", kill);
+      setTimeout(kill, 4200);
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+
+    function setTheme(theme){
+      document.body.setAttribute("data-theme", theme);
+      localStorage.setItem(KEY_THEME, theme);
+    }
+    function toggleTheme(){
+      const cur = document.body.getAttribute("data-theme") || "dark";
+      setTheme(cur === "dark" ? "light" : "dark");
+      toast("ok", "Tema değiştirildi", `Yeni tema: ${document.body.getAttribute("data-theme")}`);
+    }
+
+    function loadTheme(){
+      const t = localStorage.getItem(KEY_THEME);
+      if (t === "light" || t === "dark") setTheme(t);
+    }
+
+    function setView(isLoggedIn){
+      const login = $("#loginView");
+      const app = $("#appView");
+      if (isLoggedIn){
+        login.classList.add("hidden");
+        app.classList.remove("hidden");
+        app.setAttribute("aria-hidden","false");
+      } else {
+        app.classList.add("hidden");
+        app.setAttribute("aria-hidden","true");
+        login.classList.remove("hidden");
+      }
+    }
+
+    function getSession(){
+      try { return JSON.parse(localStorage.getItem(KEY_SESSION) || "null"); }
+      catch { return null; }
+    }
+    function setSession(s){
+      localStorage.setItem(KEY_SESSION, JSON.stringify(s));
+    }
+    function clearSession(){
+      localStorage.removeItem(KEY_SESSION);
+    }
+
+    /***********************
+     * LOGIN FORM CHECK
+     ***********************/
+    const loginForm = $("#loginForm");
+    const userHelp = $("#userHelp");
+    const pwHelp = $("#pwHelp");
+    const formHelp = $("#formHelp");
+    const pwBar = $("#pwBar");
+    const pwToggle = $("#pwToggle");
+
+    const DEMO_USER = "admin";
+    const DEMO_PASS_DEFAULT = "admin123";
+
+    function getAdminPass(){
+      return localStorage.getItem(KEY_ADMINPASS) || DEMO_PASS_DEFAULT;
+    }
+
+    function pwStrength(p){
+      // Basit skor: uzunluk + çeşitlilik
+      let score = 0;
+      if (!p) return 0;
+      if (p.length >= 6) score += 1;
+      if (p.length >= 10) score += 1;
+      if (/[A-Z]/.test(p)) score += 1;
+      if (/[a-z]/.test(p)) score += 1;
+      if (/\d/.test(p)) score += 1;
+      if (/[^A-Za-z0-9]/.test(p)) score += 1;
+      return Math.min(score, 6);
+    }
+
+    function updatePwUI(){
+      const p = $("#password").value;
+      const s = pwStrength(p);
+      const pct = [0, 18, 32, 48, 64, 82, 100][s];
+      pwBar.style.width = pct + "%";
+
+      if (!p){
+        pwHelp.className = "help";
+        pwHelp.innerHTML = `<i class="fa-regular fa-circle-info"></i> En az 6 karakter önerilir.`;
+        return;
+      }
+
+      if (s <= 2){
+        pwHelp.className = "help error";
+        pwHelp.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Zayıf parola. Daha uzun ve karmaşık yapın.`;
+      } else if (s <= 4){
+        pwHelp.className = "help";
+        pwHelp.innerHTML = `<i class="fa-regular fa-circle-info"></i> Orta seviye. Büyük harf/özel karakter ekleyin.`;
+      } else {
+        pwHelp.className = "help ok";
+        pwHelp.innerHTML = `<i class="fa-solid fa-circle-check"></i> Güçlü parola.`;
+      }
+    }
+
+    $("#password").addEventListener("input", updatePwUI);
+
+    pwToggle.addEventListener("click", () => {
+      const inp = $("#password");
+      const isPw = inp.type === "password";
+      inp.type = isPw ? "text" : "password";
+      pwToggle.innerHTML = isPw ? `<i class="fa-regular fa-eye-slash"></i>` : `<i class="fa-regular fa-eye"></i>`;
+    });
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      formHelp.textContent = "";
+
+      const u = $("#username").value.trim();
+      const p = $("#password").value;
+
+      let ok = true;
+
+      if (u.length < 3){
+        ok = false;
+        userHelp.className = "help error";
+        userHelp.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Kullanıcı adı en az 3 karakter olmalı.`;
+      } else {
+        userHelp.className = "help";
+        userHelp.innerHTML = `<i class="fa-regular fa-circle-info"></i> Varsayılan: admin`;
+      }
+
+      if (p.length < 6){
+        ok = false;
+        pwHelp.className = "help error";
+        pwHelp.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Parola en az 6 karakter olmalı.`;
+      }
+
+      if (!ok){
+        toast("bad", "Form doğrulama hatası", "Lütfen alanları kontrol edin.");
+        return;
+      }
+
+      const realAdminPass = getAdminPass();
+      if (u === DEMO_USER && p === realAdminPass){
+        const remember = $("#rememberMe").checked;
+        const session = {
+          user: u,
+          loginAt: nowTR(),
+          remember
+        };
+        setSession(session);
+        toast("ok", "Giriş başarılı", `Hoş geldiniz, ${u}.`);
+        setView(true);
+        bootApp();
+      } else {
+        toast("bad", "Giriş başarısız", "Kullanıcı adı veya parola hatalı.");
+        formHelp.className = "help error";
+        formHelp.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Bilgiler doğrulanamadı. Demo: admin / admin123`;
+        // basit sayaç (UI için)
+        const badTry = $("#badTry");
+        if (badTry) badTry.textContent = String((parseInt(badTry.textContent || "0", 10) || 0) + 1);
+      }
+    });
+
+    /***********************
+     * NAVIGATION
+     ***********************/
+    const pageMeta = {
+      dashboard: { title:"Dashboard", subtitle:"Bağlantı durumu ve genel özet" },
+      wifi: { title:"Wi-Fi Ayarları", subtitle:"Kablosuz ağ yapılandırması (demo)" },
+      security: { title:"Güvenlik", subtitle:"Firewall, uzak yönetim ve admin parolası" },
+      logs: { title:"Sistem Logları", subtitle:"Olay kayıtları ve teşhis (demo)" }
+    };
+
+    function showPage(page){
+      $$("#appView [id^='page-']").forEach(el => el.classList.add("hidden"));
+      $(`#page-${page}`).classList.remove("hidden");
+
+      $$("#appView .nav button").forEach(b => b.classList.remove("active"));
+      $(`#appView .nav button[data-page="${page}"]`).classList.add("active");
+
+      $("#pageTitle").textContent = pageMeta[page].title;
+      $("#pageSubtitle").textContent = pageMeta[page].subtitle;
+
+      // Grafiği sadece dashboard'da güncelle
+      if (page === "dashboard"){
+        drawChart();
+      }
+    }
+
+    $$("#appView .nav button").forEach(btn => {
+      btn.addEventListener("click", () => showPage(btn.dataset.page));
+    });
+
+    /***********************
+     * DEMO DATA
+     ***********************/
+    function rand(min, max){ return Math.random()*(max-min)+min; }
+    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function fakeWanIp(){
+      return `${Math.floor(rand(31, 223))}.${Math.floor(rand(0, 255))}.${Math.floor(rand(0, 255))}.${Math.floor(rand(1, 254))}`;
+    }
+
+    function formatMbps(x){
+      return `${x.toFixed(1)} Mbps`;
+    }
+
+    function fakeMac(){
+      const h = "0123456789ABCDEF";
+      let out = [];
+      for (let i=0;i<6;i++){
+        out.push(h[Math.floor(rand(0,16))] + h[Math.floor(rand(0,16))]);
+      }
+      return out.join(":");
+    }
+
+    function seedDevices(){
+      return [
+        {name:"Oray-Laptop", ip:"192.168.1.12", mac: fakeMac(), link:"5 GHz", rx: "2.1 GB", tx:"430 MB", st:"Aktif"},
+        {name:"Akıllı TV", ip:"192.168.1.21", mac: fakeMac(), link:"2.4 GHz", rx: "5.4 GB", tx:"1.2 GB", st:"Aktif"},
+        {name:"Telefon", ip:"192.168.1.18", mac: fakeMac(), link:"5 GHz", rx: "1.8 GB", tx:"310 MB", st:"Aktif"},
+        {name:"IoT Hub", ip:"192.168.1.44", mac: fakeMac(), link:"2.4 GHz", rx: "210 MB", tx:"95 MB", st:"Beklemede"},
+      ];
+    }
+
+    function renderDevices(devs){
+      const tbody = $("#devicesTbody");
+      tbody.innerHTML = devs.map(d => `
+        <tr>
+          <td style="color:var(--text);font-weight:600">${escapeHtml(d.name)}</td>
+          <td class="mono">${escapeHtml(d.ip)}</td>
+          <td class="mono">${escapeHtml(d.mac)}</td>
+          <td>${escapeHtml(d.link)}</td>
+          <td class="mono">${escapeHtml(d.rx)} / ${escapeHtml(d.tx)}</td>
+          <td>${escapeHtml(d.st)}</td>
+        </tr>
+      `).join("");
+      $("#devCount").textContent = String(devs.length);
+    }
+
+    /***********************
+     * WIFI SETTINGS (LOCAL)
+     ***********************/
+    function loadWifi(){
+      try { return JSON.parse(localStorage.getItem(KEY_WIFI) || "null"); }
+      catch { return null; }
+    }
+    function saveWifi(obj){
+      localStorage.setItem(KEY_WIFI, JSON.stringify(obj));
+    }
+
+    function initWifiForm(){
+      const cfg = loadWifi() || {
+        ssid24: "OrayNet_24G",
+        ssid5: "OrayNet_5G",
+        pass: "OrayNetStrong#2026",
+        channel: "auto",
+        bw: "40 MHz",
+        guest: false,
+        wps: false
+      };
+
+      $("#ssid24").value = cfg.ssid24;
+      $("#ssid5").value = cfg.ssid5;
+      $("#wifiPass").value = cfg.pass;
+      $("#wifiChannel").value = cfg.channel;
+      $("#wifiBw").value = cfg.bw;
+
+      setToggle($("#guestToggle"), cfg.guest);
+      setToggle($("#wpsToggle"), cfg.wps);
+
+      // Dashboard summary
+      $("#ssidName").textContent = `${cfg.ssid24} / ${cfg.ssid5}`;
+      $("#wifiCh").textContent = (cfg.channel === "auto") ? "Auto" : String(cfg.channel);
+      $("#wifiPwr").textContent = "High";
+      $("#fwState").textContent = `${$("#fwToggle").classList.contains("on") ? "ON" : "OFF"} / ${cfg.wps ? "WPS: ON" : "WPS: OFF"}`;
+    }
+
+    function setToggle(el, on){
+      el.classList.toggle("on", !!on);
+      el.setAttribute("aria-checked", on ? "true" : "false");
+    }
+    function toggleToggle(el){
+      const on = !el.classList.contains("on");
+      setToggle(el, on);
+      return on;
+    }
+
+    function bindToggles(){
+      ["guestToggle","wpsToggle","fwToggle","remoteToggle"].forEach(id => {
+        const el = $("#"+id);
+        if (!el) return;
+        const toggleIt = () => {
+          const on = toggleToggle(el);
+          toast("ok", "Ayar güncellendi", `${id.replace("Toggle","")} → ${on ? "Açık" : "Kapalı"} (demo)`);
+          // dashboard güvenlik özetini tazele
+          const wifi = loadWifi() || {};
+          $("#fwState").textContent = `${$("#fwToggle").classList.contains("on") ? "ON" : "OFF"} / ${wifi.wps ? "WPS: ON" : "WPS: OFF"}`;
+        };
+        el.addEventListener("click", toggleIt);
+        el.addEventListener("keydown", (e)=>{ if (e.key==="Enter" || e.key===" "){ e.preventDefault(); toggleIt(); } });
+      });
+    }
+
+    $("#wifiPwToggle").addEventListener("click", () => {
+      const inp = $("#wifiPass");
+      const isPw = inp.type === "password";
+      inp.type = isPw ? "text" : "password";
+      $("#wifiPwToggle").innerHTML = isPw ? `<i class="fa-regular fa-eye-slash"></i>` : `<i class="fa-regular fa-eye"></i>`;
+    });
+
+    $("#wifiForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const ssid24 = $("#ssid24").value.trim();
+      const ssid5  = $("#ssid5").value.trim();
+      const pass   = $("#wifiPass").value;
+      const channel = $("#wifiChannel").value;
+      const bw = $("#wifiBw").value;
+      const guest = $("#guestToggle").classList.contains("on");
+      const wps = $("#wpsToggle").classList.contains("on");
+
+      let ok = true;
+
+      const ssidErr = (v) => (!v || v.length < 3 || v.length > 32);
+      if (ssidErr(ssid24)){ ok=false; $("#ssid24Help").className="help error"; $("#ssid24Help").innerHTML=`<i class="fa-solid fa-circle-xmark"></i> 3–32 karakter olmalı.`; }
+      else { $("#ssid24Help").className="help ok"; $("#ssid24Help").innerHTML=`<i class="fa-solid fa-circle-check"></i> Uygun.`; }
+
+      if (ssidErr(ssid5)){ ok=false; $("#ssid5Help").className="help error"; $("#ssid5Help").innerHTML=`<i class="fa-solid fa-circle-xmark"></i> 3–32 karakter olmalı.`; }
+      else { $("#ssid5Help").className="help ok"; $("#ssid5Help").innerHTML=`<i class="fa-solid fa-circle-check"></i> Uygun.`; }
+
+      if (!pass || pass.length < 8){
+        ok=false;
+        $("#wifiPassHelp").className="help error";
+        $("#wifiPassHelp").innerHTML=`<i class="fa-solid fa-circle-xmark"></i> Parola en az 8 karakter olmalı.`;
+      } else {
+        $("#wifiPassHelp").className="help ok";
+        $("#wifiPassHelp").innerHTML=`<i class="fa-solid fa-circle-check"></i> Kaydetmeye hazır.`;
+      }
+
+      if (!ok){
+        toast("bad", "Wi-Fi doğrulama hatası", "SSID veya parola koşullarını sağlayın.");
+        return;
+      }
+
+      const cfg = { ssid24, ssid5, pass, channel, bw, guest, wps };
+      saveWifi(cfg);
+      toast("ok", "Wi-Fi kaydedildi", "Ayarlar demo olarak tarayıcı hafızasına yazıldı.");
+
+      // Dashboard özetini güncelle
+      $("#ssidName").textContent = `${cfg.ssid24} / ${cfg.ssid5}`;
+      $("#wifiCh").textContent = (cfg.channel === "auto") ? "Auto" : String(cfg.channel);
+      $("#fwState").textContent = `${$("#fwToggle").classList.contains("on") ? "ON" : "OFF"} / ${cfg.wps ? "WPS: ON" : "WPS: OFF"}`;
+    });
+
+    /***********************
+     * ADMIN PASSWORD CHANGE (DEMO)
+     ***********************/
+    $("#adminPwToggle").addEventListener("click", () => {
+      const inp = $("#newAdminPass");
+      const isPw = inp.type === "password";
+      inp.type = isPw ? "text" : "password";
+      $("#adminPwToggle").innerHTML = isPw ? `<i class="fa-regular fa-eye-slash"></i>` : `<i class="fa-regular fa-eye"></i>`;
+    });
+
+    $("#adminPassForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const p1 = $("#newAdminPass").value;
+      const p2 = $("#newAdminPass2").value;
+
+      let ok = true;
+
+      if (!p1 || p1.length < 10){
+        ok=false;
+        $("#adminPassHelp").className="help error";
+        $("#adminPassHelp").innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> En az 10 karakter önerilir.`;
+      } else {
+        $("#adminPassHelp").className="help ok";
+        $("#adminPassHelp").innerHTML=`<i class="fa-solid fa-circle-check"></i> Uygun.`;
+      }
+
+      if (p1 !== p2){
+        ok=false;
+        $("#adminPass2Help").className="help error";
+        $("#adminPass2Help").innerHTML=`<i class="fa-solid fa-circle-xmark"></i> Parolalar eşleşmiyor.`;
+      } else {
+        $("#adminPass2Help").className="help ok";
+        $("#adminPass2Help").innerHTML=`<i class="fa-solid fa-circle-check"></i> Eşleşti.`;
+      }
+
+      if (!ok){
+        toast("bad", "Güvenlik hatası", "Admin parolasını kontrol edin.");
+        return;
+      }
+
+      localStorage.setItem(KEY_ADMINPASS, p1);
+      toast("ok", "Admin parolası güncellendi", "Yeni parola demo olarak kaydedildi.");
+      $("#lastLogin").textContent = nowTR();
+    });
+
+    /***********************
+     * DASHBOARD CHART
+     ***********************/
+    let chartData = [];
+    function seedChart(){
+      chartData = Array.from({length: 24}, (_,i) => ({
+        t: i,
+        down: rand(18, 92),
+        up: rand(4, 18)
+      }));
+    }
+
+    function drawChart(){
+      const canvas = $("#speedChart");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+
+      // HiDPI
+      const cssW = canvas.clientWidth || 900;
+      const cssH = canvas.clientHeight || 180;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(cssW * dpr);
+      canvas.height = Math.floor(cssH * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+
+      // Clear
+      ctx.clearRect(0,0,cssW,cssH);
+
+      // Compute ranges
+      const maxDown = Math.max(...chartData.map(d=>d.down), 100);
+      const maxUp = Math.max(...chartData.map(d=>d.up), 30);
+
+      const padL=38, padR=10, padT=10, padB=26;
+      const W = cssW - padL - padR;
+      const H = cssH - padT - padB;
+
+      // Grid
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue("--border").trim() || "#223055";
+      for (let i=0;i<=4;i++){
+        const y = padT + (H/4)*i;
+        ctx.beginPath();
+        ctx.moveTo(padL, y);
+        ctx.lineTo(padL+W, y);
+        ctx.stroke();
+      }
+
+      // Axes labels
+      ctx.fillStyle = getComputedStyle(document.body).getPropertyValue("--muted").trim() || "#a9b7dd";
+      ctx.font = "12px Inter, Arial";
+      ctx.fillText("Mbps", 6, 14);
+
+      // Helper to map
+      const x = (i) => padL + (W*(i/(chartData.length-1)));
+      const yDown = (v) => padT + (H*(1 - v/maxDown));
+      const yUp = (v) => padT + (H*(1 - v/maxUp));
+
+      // Lines (Down + Up) - colors left default by theme; we pick from CSS vars for clarity
+      const brand = getComputedStyle(document.body).getPropertyValue("--brand").trim() || "#67b7ff";
+      const brand2 = getComputedStyle(document.body).getPropertyValue("--brand2").trim() || "#7c5cff";
+
+      // Down line
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = brand;
+      ctx.beginPath();
+      chartData.forEach((d,i)=>{
+        const xx = x(i), yy = yDown(d.down);
+        if (i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+      });
+      ctx.stroke();
+
+      // Up line
+      ctx.strokeStyle = brand2;
+      ctx.beginPath();
+      chartData.forEach((d,i)=>{
+        const xx = x(i), yy = yUp(d.up);
+        if (i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+      });
+      ctx.stroke();
+
+      // Current values
+      const last = chartData[chartData.length-1];
+      $("#downNow").textContent = formatMbps(last.down);
+      $("#upNow").textContent = formatMbps(last.up);
+      $("#jitterNow").textContent = `${rand(1.5, 9.5).toFixed(1)} ms`;
+    }
+
+    window.addEventListener("resize", () => {
+      if (!$("#page-dashboard").classList.contains("hidden")) drawChart();
+    });
+
+    /***********************
+     * LOGS
+     ***********************/
+    const logBox = $("#logBox");
+    let logs = [];
+
+    function addLog(level, msg){
+      const t = new Date().toLocaleTimeString("tr-TR", { hour12:false });
+      const line = `[${t}] ${level.toUpperCase()}  ${msg}`;
+      logs.unshift(line);
+      logs = logs.slice(0, 60);
+      renderLogs();
+    }
+    function renderLogs(){
+      logBox.textContent = logs.join("\n");
+    }
+    $("#genLogBtn").addEventListener("click", () => {
+      const level = pick(["info","warn","ok","error"]);
+      const map = {
+        info: "DHCP lease yenilendi (192.168.1.18)",
+        warn: "Wi-Fi kanal çakışması tespit edildi (auto önerilir)",
+        ok: "WAN bağlantısı stabil (ping normal)",
+        error: "DNS gecikmesi yükseldi (failover denendi)"
+      };
+      addLog(level, map[level]);
+      toast(level==="error"?"bad":level==="warn"?"warn":"ok", "Log eklendi", map[level]);
+    });
+    $("#clearLogBtn").addEventListener("click", () => {
+      logs = [];
+      renderLogs();
+      toast("ok", "Loglar temizlendi", "Demo log listesi sıfırlandı.");
+    });
+
+    /***********************
+     * TOP ACTIONS (DEMO)
+     ***********************/
+    $("#rebootBtn").addEventListener("click", () => {
+      toast("warn", "Yeniden başlatma", "Demo: Modem yeniden başlatılıyor gibi simüle ediliyor.");
+      addLog("warn", "Kullanıcı yeniden başlatma istedi (demo)");
+      // küçük animasyon: uptime sıfırlama
+      bootUptime(true);
+    });
+
+    $("#updateBtn").addEventListener("click", () => {
+      toast("ok", "Firmware kontrol", "Demo: Güncelleme kontrol edildi. Yeni sürüm yok.");
+      addLog("info", "Firmware kontrolü yapıldı (demo)");
+    });
+
+    $("#wpsBtn").addEventListener("click", () => {
+      toast("warn", "WPS", "Demo: WPS 120 saniyeliğine açık varsayıldı.");
+      addLog("warn", "WPS geçici olarak etkin (demo)");
+    });
+
+    $("#guestBtn").addEventListener("click", () => {
+      const el = $("#guestToggle");
+      const on = toggleToggle(el);
+      const cfg = loadWifi() || {};
+      cfg.guest = on;
+      saveWifi(cfg);
+      toast("ok", "Misafir ağı", `Misafir ağı ${on ? "açıldı" : "kapatıldı"} (demo).`);
+    });
+
+    $("#factoryBtn").addEventListener("click", () => {
+      toast("bad", "Fabrika ayarları", "Demo: Bu işlem uygulanmadı (güvenlik).");
+      addLog("error", "Fabrika ayarları isteği engellendi (demo)");
+    });
+
+    /***********************
+     * THEME BUTTONS + LOGOUT
+     ***********************/
+    $("#themeBtnLogin").addEventListener("click", toggleTheme);
+    $("#themeBtnApp").addEventListener("click", toggleTheme);
+
+    $("#logoutBtn").addEventListener("click", () => {
+      clearSession();
+      toast("ok", "Çıkış yapıldı", "Oturum kapatıldı.");
+      setView(false);
+      // Login ekranında alanları temizle
+      $("#password").value = "";
+      updatePwUI();
+    });
+
+    /***********************
+     * UPTIME + HEADER DATA
+     ***********************/
+    let uptimeStart = null;
+    let uptimeTimer = null;
+
+    function bootUptime(reset=false){
+      if (reset || !uptimeStart) uptimeStart = Date.now();
+      if (uptimeTimer) clearInterval(uptimeTimer);
+      uptimeTimer = setInterval(() => {
+        const s = Math.floor((Date.now() - uptimeStart)/1000);
+        const hh = String(Math.floor(s/3600)).padStart(2,"0");
+        const mm = String(Math.floor((s%3600)/60)).padStart(2,"0");
+        const ss = String(s%60).padStart(2,"0");
+        $("#uptime").textContent = `${hh}:${mm}:${ss}`;
+      }, 1000);
+    }
+
+    /***********************
+     * APP BOOT
+     ***********************/
+    function bootApp(){
+      const sess = getSession();
+      if (!sess) return;
+
+      $("#whoami").textContent = sess.user;
+      $("#lastLogin").textContent = sess.loginAt;
+
+      $("#wanIp").textContent = fakeWanIp();
+      $("#dslRate").textContent = `${Math.floor(rand(35, 92))} / ${Math.floor(rand(6, 19))} Mbps`;
+      $("#latency").textContent = `${Math.floor(rand(7, 19))} ms`;
+      $("#snr").textContent = `${rand(6.5, 13.5).toFixed(1)} dB`;
+      $("#attn").textContent = `${rand(9.0, 21.0).toFixed(1)} dB`;
+
+      seedChart();
+      drawChart();
+
+      const devs = seedDevices();
+      renderDevices(devs);
+
+      // Wi-Fi form yükle
+      initWifiForm();
+
+      // log seed
+      logs = [
+        `[${new Date().toLocaleTimeString("tr-TR",{hour12:false})}] INFO  Sistem başlatıldı (demo)`,
+        `[${new Date().toLocaleTimeString("tr-TR",{hour12:false})}] OK    WAN bağlantısı aktif`,
+        `[${new Date().toLocaleTimeString("tr-TR",{hour12:false})}] INFO  DHCP servis çalışıyor`,
+      ];
+      renderLogs();
+
+      // toggles
+      bindToggles();
+
+      // Default page
+      showPage("dashboard");
+
+      // Uptime
+      bootUptime(false);
+    }
+
+    /***********************
+     * INITIAL LOAD
+     ***********************/
+    loadTheme();
+    updatePwUI();
+
+    // Session restore
+    const sess = getSession();
+    if (sess && sess.user){
+      setView(true);
+      bootApp();
+      toast("ok", "Oturum geri yüklendi", "Kayıtlı oturum ile panele girildi.");
+    } else {
+      setView(false);
+    }
+  </script>
+</body>
+</html>

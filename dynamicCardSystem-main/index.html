@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OrayDev | Dynamic Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- 🔝 Header -->
+  <header class="header" aria-label="Ana menü">
+    <div class="logo">Oray<span>Dev</span></div>
+    <nav class="nav">
+      <a href="#portfolio">Projeler</a>
+      <a href="#about">Hakkımda</a>
+      <a href="#skills">Yetenekler</a>
+      <a href="#contact">İletişim</a>
+    </nav>
+    <!-- Mobil menü butonu -->
+    <button class="menu-toggle" aria-label="Menüyü Aç/Kapat">☰</button>
+  </header>
+
+  <main>
+    <!-- 🎯 Hero Section -->
+    <section class="hero" id="hero">
+      <div class="hero-content">
+        <h1><span>OrayDev</span> Portföy Kart Sistemi</h1>
+        <div class="typewriter">
+          <span id="tw"></span>
+          <span class="cursor"></span>
+        </div>
+        <div class="search-filter">
+          <input type="text" id="search" placeholder="🔍 Proje ara..." aria-label="Proje arama">
+          <div class="filters">
+            <button data-filter="all" class="active">Hepsi</button>
+            <button data-filter="web">Web</button>
+            <button data-filter="game">Oyun</button>
+            <button data-filter="tool">Araç</button>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="img/portfolioWallpaper.jpg" alt="Portföy Önizleme Görseli">
+      </div>
+    </section>
+
+    <!-- 🗂️ Portfolio Section -->
+    <section id="portfolio" class="portfolio-section" aria-label="Projelerim">
+      <h2>🚀 Projelerim</h2>
+      <p class="section-subtitle">Farklı alanlarda geliştirdiğim projelerden seçmeler</p>
+
+      <div class="portfolio-container" id="portfolio-container">
+
+        <!-- 🔹 Card 1 -->
+        <div class="card" data-category="web">
+          <img src="img/portfolio1.png" alt="Portfolio Website">
+          <h3>Portfolio Website</h3>
+          <p>Kendi kişisel portföy sitem. Modern UI/UX, responsive tasarım ve animasyonlarla zenginleştirilmiş.</p>
+          <div class="tags">
+            <span>HTML</span>
+            <span>CSS</span>
+            <span>JavaScript</span>
+          </div>
+          <a href="#" target="_blank">Detay</a>
+        </div>
+
+        <!-- 🔹 Card 2 -->
+        <div class="card" data-category="game">
+          <img src="img/miniapp.png" alt="Game Prototype">
+          <h3>Mini Oyun</h3>
+          <p>Canvas API kullanarak geliştirdiğim küçük bir tarayıcı oyunu. Skor kaydı ve çarpışma algılama içeriyor.</p>
+          <div class="tags">
+            <span>JavaScript</span>
+            <span>Canvas</span>
+          </div>
+          <a href="#" target="_blank">Detay</a>
+        </div>
+
+        <!-- 🔹 Card 3 -->
+        <div class="card" data-category="tool">
+          <img src="img/automation.jpg" alt="Automation Tool">
+          <h3>Automation Tool</h3>
+          <p>PowerShell ve .NET ile geliştirilmiş iş akışı otomasyon aracı. Tekrarlayan görevleri hızlandırır.</p>
+          <div class="tags">
+            <span>C#</span>
+            <span>.NET</span>
+            <span>PowerShell</span>
+          </div>
+          <a href="#" target="_blank">Detay</a>
+        </div>
+    </section>
+
+
+    <!-- 🛠️ Skills Section -->
+    <section id="skills" class="skills" aria-label="Yeteneklerim">
+      <h2>Yetenekler</h2>
+      <ul>
+        <li>HTML5 / CSS3 / JavaScript (ES6+)</li>
+        <li>React & Vue Frameworkleri</li>
+        <li>C# / .NET & PowerShell</li>
+        <li>UI/UX Tasarım, Animasyon & Micro-interactions</li>
+      </ul>
+    </section>
+
+    <!-- ℹ️ About Section -->
+    <section id="about" class="about" aria-label="Hakkımda">
+      <h2>Hakkımda</h2>
+      <p>Ben Oray, modern web uygulamaları, interaktif oyunlar ve otomasyon çözümleri geliştiren bir Front-End Developer
+        & Workflow Architect’im. Görsel tasarım, performans ve kullanıcı deneyimini birleştirerek yenilikçi çözümler
+        üretmeyi seviyorum.</p>
+    </section>
+
+    <!-- 📩 Contact Section -->
+    <section id="contact" class="contact" aria-label="İletişim">
+      <h2>İletişim</h2>
+      <p>Projelerim hakkında daha fazla bilgi almak için bana ulaşabilirsin.</p>
+      <a href="mailto:oray@example.com" class="btn">Mail Gönder</a>
+    </section>
+  </main>
+
+  <!-- 🔻 Footer -->
+  <footer class="footer" aria-label="Alt bilgi">
+    <p>© 2025 OrayDev | Tüm Hakları Saklıdır</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

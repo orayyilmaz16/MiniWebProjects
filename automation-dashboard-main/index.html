@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Otomasyon Dashboard • Local Veri</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <meta name="color-scheme" content="dark light" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">İçeriğe atla</a>
+
+    <div class="app-shell">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <span class="dot"></span>
+            <span class="ring"></span>
+          </div>
+          <div class="brand-text">
+            <div class="title">Automation Ops</div>
+            <div class="subtitle">Local JSON → Otonom Dashboard</div>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="status-pill" id="statusPill" aria-live="polite">
+            <span class="status-led" id="statusLed" aria-hidden="true"></span>
+            <span class="status-text" id="statusText">Hazır</span>
+            <span class="sep" aria-hidden="true">•</span>
+            <span class="status-meta" id="statusMeta">—</span>
+          </div>
+
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Temayı değiştir">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 18a6 6 0 1 1 5.196-9h-1.72A4.5 4.5 0 1 0 12 16.5V18Zm8-6a8 8 0 0 1-12.63 6.48A9 9 0 0 0 18.52 7.37 7.96 7.96 0 0 1 20 12Z"
+              />
+            </svg>
+          </button>
+
+          <button class="primary-btn" id="refreshBtn" type="button">
+            <span class="btn-glow" aria-hidden="true"></span>
+            Yenile
+            <span class="kbd" aria-hidden="true">R</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Controls -->
+      <section class="controls" aria-label="Kontroller">
+        <div class="control-row">
+          <div class="searchbox">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M10 18a8 8 0 1 1 5.293-14.001A8 8 0 0 1 10 18Zm10.707 2.293-4.02-4.02a10 10 0 1 1 1.414-1.414l4.02 4.02a1 1 0 0 1-1.414 1.414Z"
+              />
+            </svg>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Otomasyon ara… (isim, etiket, sahip)"
+              autocomplete="off"
+            />
+            <button class="ghost-btn" id="clearSearch" type="button">Temizle</button>
+          </div>
+
+          <div class="segmented" role="tablist" aria-label="Durum filtresi">
+            <button class="seg-btn is-active" data-filter="all" role="tab" aria-selected="true">Tümü</button>
+            <button class="seg-btn" data-filter="running" role="tab">Running</button>
+            <button class="seg-btn" data-filter="paused" role="tab">Paused</button>
+            <button class="seg-btn" data-filter="failed" role="tab">Failed</button>
+          </div>
+
+          <div class="select-wrap">
+            <label class="select-label" for="sortSelect">Sırala</label>
+            <select id="sortSelect">
+              <option value="health_desc">Sağlık (yüksek → düşük)</option>
+              <option value="health_asc">Sağlık (düşük → yüksek)</option>
+              <option value="nextRun_asc">Next Run (yakın → uzak)</option>
+              <option value="lastRun_desc">Last Run (yeni → eski)</option>
+              <option value="name_asc">İsim (A → Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="meta-row">
+          <div class="hint">
+            Otonom yenileme: <strong id="autoRefreshLabel">15s</strong>
+            <span class="dot-sep" aria-hidden="true">•</span>
+            Son çekim: <strong id="lastFetchLabel">—</strong>
+          </div>
+
+          <div class="toggles">
+            <label class="toggle">
+              <input id="autoRefreshToggle" type="checkbox" checked />
+              <span class="toggle-ui" aria-hidden="true"></span>
+              <span class="toggle-text">Auto-refresh</span>
+            </label>
+
+            <label class="toggle">
+              <input id="reduceMotionToggle" type="checkbox" />
+              <span class="toggle-ui" aria-hidden="true"></span>
+              <span class="toggle-text">Reduce motion</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main -->
+      <main id="main" class="main" tabindex="-1">
+        <section class="summary" aria-label="Özet kartları">
+          <div class="summary-card">
+            <div class="summary-k">Toplam</div>
+            <div class="summary-v" id="sumTotal">—</div>
+            <div class="summary-s">Tüm otomasyonlar</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-k">Çalışan</div>
+            <div class="summary-v" id="sumRunning">—</div>
+            <div class="summary-s">Aktif işlemler</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-k">Hatalı</div>
+            <div class="summary-v danger" id="sumFailed">—</div>
+            <div class="summary-s">Müdahale gerektirir</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-k">Ortalama Sağlık</div>
+            <div class="summary-v" id="sumHealth">—</div>
+            <div class="summary-s">0–100</div>
+          </div>
+        </section>
+
+        <section class="grid-head" aria-label="Liste başlığı">
+          <div class="grid-title">
+            <h1>Otomasyonlar</h1>
+            <p>Local veriyi çekip otonom UI güncelleyen dashboard örneği.</p>
+          </div>
+
+          <div class="grid-actions">
+            <button class="ghost-btn" id="simulateBtn" type="button" title="UI üstünde simülasyon (veri bozulması / gecikme)">
+              Simüle
+            </button>
+            <button class="ghost-btn" id="exportBtn" type="button" title="Ekrandaki filtrelenmiş veriyi JSON indir">
+              Export JSON
+            </button>
+          </div>
+        </section>
+
+        <!-- Cards -->
+        <section class="cards" id="cards" aria-label="Otomasyon kartları">
+          <!-- Skeletons injected -->
+        </section>
+
+        <section class="empty" id="emptyState" hidden>
+          <div class="empty-illus" aria-hidden="true"></div>
+          <h2>Sonuç bulunamadı</h2>
+          <p>Arama terimini veya filtreleri değiştirin.</p>
+          <button class="primary-btn" id="resetFiltersBtn" type="button">Filtreleri Sıfırla</button>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="foot-left">
+          <span class="chip">Local: <strong>data.json</strong></span>
+          <span class="chip">UI: <strong>Responsive</strong></span>
+          <span class="chip">Ops: <strong>Retry/Backoff</strong></span>
+        </div>
+        <div class="foot-right">
+          <span class="muted">Klavye: <strong>R</strong> (yenile) • <strong>/</strong> (ara)</span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Toasts -->
+    <div class="toasts" id="toasts" aria-live="polite" aria-relevant="additions"></div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

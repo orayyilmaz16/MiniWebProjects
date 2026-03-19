@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Graddy Coffee - Modern kahve deneyimi." />
+  <title>Graddy Coffee — Modern Coffee Experience</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Background -->
+  <div class="bg" aria-hidden="true">
+    <div class="blob blob--a"></div>
+    <div class="blob blob--b"></div>
+    <div class="blob blob--c"></div>
+    <div class="noise"></div>
+  </div>
+
+  <!-- Top progress -->
+  <div class="scrollProgress" aria-hidden="true">
+    <div class="scrollProgress__bar"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <header class="header" id="top">
+    <nav class="nav glass" aria-label="Ana navigasyon">
+      <a class="brand" href="#home" aria-label="Graddy ana sayfa">
+        <span class="brand__mark" aria-hidden="true">
+          <!-- coffee icon (updated) -->
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 8h10v6a5 5 0 0 1-5 5H9a3 3 0 0 1-3-3V8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M16 9h2.2a2.8 2.8 0 1 1 0 5.6H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M6 8V7a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand__text">
+          <span class="brand__name">Graddy</span>
+          <span class="brand__tag">coffee</span>
+        </span>
+      </a>
+
+      <div class="nav__links" id="navLinks">
+        <a href="#about" class="nav__link">Hakkımızda</a>
+        <a href="#mission" class="nav__link">Misyon</a>
+        <a href="#vision" class="nav__link">Vizyon</a>
+        <a href="#products" class="nav__link">Ürünler</a>
+        <a href="#contact" class="nav__link">İletişim</a>
+      </div>
+
+      <div class="nav__actions">
+        <button class="btn btn--ghost btn--icon" id="themeToggle" aria-label="Tema değiştir" title="Tema">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 12.6A8.4 8.4 0 0 1 11.4 3a7.2 7.2 0 1 0 9.6 9.6Z"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Cart button -->
+        <button class="btn btn--ghost btn--icon cartBtn" id="cartOpen" aria-label="Sepet">
+          <span class="cartBadge" id="cartBadge" aria-hidden="true">0</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6h15l-1.5 9H8L6 6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M6 6l-2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+              stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </button>
+
+        <button class="btn btn--primary" id="ctaOrder">
+          <span class="btn__label">Sipariş</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="section hero" id="home">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <div class="pill anim anim--in" style="--d: .03s">
+            <span class="pill__dot" aria-hidden="true"></span>
+            <span>Modern arayüz • Temiz tasarım • Responsive</span>
+          </div>
+
+          <h1 class="hero__title anim anim--in" style="--d: .08s">
+            Graddy ile <span class="accent">kahvenin</span> modern hali.
+          </h1>
+
+          <p class="hero__desc anim anim--in" style="--d: .12s">
+            Özenle seçilmiş çekirdekler, sürdürülebilir tedarik ve premium içim.
+            Her yudum, daha iyi bir güne açılan kapı.
+          </p>
+
+          <div class="hero__actions anim anim--in" style="--d: .16s">
+            <button class="btn btn--primary btn--xl" id="ctaExplore">
+              <span class="btn__label">Ürünleri Keşfet</span>
+            </button>
+            <a class="btn btn--ghost btn--xl" href="#about">
+              <span class="btn__label">Marka Hikayesi</span>
+            </a>
+          </div>
+
+          <div class="hero__stats anim anim--in" style="--d: .20s">
+            <div class="stat glass">
+              <div class="stat__value">+24</div>
+              <div class="stat__label">Özel Harman</div>
+            </div>
+            <div class="stat glass">
+              <div class="stat__value">98%</div>
+              <div class="stat__label">Memnuniyet</div>
+            </div>
+            <div class="stat glass">
+              <div class="stat__value">48h</div>
+              <div class="stat__label">Taze Kavrum</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero visual -->
+        <div class="hero__media anim anim--in" style="--d: .12s" aria-label="Graddy görsel alanı">
+          <div class="heroMedia glass">
+            <div class="heroMedia__top">
+              <span class="badge badge--soft">
+                <span class="i" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 21h10M8 21V9a4 4 0 0 1 8 0v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M6 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                Yeni Seri
+              </span>
+              <span class="muted small">Single Origin • 250g</span>
+            </div>
+
+            <div class="heroMedia__img" aria-hidden="true">
+              <img class="heroImg" src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGNvZmZlZSUyMGJhZ3xlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000" alt="" loading="lazy">
+            </div>
+
+            <div class="heroMedia__bottom">
+              <div class="heroMedia__meta">
+                <div class="metaPill">
+                  <span class="i" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  Taze Kavrum
+                </div>
+                <div class="metaPill">
+                  <span class="i" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M4 12a8 8 0 0 1 16 0c0 4-3 7-8 10-5-3-8-6-8-10Z"
+                        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                      <path d="M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+                        stroke="currentColor" stroke-width="1.8"/>
+                    </svg>
+                  </span>
+                  İzlenebilir
+                </div>
+              </div>
+
+              <button class="btn btn--primary btn--sm" id="ctaQuickView">
+                <span class="btn__label">Hızlı Görünüm</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="sectionHead">
+          <h2 class="sectionTitle anim">Hakkımızda</h2>
+          <p class="sectionDesc anim" style="--d:.06s">
+            Graddy, kahvenin sadece içecek değil; bir deneyim olduğuna inanır. Tasarım ve zanaatı bir araya getirir.
+          </p>
+        </div>
+
+        <div class="aboutGrid">
+          <article class="panel glass anim">
+            <h3>Hikayemiz</h3>
+            <p>
+              Kavrum profilinden demleme reçetesine kadar her adımı ölçer, iteratif şekilde iyileştiririz.
+              Her fincanda tutarlılık ve karakter hedefleriz.
+            </p>
+            <ul class="tickList">
+              <li>Ölçülebilir kalite kontrol</li>
+              <li>Yerel & sürdürülebilir tedarik</li>
+              <li>Tadım notlarında şeffaflık</li>
+            </ul>
+          </article>
+
+          <article class="panel glass anim" style="--d:.08s">
+            <h3>Deneyim Tasarımı</h3>
+            <p>
+              Graddy’de hem ürün hem arayüz sade ve güçlüdür. Gereksiz mouse takip efektleri olmadan,
+              net hiyerarşi ile “okunur” bir deneyim sunar.
+            </p>
+            <div class="kpiRow">
+              <div class="kpi">
+                <div class="kpi__num">12</div>
+                <div class="kpi__label">Ülke Kaynağı</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi__num">4.9</div>
+                <div class="kpi__label">Ortalama Puan</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi__num">30+</div>
+                <div class="kpi__label">Reçete</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- MISSION -->
+    <section class="section" id="mission">
+      <div class="container">
+        <div class="split">
+          <div class="split__left">
+            <h2 class="sectionTitle anim">Misyon</h2>
+            <p class="sectionDesc anim" style="--d:.06s">
+              Kahve kalitesini ölçülebilir hale getirip sürdürülebilir tedarikle birleştirerek erişilebilir premium deneyim sunmak.
+            </p>
+
+            <div class="featureList">
+              <div class="feature glass anim" style="--d:.10s">
+                <div class="feature__icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 8h10v6a5 5 0 0 1-5 5H9a3 3 0 0 1-3-3V8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M16 9h2.2a2.8 2.8 0 1 1 0 5.6H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="feature__title">Tutarlı Profil</div>
+                  <div class="feature__desc">Her parti aynı karakter, aynı tat.</div>
+                </div>
+              </div>
+              <div class="feature glass anim" style="--d:.14s">
+                <div class="feature__icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 7c-3 5-7 2-10 7-2 3-5 3-6 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M4 7c3 5 7 2 10 7 2 3 5 3 6 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="feature__title">Sürdürülebilirlik</div>
+                  <div class="feature__desc">İzlenebilir tedarik, daha iyi gelecek.</div>
+                </div>
+              </div>
+              <div class="feature glass anim" style="--d:.18s">
+                <div class="feature__icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                      stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="feature__title">Zanaat + Veri</div>
+                  <div class="feature__desc">Hassas ölçüm ve iterasyon.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="split__right">
+            <div class="panel glass anim" style="--d:.10s">
+              <h3>Graddy Lab</h3>
+              <p class="muted" style="line-height:1.7; margin:0;">
+                Tadım notlarını standardize eder, her çekirdeği doğru yönteme göre konumlandırırız.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISION -->
+    <section class="section" id="vision">
+      <div class="container">
+        <div class="sectionHead">
+          <h2 class="sectionTitle anim">Vizyon</h2>
+          <p class="sectionDesc anim" style="--d:.06s">
+            Kahvede şeffaflığı ve kalite standardını yükseltmek; tasarım odaklı global bir deneyim markası olmak.
+          </p>
+        </div>
+
+        <div class="visionRow">
+          <article class="visionCard glass anim">
+            <h3>Global Standard</h3>
+            <p>Kaynak, kavrum tarihi, profil ve demleme önerileri net biçimde sunulur.</p>
+          </article>
+          <article class="visionCard glass anim" style="--d:.08s">
+            <h3>Community</h3>
+            <p>Reçete paylaşımı, eğitim ve etkinliklerle topluluğu büyütürüz.</p>
+          </article>
+          <article class="visionCard glass anim" style="--d:.12s">
+            <h3>Future Craft</h3>
+            <p>Zanaatı korurken veriyle tutarlılık; tasarımla erişilebilirlik sağlarız.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="section" id="products">
+      <div class="container">
+        <div class="sectionHead">
+          <h2 class="sectionTitle anim">Ürünler</h2>
+          <p class="sectionDesc anim" style="--d:.06s">
+            Kartlara tıklayın: ürün detayı. “Ekle” ile sepete atın. Sepette adet/tutar/silme/checkout var.
+          </p>
+        </div>
+
+        <div class="productToolbar glass anim" style="--d:.08s">
+          <div class="segmented" role="tablist" aria-label="Ürün filtreleri">
+            <button class="segmented__btn is-active" data-filter="all" role="tab" aria-selected="true">Hepsi</button>
+            <button class="segmented__btn" data-filter="espresso" role="tab" aria-selected="false">Espresso</button>
+            <button class="segmented__btn" data-filter="filter" role="tab" aria-selected="false">Filtre</button>
+            <button class="segmented__btn" data-filter="cold" role="tab" aria-selected="false">Cold Brew</button>
+          </div>
+
+          <div class="search">
+            <input id="productSearch" type="search" placeholder="Ara: Kenya, cacao, caramel..." aria-label="Ürün ara" />
+            <span class="search__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </div>
+        </div>
+
+        <div class="grid productsGrid" id="productsGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="sectionHead">
+          <h2 class="sectionTitle anim">İletişim</h2>
+          <p class="sectionDesc anim" style="--d:.06s">
+            İş birlikleri ve destek için yazın. Form gönderimi demo amaçlıdır.
+          </p>
+        </div>
+
+        <div class="contactGrid">
+          <form class="contactForm glass anim" id="contactForm">
+            <div class="formRow">
+              <label>
+                <span>Ad Soyad</span>
+                <input type="text" name="name" placeholder="Oray" required />
+              </label>
+              <label>
+                <span>E-posta</span>
+                <input type="email" name="email" placeholder="oray@ornek.com" required />
+              </label>
+            </div>
+
+            <label>
+              <span>Konu</span>
+              <input type="text" name="subject" placeholder="Toptan satış hakkında" required />
+            </label>
+
+            <label>
+              <span>Mesaj</span>
+              <textarea name="message" rows="5" placeholder="Detayları paylaşır mısınız?" required></textarea>
+            </label>
+
+            <div class="formActions">
+              <button class="btn btn--primary btn--xl" type="submit">
+                <span class="btn__label">Gönder</span>
+              </button>
+              <button class="btn btn--ghost btn--xl" type="reset">Temizle</button>
+            </div>
+
+            <p class="miniText">Not: Bu form demo — gönderim sonrası toast gösterir.</p>
+          </form>
+
+          <aside class="contactAside">
+            <div class="infoCard glass anim" style="--d:.08s">
+              <h3>Graddy Roastery</h3>
+              <p class="muted">
+                İstanbul • Türkiye<br />
+                Hafta içi 09:00–18:00
+              </p>
+              <div class="infoRow">
+                <span class="muted">E-posta</span>
+                <strong>hello@graddy.coffee</strong>
+              </div>
+              <div class="infoRow">
+                <span class="muted">Telefon</span>
+                <strong>+90 555 000 00 00</strong>
+              </div>
+              <div class="socialRow">
+                <a class="social" href="#top" data-toast="Instagram demo" aria-label="Instagram">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"
+                      stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+                      stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M17.5 6.5h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+                  </svg>
+                </a>
+                <a class="social" href="#top" data-toast="X demo" aria-label="X">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 4l16 16M20 4 4 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </a>
+                <a class="social" href="#top" data-toast="YouTube demo" aria-label="YouTube">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 12s0-4-1-5-4-1-8-1-7 0-8 1-1 5-1 5 0 4 1 5 4 1 8 1 7 0 8-1 1-5 1-5Z"
+                      stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M10 9.5v5l5-2.5-5-2.5Z" fill="currentColor"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Location image (map) -->
+            <div class="mapCard glass anim" style="--d:.12s">
+              <div class="mapCard__hdr">
+                <span class="badge badge--soft">
+                  <span class="i" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 21s-7-4.3-7-10a7 7 0 1 1 14 0c0 5.7-7 10-7 10Z"
+                        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                      <path d="M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+                        stroke="currentColor" stroke-width="1.8"/>
+                    </svg>
+                  </span>
+                  Konum
+                </span>
+                <span class="muted">Demo Harita</span>
+              </div>
+
+              <div class="mapMedia" aria-hidden="true">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Location_map_Istanbul.png" alt="" loading="lazy">
+                <span class="mapPin" aria-hidden="true"></span>
+              </div>
+
+              <div class="mapCard__ftr">
+                <span class="muted small">Görsel amaçlıdır. Harita embed eklenebilir.</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="brand brand--footer">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+              <path d="M6 8h10v6a5 5 0 0 1-5 5H9a3 3 0 0 1-3-3V8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M16 9h2.2a2.8 2.8 0 1 1 0 5.6H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="brand__text">
+            <span class="brand__name">Graddy</span>
+            <span class="brand__tag">coffee</span>
+          </span>
+        </div>
+
+        <p class="muted">Modern kahve deneyimi. Şeffaf tedarik, taze kavrum, rafine tasarım.</p>
+
+        <div class="newsletter glass">
+          <input type="email" id="newsletterEmail" placeholder="E-posta ile abone ol" aria-label="Bülten e-postası" />
+          <button class="btn btn--primary" id="newsletterBtn">
+            <span class="btn__label">Abone Ol</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="footer__cols">
+        <div class="footerCol">
+          <h4>Sayfalar</h4>
+          <a href="#about">Hakkımızda</a>
+          <a href="#mission">Misyon</a>
+          <a href="#vision">Vizyon</a>
+          <a href="#products">Ürünler</a>
+          <a href="#contact">İletişim</a>
+        </div>
+        <div class="footerCol">
+          <h4>Destek</h4>
+          <a href="#top" data-toast="SSS demo">SSS</a>
+          <a href="#top" data-toast="Kargo demo">Kargo</a>
+          <a href="#top" data-toast="İade demo">İade</a>
+          <a href="#top" data-toast="KVKK demo">Gizlilik</a>
+        </div>
+        <div class="footerCol">
+          <h4>Sosyal</h4>
+          <a href="#top" data-toast="Instagram demo">Instagram</a>
+          <a href="#top" data-toast="YouTube demo">YouTube</a>
+          <a href="#top" data-toast="LinkedIn demo">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer__bottom">
+      <span class="muted small">© <span id="year"></span> Graddy Coffee. Tüm hakları saklıdır.</span>
+      <a class="toTop" href="#top" aria-label="Yukarı çık">
+        <span>Yukarı</span>
+        <i aria-hidden="true">↑</i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-label="Ürün detayı" hidden>
+    <div class="modal__panel glass" role="document">
+      <div class="modal__hdr">
+        <div>
+          <div class="muted small" id="modalCategory">Kategori</div>
+          <h3 class="modal__title" id="modalTitle">Ürün</h3>
+        </div>
+        <button class="btn btn--ghost btn--icon" id="modalClose" aria-label="Modal kapat">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+
+      <div class="modal__body">
+        <div class="modal__visual" aria-hidden="true">
+          <img id="modalImg" class="modalImg" src="" alt="">
+        </div>
+
+        <div class="modal__info">
+          <p class="modal__desc" id="modalDesc"></p>
+
+          <div class="modal__meta">
+            <div class="metaItem glass">
+              <div class="muted small">Tadım</div>
+              <div id="modalNotes"></div>
+            </div>
+            <div class="metaItem glass">
+              <div class="muted small">Yoğunluk</div>
+              <div class="meter" aria-hidden="true"><span id="modalIntensity"></span></div>
+            </div>
+          </div>
+
+          <div class="modal__actions">
+            <button class="btn btn--primary btn--xl" id="modalAdd">
+              <span class="btn__label">Sepete Ekle</span>
+            </button>
+            <button class="btn btn--ghost btn--xl" id="modalWishlist">Favorile</button>
+          </div>
+
+          <div class="muted small">ESC ile kapat • backdrop tıklayınca kapanır</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal__backdrop" id="modalBackdrop" aria-hidden="true"></div>
+  </div>
+
+  <!-- CART DRAWER -->
+  <div class="drawer" id="cartDrawer" aria-label="Sepet" role="dialog" aria-modal="true" hidden>
+    <div class="drawer__panel glass" role="document">
+      <div class="drawer__hdr">
+        <div class="drawer__titleRow">
+          <h3 class="drawer__title">Sepet</h3>
+          <span class="muted small" id="cartSubtitle">0 ürün</span>
+        </div>
+        <button class="btn btn--ghost btn--icon" id="cartClose" aria-label="Sepeti kapat">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+
+      <div class="drawer__body">
+        <div class="cartEmpty" id="cartEmpty" hidden>
+          <div class="cartEmpty__icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M6 6h15l-1.5 9H8L6 6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M6 6l-2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="cartEmpty__title">Sepetin boş</div>
+            <div class="cartEmpty__desc">Ürünlerden “Ekle” diyerek sepete ekleyebilirsin.</div>
+          </div>
+        </div>
+
+        <div class="cartList" id="cartList"></div>
+      </div>
+
+      <div class="drawer__ftr">
+        <div class="cartTotals glass">
+          <div class="totRow">
+            <span class="muted">Ara Toplam</span>
+            <strong id="subtotalText">₺0</strong>
+          </div>
+          <div class="totRow">
+            <span class="muted">Kargo</span>
+            <strong id="shippingText">₺0</strong>
+          </div>
+          <div class="totRow totRow--sum">
+            <span>Toplam</span>
+            <strong id="totalText">₺0</strong>
+          </div>
+        </div>
+
+        <div class="drawer__actions">
+          <button class="btn btn--ghost btn--xl" id="cartClear">Sepeti Temizle</button>
+          <button class="btn btn--primary btn--xl" id="cartCheckout">
+            <span class="btn__label">Siparişi Onayla</span>
+          </button>
+        </div>
+
+        <div class="muted small">Demo checkout: onay sonrası sepet sıfırlanır.</div>
+      </div>
+    </div>
+
+    <div class="drawer__backdrop" id="cartBackdrop" aria-hidden="true"></div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toaster" id="toaster" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

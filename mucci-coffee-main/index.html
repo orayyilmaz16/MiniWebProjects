@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Mucci Coffee — modern kafe deneyimi. Specialty coffee, taze fırın, workshop, etkinlik."
+    />
+
+    <title>Mucci Coffee</title>
+
+    <!-- Favicon (inline SVG) -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cdefs/%3E%3Cpath fill='%23caa36a' d='M24 28h40v24c0 10-8 18-18 18H42c-10 0-18-8-18-18V28Zm48 4c10 0 18 8 18 18s-8 18-18 18h-4v-8h4c5.5 0 10-4.5 10-10s-4.5-10-10-10h-4v-8h4Z'/%3E%3Cpath fill='%23ffffff' opacity='.14' d='M18 76h60v8H18z'/%3E%3C/svg%3E"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader" aria-hidden="true">
+      <div class="preloader__card">
+        <div class="brandmark">
+          <i class="fa-solid fa-mug-hot"></i>
+        </div>
+        <div class="preloader__text">
+          <div class="preloader__title">Mucci</div>
+          <div class="preloader__sub">Koku yayılıyor…</div>
+        </div>
+        <div class="preloader__bar" role="progressbar" aria-label="Yükleniyor">
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top progress -->
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <!-- Header -->
+    <header class="header" id="top">
+      <nav class="nav container" aria-label="Ana Menü">
+        <a class="logo" href="#home" aria-label="Mucci ana sayfa">
+          <span class="logo__icon"><i class="fa-solid fa-mug-hot"></i></span>
+          <span class="logo__text">Mucci</span>
+        </a>
+
+        <div class="nav__links" id="navLinks">
+          <a href="#home" class="nav__link active">Home</a>
+          <a href="#services" class="nav__link">Services</a>
+          <a href="#history" class="nav__link">History</a>
+          <a href="#vision" class="nav__link">Vision</a>
+          <a href="#mission" class="nav__link">Mission</a>
+          <a href="#skills" class="nav__link">Skills & Other</a>
+          <a href="#contact" class="nav__link">Contact</a>
+        </div>
+
+        <div class="nav__actions">
+          <button
+            class="iconbtn"
+            id="themeToggle"
+            aria-label="Tema değiştir"
+            title="Dark/Light"
+          >
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
+          </button>
+
+          <button
+            class="hamburger"
+            id="hamburger"
+            aria-label="Menüyü aç/kapat"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Mobile menu -->
+      <div class="mobile" id="mobileMenu" aria-hidden="true">
+        <div class="mobile__overlay" id="mobileOverlay" tabindex="-1"></div>
+        <div class="mobile__panel" role="dialog" aria-label="Mobil Menü">
+          <div class="mobile__head">
+            <div class="mobile__brand">
+              <i class="fa-solid fa-mug-hot"></i>
+              <span>Mucci</span>
+            </div>
+            <button class="iconbtn" id="mobileClose" aria-label="Menüyü kapat">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="mobile__links">
+            <a href="#home" class="mobile__link">Home</a>
+            <a href="#services" class="mobile__link">Services</a>
+            <a href="#history" class="mobile__link">History</a>
+            <a href="#vision" class="mobile__link">Vision</a>
+            <a href="#mission" class="mobile__link">Mission</a>
+            <a href="#skills" class="mobile__link">Skills & Other</a>
+            <a href="#contact" class="mobile__link">Contact</a>
+          </div>
+
+          <div class="mobile__cta">
+            <a class="btn btn--primary" href="#contact"
+              ><i class="fa-solid fa-calendar-check"></i> Rezervasyon /
+              Etkinlik</a
+            >
+            <p class="muted">Gece modunda daha iyi görünür.</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <main>
+      <section class="hero" id="home">
+        <!-- CSS'te background gelmiyorsa diye inline garanti -->
+        <div
+          class="hero__bg"
+          aria-hidden="true"
+          style="background-image: url('https://images.unsplash.com/photo-1733697968338-21feb4b7a4c3?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=2400');"
+        ></div>
+        <div class="hero__overlay" aria-hidden="true"></div>
+
+        <div class="container hero__grid">
+          <div class="hero__copy reveal">
+            <div class="pill">
+              <i class="fa-solid fa-star"></i>
+              <span>Specialty Coffee • Fresh Bakery • Night Vibes</span>
+            </div>
+
+            <h1 class="hero__title">
+              Geceye yakışan kahve deneyimi: <span class="grad">Mucci</span>
+            </h1>
+
+            <p class="hero__lead">
+              Çekirdekten fincana; sürdürülebilir tedarik, rafine reçeteler ve
+              modern bir atmosfer. İster çalış, ister sohbet et; Mucci her
+              tempoya uyum sağlar.
+            </p>
+
+            <div class="hero__actions">
+              <a class="btn btn--primary" href="#services">
+                <i class="fa-solid fa-bolt"></i> Menü & Servisler
+              </a>
+              <a class="btn btn--ghost" href="#history">
+                <i class="fa-solid fa-timeline"></i> Hikâyemiz
+              </a>
+            </div>
+
+            <div class="hero__meta">
+              <div class="meta">
+                <i class="fa-solid fa-wifi"></i>
+                <div>
+                  <div class="meta__t">Wi-Fi & Çalışma Alanı</div>
+                  <div class="meta__s">Sessiz köşeler + priz</div>
+                </div>
+              </div>
+              <div class="meta">
+                <i class="fa-solid fa-mug-saucer"></i>
+                <div>
+                  <div class="meta__t">Özel Harman</div>
+                  <div class="meta__s">Haftalık taze kavrum</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero__cards reveal">
+            <div class="glass card">
+              <div class="card__top">
+                <div class="card__icon">
+                  <i class="fa-solid fa-seedling"></i>
+                </div>
+                <div>
+                  <div class="card__title">Sürdürülebilir</div>
+                  <div class="card__sub">Şeffaf tedarik zinciri</div>
+                </div>
+              </div>
+              <p class="card__txt">
+                Single-origin seçenekler, mevsimsel profil rotasyonu ve atık
+                azaltma odaklı operasyon.
+              </p>
+            </div>
+
+            <div class="glass card">
+              <div class="card__top">
+                <div class="card__icon">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div>
+                  <div class="card__title">Modern Sunum</div>
+                  <div class="card__sub">Latte art + imza reçeteler</div>
+                </div>
+              </div>
+              <p class="card__txt">
+                Klasikler + “Mucci Signature” içecekler; dengeli tatlılar,
+                kruvasan ve tartlar.
+              </p>
+            </div>
+
+            <div class="glass card">
+              <div class="card__top">
+                <div class="card__icon"><i class="fa-solid fa-music"></i></div>
+                <div>
+                  <div class="card__title">Etkinlik</div>
+                  <div class="card__sub">Workshop & canlı set</div>
+                </div>
+              </div>
+              <p class="card__txt">
+                Demleme atölyeleri, mini tadım günleri ve sakin akşam setleriyle
+                topluluk buluşmaları.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <a class="scrollhint" href="#services" aria-label="Aşağı kaydır">
+          <span class="scrollhint__dot"></span>
+          <span class="scrollhint__txt">Keşfet</span>
+        </a>
+      </section>
+
+      <!-- Services -->
+      <section class="section" id="services">
+        <div class="container">
+          <div class="section__head reveal">
+            <h2 class="section__title">Services</h2>
+            <p class="section__lead">
+              Günün her anına uygun, modern kafe servisleri.
+            </p>
+          </div>
+
+          <div class="grid services">
+            <article class="svc reveal">
+              <div class="svc__icon"><i class="fa-solid fa-mug-hot"></i></div>
+              <h3>Specialty Coffee</h3>
+              <p>
+                Espresso bazlı içecekler, filtre demleme, V60, AeroPress ve
+                mevsimsel reçeteler.
+              </p>
+              <ul class="ticks">
+                <li>Tek köken / harman</li>
+                <li>Profil bazlı kavrum</li>
+                <li>Alternatif süt opsiyonları</li>
+              </ul>
+            </article>
+
+            <article class="svc reveal">
+              <div class="svc__icon">
+                <i class="fa-solid fa-bread-slice"></i>
+              </div>
+              <h3>Fresh Bakery</h3>
+              <p>
+                Günlük taze kruvasan, cookie, tart ve “geceye uygun” hafif tatlı
+                menüsü.
+              </p>
+              <ul class="ticks">
+                <li>Günlük üretim</li>
+                <li>Şekersiz opsiyon</li>
+                <li>Mevsimsel içerik</li>
+              </ul>
+            </article>
+
+            <article class="svc reveal">
+              <div class="svc__icon">
+                <i class="fa-solid fa-people-group"></i>
+              </div>
+              <h3>Workshop</h3>
+              <p>
+                Demleme teknikleri, latte art ve çekirdek tadım seansları.
+                Kurumsal gruplara özel.
+              </p>
+              <ul class="ticks">
+                <li>45–90 dk modüller</li>
+                <li>Küçük gruplar</li>
+                <li>Sertifika opsiyonu</li>
+              </ul>
+            </article>
+
+            <article class="svc reveal">
+              <div class="svc__icon"><i class="fa-solid fa-briefcase"></i></div>
+              <h3>Kurumsal Catering</h3>
+              <p>
+                Toplantı ve lansmanlar için kahve bar + tatlı seti. Planlama ve
+                kurulum dahil.
+              </p>
+              <ul class="ticks">
+                <li>Mobil bar kurulum</li>
+                <li>Kurumsal paketler</li>
+                <li>Özelleştirme</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- History -->
+      <section class="section section--alt" id="history">
+        <div class="container">
+          <div class="section__head reveal">
+            <h2 class="section__title">History</h2>
+            <p class="section__lead">
+              Mucci’nin kısa ve net hikâyesi: kaliteyi rutin hâline getirmek.
+            </p>
+          </div>
+
+          <div class="history">
+            <div class="history__media reveal">
+              <img
+                src="https://images.unsplash.com/photo-1744920668441-44bf26e9930a?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1600"
+                alt="Mucci iç mekân atmosferi"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="no-referrer"
+              />
+              <div class="history__badge glass">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                  <div class="b1">Merkez Şube</div>
+                  <div class="b2">Şehir merkezinde, gece açık</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline reveal">
+              <div class="titem">
+                <div class="titem__dot"></div>
+                <div class="titem__body">
+                  <div class="titem__year">2019</div>
+                  <div class="titem__title">İlk fincan</div>
+                  <p>
+                    Mucci; çekirdek seçimi ve reçete standardizasyonu üzerine
+                    kuruldu.
+                  </p>
+                </div>
+              </div>
+
+              <div class="titem">
+                <div class="titem__dot"></div>
+                <div class="titem__body">
+                  <div class="titem__year">2021</div>
+                  <div class="titem__title">Kavrum & profil</div>
+                  <p>
+                    Küçük parti kavrum ve tadım takvimiyle “mevsimsel menü”
+                    düzeni oturdu.
+                  </p>
+                </div>
+              </div>
+
+              <div class="titem">
+                <div class="titem__dot"></div>
+                <div class="titem__body">
+                  <div class="titem__year">2023</div>
+                  <div class="titem__title">Topluluk</div>
+                  <p>
+                    Workshop’lar, mini tadımlar ve akşam setleriyle Mucci sosyal
+                    bir durak oldu.
+                  </p>
+                </div>
+              </div>
+
+              <div class="titem">
+                <div class="titem__dot"></div>
+                <div class="titem__body">
+                  <div class="titem__year">Bugün</div>
+                  <div class="titem__title">Night-ready experience</div>
+                  <p>
+                    Modern tasarım, hızlı servis ve “aynı kalite, her gün”
+                    odağı.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vision -->
+      <section class="section" id="vision">
+        <div class="container split">
+          <div class="split__copy reveal">
+            <h2 class="section__title">Vision</h2>
+            <p class="section__lead">
+              Şehrin en rafine “night café” deneyimini; tasarım, servis ve ürün
+              standardı ile tek çizgide sunmak.
+            </p>
+            <div class="quote glass">
+              <i class="fa-solid fa-quote-left"></i>
+              <p>
+                “Kahve bir içecek değil; ritüel. Mucci bu ritüeli modern, sakin
+                ve tutarlı kılar.”
+              </p>
+            </div>
+            <div class="kpis">
+              <div class="kpi glass">
+                <div class="kpi__n">7/24</div>
+                <div class="kpi__t">Enerji</div>
+                <div class="kpi__s">Gündüz üretken, gece sosyal</div>
+              </div>
+              <div class="kpi glass">
+                <div class="kpi__n">1 çizgi</div>
+                <div class="kpi__t">Standart</div>
+                <div class="kpi__s">Reçete + kalite kontrol</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="split__media reveal">
+            <div class="mediaStack">
+              <img
+                src="https://images.unsplash.com/photo-1733697968338-21feb4b7a4c3?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1600"
+                alt="Kahve dükkanı içi"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="no-referrer"
+              />
+              <div class="mediaStack__float glass">
+                <i class="fa-solid fa-fire-flame-curved"></i>
+                <div>
+                  <div class="b1">İmza Profil</div>
+                  <div class="b2">Dengeli asidite • temiz bitiş</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mission -->
+      <section class="section section--alt" id="mission">
+        <div class="container">
+          <div class="section__head reveal">
+            <h2 class="section__title">Mission</h2>
+            <p class="section__lead">
+              Kaliteyi erişilebilir, sürdürülebilir ve ölçülebilir hâle
+              getirmek.
+            </p>
+          </div>
+
+          <div class="grid mission">
+            <article class="glass mcard reveal">
+              <h3>
+                <i class="fa-solid fa-handshake-angle"></i> Şeffaf tedarik
+              </h3>
+              <p>
+                Kaynak, işleme ve profil bilgilerini görünür kılmak; çekirdek
+                hikâyesini net anlatmak.
+              </p>
+            </article>
+            <article class="glass mcard reveal">
+              <h3><i class="fa-solid fa-scale-balanced"></i> Tutarlı reçete</h3>
+              <p>
+                Gramaj, sıcaklık, süre ve öğütüm parametrelerini standardize
+                ederek her gün aynı fincan.
+              </p>
+            </article>
+            <article class="glass mcard reveal">
+              <h3><i class="fa-solid fa-leaf"></i> Atık azaltma</h3>
+              <p>
+                Tek kullanımlık azaltma, geri dönüşüm, doğru stok planlama ve
+                enerji verimliliği.
+              </p>
+            </article>
+            <article class="glass mcard reveal">
+              <h3><i class="fa-solid fa-people-roof"></i> Topluluk</h3>
+              <p>
+                Workshop, mini talk ve etkinliklerle kafe kültürünü paylaşan bir
+                çekim alanı.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skills & Other -->
+      <section class="section" id="skills">
+        <div class="container">
+          <div class="section__head reveal">
+            <h2 class="section__title">Skills & Other</h2>
+            <p class="section__lead">
+              Bar ekibinin gücü + mekânın “diğer” artıları.
+            </p>
+          </div>
+
+          <div class="skills">
+            <div class="skills__left reveal">
+              <div class="skill">
+                <div class="skill__top">
+                  <span>Espresso Calibration</span><span class="muted">92%</span>
+                </div>
+                <div class="bar"><span style="width: 92%"></span></div>
+              </div>
+
+              <div class="skill">
+                <div class="skill__top">
+                  <span>Latte Art</span><span class="muted">88%</span>
+                </div>
+                <div class="bar"><span style="width: 88%"></span></div>
+              </div>
+
+              <div class="skill">
+                <div class="skill__top">
+                  <span>Pour Over / Filter</span><span class="muted">90%</span>
+                </div>
+                <div class="bar"><span style="width: 90%"></span></div>
+              </div>
+
+              <div class="skill">
+                <div class="skill__top">
+                  <span>Guest Experience</span><span class="muted">95%</span>
+                </div>
+                <div class="bar"><span style="width: 95%"></span></div>
+              </div>
+
+              <div class="tags">
+                <span class="tag"><i class="fa-solid fa-wifi"></i> Güçlü Wi-Fi</span>
+                <span class="tag"><i class="fa-solid fa-plug-circle-bolt"></i> Priz</span>
+                <span class="tag"><i class="fa-solid fa-paw"></i> Pet-friendly</span>
+                <span class="tag"><i class="fa-solid fa-seedling"></i> Vegan opsiyon</span>
+                <span class="tag"><i class="fa-solid fa-music"></i> Akşam setleri</span>
+                <span class="tag"><i class="fa-solid fa-people-group"></i> Workshop</span>
+              </div>
+            </div>
+
+            <div class="skills__right reveal">
+              <div class="galleryCard glass">
+                <div class="galleryCard__head">
+                  <h3>Gallery</h3>
+                  <p class="muted">Tıkla, büyüt.</p>
+                </div>
+
+                <div class="gallery" id="gallery">
+                  <!-- 1) Espresso machine -->
+                  <button
+                    class="gitem"
+                    data-full="https://images.unsplash.com/photo-1682052297846-9e5e52bfcaeb?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=80&w=2400"
+                    aria-label="Görseli büyüt"
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1682052297846-9e5e52bfcaeb?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=70&w=900"
+                      alt="Espresso makinesi"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                    />
+                  </button>
+
+                  <!-- 2) Croissant + coffee -->
+                  <button
+                    class="gitem"
+                    data-full="https://images.unsplash.com/photo-1716831312304-109948b8ccfd?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=80&w=2400"
+                    aria-label="Görseli büyüt"
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1716831312304-109948b8ccfd?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=70&w=900"
+                      alt="Kruvasan ve kahve"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                    />
+                  </button>
+
+                  <!-- 3) Seating area -->
+                  <button
+                    class="gitem"
+                    data-full="https://images.unsplash.com/photo-1729631316643-5c61193f71b9?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=80&w=2400"
+                    aria-label="Görseli büyüt"
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1729631316643-5c61193f71b9?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=70&w=900"
+                      alt="Kafe oturma alanı"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                    />
+                  </button>
+
+                  <!-- 4) Chalkboard menu -->
+                  <button
+                    class="gitem"
+                    data-full="https://images.unsplash.com/photo-1746086515219-754d15b14cd1?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=80&w=2400"
+                    aria-label="Görseli büyüt"
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1746086515219-754d15b14cd1?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=70&w=900"
+                      alt="Kara tahta menü"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                    />
+                  </button>
+
+                  <!-- 5) Latte art flat lay -->
+                  <button
+                    class="gitem"
+                    data-full="https://images.unsplash.com/photo-1511920170033-f8396924c348?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=80&w=2400"
+                    aria-label="Görseli büyüt"
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1511920170033-f8396924c348?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=70&w=900"
+                      alt="Latte art flat lay"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                    />
+                  </button>
+
+                  <!-- 6) Coffee beans -->
+                  <button
+                    class="gitem"
+                    data-full="https://images.unsplash.com/photo-1621555489777-083342687253?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=80&w=2400"
+                    aria-label="Görseli büyüt"
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1621555489777-083342687253?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=70&w=900"
+                      alt="Kahve çekirdekleri"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section class="section section--alt" id="contact">
+        <div class="container">
+          <div class="section__head reveal">
+            <h2 class="section__title">Contact</h2>
+            <p class="section__lead">
+              Rezervasyon, etkinlik veya iş birliği için yaz.
+            </p>
+          </div>
+
+          <div class="contact">
+            <div class="glass contact__info reveal">
+              <div class="infoRow">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                  <div class="b1">Adres</div>
+                  <div class="b2">
+                    Mucci Coffee, Merkez Cad. No: 10 (Örnek), Türkiye
+                  </div>
+                </div>
+              </div>
+              <div class="infoRow">
+                <i class="fa-solid fa-phone"></i>
+                <div>
+                  <div class="b1">Telefon</div>
+                  <div class="b2">+90 (000) 000 00 00</div>
+                </div>
+              </div>
+              <div class="infoRow">
+                <i class="fa-solid fa-envelope"></i>
+                <div>
+                  <div class="b1">E-posta</div>
+                  <div class="b2">hello@mucci.cafe</div>
+                </div>
+              </div>
+              <div class="infoRow">
+                <i class="fa-solid fa-clock"></i>
+                <div>
+                  <div class="b1">Saatler</div>
+                  <div class="b2">Pzt–Paz: 09:00 – 01:00</div>
+                </div>
+              </div>
+
+              <div class="socials">
+                <a class="iconbtn" href="#" aria-label="Instagram"
+                  ><i class="fa-brands fa-instagram"></i
+                ></a>
+                <a class="iconbtn" href="#" aria-label="X"
+                  ><i class="fa-brands fa-x-twitter"></i
+                ></a>
+                <a class="iconbtn" href="#" aria-label="YouTube"
+                  ><i class="fa-brands fa-youtube"></i
+                ></a>
+                <a class="iconbtn" href="#" aria-label="LinkedIn"
+                  ><i class="fa-brands fa-linkedin-in"></i
+                ></a>
+              </div>
+            </div>
+
+            <form class="glass contact__form reveal" id="contactForm">
+              <div class="formGrid">
+                <label>
+                  <span>Ad Soyad</span>
+                  <input type="text" name="name" placeholder="Adınız" required />
+                </label>
+                <label>
+                  <span>E-posta</span>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="mail@ornek.com"
+                    required
+                  />
+                </label>
+                <label class="col2">
+                  <span>Konu</span>
+                  <input
+                    type="text"
+                    name="subject"
+                    placeholder="Etkinlik / Rezervasyon / İş birliği"
+                  />
+                </label>
+                <label class="col2">
+                  <span>Mesaj</span>
+                  <textarea
+                    name="message"
+                    rows="5"
+                    placeholder="Kısaca ihtiyacınızı yazın..."
+                    required
+                  ></textarea>
+                </label>
+              </div>
+
+              <button class="btn btn--primary" type="submit">
+                <i class="fa-solid fa-paper-plane"></i> Gönder
+              </button>
+              <p class="muted small">
+                Demo form: gönderimde yalnızca bildirim gösterir. Backend
+                bağlayınca gerçek gönderim yapar.
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container footer__grid">
+        <div>
+          <div class="footer__brand">
+            <i class="fa-solid fa-mug-hot"></i>
+            <span>Mucci</span>
+          </div>
+          <p class="muted">
+            Modern kafe deneyimi. Specialty coffee, taze bakery ve gece
+            atmosferi.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer__title">Sayfalar</div>
+          <div class="footer__links">
+            <a href="#services">Services</a>
+            <a href="#history">History</a>
+            <a href="#vision">Vision</a>
+            <a href="#mission">Mission</a>
+            <a href="#skills">Skills & Other</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer__title">Bülten</div>
+          <form class="newsletter" id="newsletter">
+            <input
+              type="email"
+              placeholder="E-posta adresiniz"
+              aria-label="E-posta"
+              required
+            />
+            <button class="btn btn--ghost" type="submit">
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+          <div class="muted small">Aylık etkinlik ve yeni çekirdek duyuruları.</div>
+        </div>
+      </div>
+
+      <div class="container footer__bottom">
+        <span class="muted small"
+          >© <span id="year"></span> Mucci Coffee. Tüm hakları saklıdır.</span
+        >
+        <span class="muted small">UI/UX demo front-end</span>
+      </div>
+    </footer>
+
+    <!-- Back to top -->
+    <button class="totop" id="toTop" aria-label="Yukarı çık">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+      <div class="lightbox__overlay" id="lightboxOverlay"></div>
+      <figure class="lightbox__panel" role="dialog" aria-label="Görsel">
+        <button
+          class="iconbtn lightbox__close"
+          id="lightboxClose"
+          aria-label="Kapat"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img id="lightboxImg" alt="Büyük görsel" />
+        <figcaption class="muted small" id="lightboxCap">Mucci Gallery</figcaption>
+      </figure>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

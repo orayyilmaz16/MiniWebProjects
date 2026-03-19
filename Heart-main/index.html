@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kalp Çizen Program</title>
+  <style>
+    :root {
+      --bg: #0b0f18;
+      --panel: #111827cc;
+      --accent: #ff2e63;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: #1f2937;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(1200px circle at 70% -20%, #1b2340 0%, #0b0f18 40%, #060913 100%);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: saturate(1.2) blur(10px);
+      background: linear-gradient(to right, #11182799, #0b0f1899);
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+      color: #f3f4f6;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      backdrop-filter: blur(16px);
+      box-shadow:
+        0 20px 40px -18px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      color: #e5e7eb;
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px;
+    }
+
+    .control {
+      display: grid;
+      gap: 6px;
+    }
+    .control label {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .control input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+    }
+    .row > * {
+      flex: 1;
+    }
+    .color-input {
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0f172acc;
+      padding: 0 8px;
+      color: var(--text);
+    }
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      user-select: none;
+    }
+    .checkbox input {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      background: radial-gradient(1200px circle at 40% 0%, #0e1428 0%, #0b0f18 65%, #080c15 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow:
+        0 60px 120px -40px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 10px 40px rgba(255, 46, 99, 0.25));
+    }
+
+    footer {
+      padding: 12px 20px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      border-top: 1px solid var(--border);
+      background: linear-gradient(to right, #0b0f1899, #0b0f18aa);
+    }
+
+    /* Micro-interactions */
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #151a26, #0f1420);
+      color: #e5e7eb;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 200ms ease, border-color 200ms ease;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px -12px rgba(0,0,0,0.5);
+      border-color: #243143;
+    }
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 14px -8px rgba(0,0,0,0.55);
+    }
+
+    @media (max-width: 920px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Parametrik Kalp Çizici</h1>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>Ayarlar</h2>
+      <div class="controls">
+        <div class="control">
+          <label>
+            Ölçek
+            <span id="scaleVal">32</span>
+          </label>
+          <input id="scale" type="range" min="10" max="80" value="32" />
+        </div>
+
+        <div class="control">
+          <label>
+            Kontur kalınlığı
+            <span id="strokeVal">3</span>
+          </label>
+          <input id="stroke" type="range" min="1" max="10" value="3" />
+        </div>
+
+        <div class="control row">
+          <input id="strokeColor" class="color-input" type="color" value="#ff2e63" />
+          <input id="fillColor" class="color-input" type="color" value="#ff2e63" />
+        </div>
+
+        <label class="checkbox">
+          <input id="fill" type="checkbox" checked />
+          Dolgu açık
+        </label>
+
+        <div class="row">
+          <button id="resetBtn" class="btn">Sıfırla</button>
+          <button id="pulseBtn" class="btn">Kalp atışı</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="canvas-wrap">
+      <canvas id="canvas" width="1200" height="800" aria-label="Kalp çizim alanı"></canvas>
+    </section>
+  </main>
+
+  <footer>
+    Parametrik kalp: x=16·sin³t, y=13·cost−5·cos2t−2·cos3t−cos4t. Ölçek ve stil ayarlanabilir.
+  </footer>
+
+  <script>
+    // Canvas ve durum
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const state = {
+      scale: 32,
+      strokeWidth: 3,
+      strokeColor: '#ff2e63',
+      fillColor: '#ff2e63',
+      fill: true,
+      pulse: false,
+      tGlow: 0,
+    };
+
+    // UI referansları
+    const scaleInput = document.getElementById('scale');
+    const strokeInput = document.getElementById('stroke');
+    const strokeColorInput = document.getElementById('strokeColor');
+    const fillColorInput = document.getElementById('fillColor');
+    const fillCheckbox = document.getElementById('fill');
+    const resetBtn = document.getElementById('resetBtn');
+    const pulseBtn = document.getElementById('pulseBtn');
+    const scaleVal = document.getElementById('scaleVal');
+    const strokeVal = document.getElementById('strokeVal');
+
+    // Yardımcı: koordinat çevirici (canvas merkezli)
+    function toCanvas(x, y) {
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      // Canvas y ekseni aşağıya doğru, matematikte yukarı. Bu yüzden y'yi ters çeviriyoruz.
+      return [cx + x, cy - y];
+    }
+
+    // Parametrik kalp eğrisi (t: 0..2π)
+    function heartPoint(t) {
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+      return { x, y };
+    }
+
+    // Kalp çizimi
+    function drawHeart(scale, options = {}) {
+      const {
+        strokeWidth = state.strokeWidth,
+        strokeColor = state.strokeColor,
+        fillColor = state.fillColor,
+        fill = state.fill,
+        glow = true,
+      } = options;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Hafif arkaplan grid/motion
+      drawBackdrop();
+
+      // Path oluştur
+      ctx.beginPath();
+      const steps = 720;
+      for (let i = 0; i <= steps; i++) {
+        const t = (Math.PI * 2) * (i / steps);
+        const p = heartPoint(t);
+        const x = p.x * scale;
+        const y = p.y * scale;
+        const [cx, cy] = toCanvas(x, y);
+        if (i === 0) ctx.moveTo(cx, cy);
+        else ctx.lineTo(cx, cy);
+      }
+      ctx.closePath();
+
+      // Dolgu
+      if (fill) {
+        const grad = ctx.createRadialGradient(
+          canvas.width * 0.55, canvas.height * 0.45, 10,
+          canvas.width * 0.5, canvas.height * 0.5, 500
+        );
+        grad.addColorStop(0, withAlpha(fillColor, 0.85));
+        grad.addColorStop(1, withAlpha(fillColor, 0.15));
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+
+      // Kontur ve parıltı
+      ctx.lineWidth = strokeWidth;
+      ctx.strokeStyle = strokeColor;
+      ctx.shadowColor = withAlpha(strokeColor, 0.45);
+      ctx.shadowBlur = glow ? 18 + 10 * Math.abs(Math.sin(state.tGlow)) : 0;
+      ctx.stroke();
+    }
+
+    function withAlpha(hex, a = 1) {
+      const { r, g, b } = hexToRgb(hex);
+      return `rgba(${r}, ${g}, ${b}, ${a})`;
+    }
+
+    function hexToRgb(hex) {
+      const m = hex.replace('#', '');
+      const bigint = parseInt(m.length === 3 ? m.split('').map(c => c + c).join('') : m, 16);
+      return {
+        r: (bigint >> 16) & 255,
+        g: (bigint >> 8) & 255,
+        b: bigint & 255,
+      };
+    }
+
+    // Arka plan çizimi (hafif grid + vurgu)
+    function drawBackdrop() {
+      // Vinyet
+      const vignette = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 100,
+        canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
+      );
+      vignette.addColorStop(0, 'rgba(255,255,255,0.02)');
+      vignette.addColorStop(1, 'rgba(0,0,0,0.38)');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Hafif grid
+      ctx.save();
+      ctx.globalAlpha = 0.08;
+      ctx.strokeStyle = '#9ca3af';
+      ctx.lineWidth = 1;
+      const s = 40;
+      for (let x = 0; x < canvas.width; x += s) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += s) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Merkez ışık
+      ctx.save();
+      const glow = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 10,
+        canvas.width / 2, canvas.height / 2, 260
+      );
+      glow.addColorStop(0, 'rgba(255, 46, 99, 0.10)');
+      glow.addColorStop(1, 'rgba(255, 46, 99, 0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
+
+    // Animasyon döngüsü
+    function animate() {
+      if (state.pulse) {
+        // Kalp atışı: ölçek sinüs ile hafifçe değişir
+        const base = state.scale;
+        const amp = Math.max(2, state.scale * 0.08);
+        const speed = 2.0;
+        const time = performance.now() / 1000;
+        const dynamicScale = base + Math.sin(time * speed) * amp;
+        state.tGlow = time * 2.0;
+        drawHeart(dynamicScale);
+      } else {
+        state.tGlow = performance.now() / 800;
+        drawHeart(state.scale);
+      }
+      requestAnimationFrame(animate);
+    }
+
+    // Etkinlikler
+    scaleInput.addEventListener('input', () => {
+      state.scale = Number(scaleInput.value);
+      scaleVal.textContent = scaleInput.value;
+    });
+    strokeInput.addEventListener('input', () => {
+      state.strokeWidth = Number(strokeInput.value);
+      strokeVal.textContent = strokeInput.value;
+    });
+    strokeColorInput.addEventListener('input', () => {
+      state.strokeColor = strokeColorInput.value;
+    });
+    fillColorInput.addEventListener('input', () => {
+      state.fillColor = fillColorInput.value;
+    });
+    fillCheckbox.addEventListener('change', () => {
+      state.fill = fillCheckbox.checked;
+    });
+    resetBtn.addEventListener('click', () => {
+      scaleInput.value = 32;
+      strokeInput.value = 3;
+      strokeColorInput.value = '#ff2e63';
+      fillColorInput.value = '#ff2e63';
+      fillCheckbox.checked = true;
+      state.scale = 32;
+      state.strokeWidth = 3;
+      state.strokeColor = '#ff2e63';
+      state.fillColor = '#ff2e63';
+      state.fill = true;
+      state.pulse = false;
+      pulseBtn.textContent = 'Kalp atışı';
+    });
+    pulseBtn.addEventListener('click', () => {
+      state.pulse = !state.pulse;
+      pulseBtn.textContent = state.pulse ? 'Durdur' : 'Kalp atışı';
+    });
+
+    // Başlat
+    drawHeart(state.scale);
+    animate();
+
+    // Yüksek DPI desteği
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(rect.width * dpr);
+      canvas.height = Math.floor(rect.height * dpr);
+    }
+    // İlk layout sonrası yeniden boyutlandır
+    window.addEventListener('resize', () => {
+      // Canvas otomatik % genişlikte; boyutlandırmayı tetikle
+      const wrap = document.querySelector('.canvas-wrap');
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      // Canvas stil boyutları sabit; piksel yoğunluğu düzelt
+      resizeCanvas();
+    });
+    // İlk DPI ayarı
+    resizeCanvas();
+  </script>
+</body>
+</html>

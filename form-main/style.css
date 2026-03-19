@@ -1,0 +1,382 @@
+/* ------------------------------
+   GLOBAL
+------------------------------ */
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #eef2f7, #f4f6f9);
+  margin: 0;
+  padding: 0;
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------
+   HEADER
+------------------------------ */
+.header {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.header-border {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 3px solid #007bff;
+  padding: 14px 28px;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.25);
+  transition: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: glowPulse 2.8s infinite ease-in-out;
+}
+
+/* Glow animation */
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.25);
+  }
+  50% {
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.35);
+  }
+  100% {
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.25);
+  }
+}
+
+.header-border h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.header-border i {
+  font-size: 26px;
+  color: #007bff;
+}
+
+/* ------------------------------
+   FORM CONTAINER
+------------------------------ */
+.form-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 50px auto;
+  padding: 40px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  animation: slideUp 0.7s ease-out;
+}
+
+/* Slide-up */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------
+   FORM GROUP
+------------------------------ */
+.form-group {
+  margin-bottom: 26px;
+}
+
+label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+/* ------------------------------
+   INPUT WRAPPER
+------------------------------ */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  height: 52px; /* gerçek input yüksekliği */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 12px; /* taşmayı maskeler */
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #777;
+  pointer-events: none;
+  transition: 0.25s ease;
+}
+
+.input-icon.error-icon {
+  color: red !important;
+}
+
+/* ------------------------------
+   INPUT
+------------------------------ */
+input {
+  width: 100%;
+  height: 50px;
+  padding-left: 48px; /* ikon + boşluk */
+  padding-right: 14px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+input:hover {
+  background: #f1f1f1;
+}
+
+input:focus {
+  border-color: #007bff;
+  background: white;
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.35);
+  outline: none;
+}
+
+input.error {
+  border-color: red;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.25);
+}
+
+/* ------------------------------
+   ERROR MESSAGE
+------------------------------ */
+.error-msg {
+  color: red;
+  font-size: 12px;
+  margin-top: 6px;
+  height: 16px;
+  transition: opacity 0.25s ease;
+}
+
+/* ------------------------------
+   SUBMIT BUTTON
+------------------------------ */
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 26px rgba(0, 123, 255, 0.25);
+}
+
+.btn-submit:hover {
+  background: #005fcc;
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(0, 123, 255, 0.35);
+}
+
+.btn-submit:active {
+  transform: scale(0.96);
+}
+
+.btn-submit.success {
+  background: #28a745 !important;
+  box-shadow: 0 14px 32px rgba(40, 167, 69, 0.35);
+}
+
+.btn-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-submit i {
+  font-size: 17px;
+}
+
+.password-meter {
+  margin-top: 10px;
+}
+
+.password-meter__bar {
+  height: 10px;
+  border-radius: 999px;
+  background: #eef2f7;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.password-meter__fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: #cbd5e1;
+  transition:
+    width 220ms ease,
+    background 220ms ease;
+}
+
+.password-meter__meta {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #475569;
+}
+
+.password-meter__label {
+  font-weight: 600;
+}
+
+.password-meter__tips {
+  color: #64748b;
+  text-align: right;
+}
+
+/* Levels */
+.pw-weak .password-meter__fill {
+  background: #ef4444;
+} /* red */
+.pw-fair .password-meter__fill {
+  background: #f59e0b;
+} /* amber */
+.pw-good .password-meter__fill {
+  background: #3b82f6;
+} /* blue */
+.pw-strong .password-meter__fill {
+  background: #22c55e;
+} /* green */
+
+@media (max-width: 768px) {
+  .form-container {
+    padding: 32px;
+    margin: 40px 20px;
+  }
+
+  .header-border {
+    padding: 12px 22px;
+  }
+
+  .header-border h1 {
+    font-size: 24px;
+  }
+
+  input {
+    font-size: 14px;
+  }
+
+  .btn-submit {
+    font-size: 16px;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  .header {
+    margin-top: 20px;
+  }
+
+  .header-border {
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 18px;
+  }
+
+  .header-border h1 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .form-container {
+    padding: 24px 20px;
+    margin: 20px auto;
+    border-radius: 14px;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  .input-wrapper {
+    height: 48px;
+  }
+
+  input {
+    height: 48px;
+    font-size: 14px;
+  }
+
+  .btn-submit {
+    font-size: 15px;
+    padding: 14px;
+  }
+
+  .password-meter__meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .password-meter__tips {
+    text-align: left;
+  }
+}
+
+@media (hover: none) {
+  input:hover {
+    background: #fafafa;
+  }
+
+  .btn-submit:hover {
+    transform: none;
+    box-shadow: 0 10px 26px rgba(0, 123, 255, 0.25);
+  }
+}

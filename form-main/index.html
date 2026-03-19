@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Form</title>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-border">
+        <i class="fa-solid fa-file-pen"></i>
+        <h1>Form Label</h1>
+      </div>
+    </header>
+
+    <main>
+      <div class="form-container">
+        <form id="myForm" novalidate>
+          <!-- NAME -->
+          <div class="form-group">
+            <label for="name">
+              <i class="fa-solid fa-user"></i>
+              Name
+            </label>
+
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user input-icon"></i>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                autocomplete="off"
+                data-validate="text"
+              />
+            </div>
+
+            <small class="error-msg"></small>
+          </div>
+
+          <!-- EMAIL -->
+          <div class="form-group">
+            <label for="email">
+              <i class="fa-solid fa-envelope"></i>
+              Email
+            </label>
+
+            <div class="input-wrapper">
+              <i class="fa-solid fa-envelope input-icon"></i>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                autocomplete="off"
+                data-validate="email"
+              />
+            </div>
+
+            <small class="error-msg"></small>
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="form-group">
+            <label for="password">
+              <i class="fa-solid fa-lock"></i>
+              Password
+            </label>
+
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                autocomplete="off"
+                data-validate="password"
+              />
+            </div>
+            <small class="error-msg"></small>
+
+            <div class="password-meter" aria-live="polite">
+              <div class="password-meter__bar">
+                <span class="password-meter__fill" id="pwFill"></span>
+              </div>
+              <div class="password-meter__meta">
+                <span class="password-meter__label" id="pwLabel"
+                  >Strength: —</span
+                >
+                <span class="password-meter__tips" id="pwTips"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <button type="submit" class="btn-submit">
+            <i class="fa-solid fa-paper-plane"></i>
+            Submit
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

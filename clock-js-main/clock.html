@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer</title>
+
+</head>
+
+<body>
+
+    <style>
+        .clock {
+            width: 300px;
+            height: 300px;
+            border: 10px solid #333;
+            border-radius: 50%;
+            position: relative;
+            margin: auto;
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            background: #000;
+        }
+
+        .hour {
+            width: 6px;
+            height: 80px;
+        }
+
+        .minute {
+            width: 4px;
+            height: 110px;
+        }
+
+        .second {
+            width: 2px;
+            height: 130px;
+            background: red;
+        }
+
+        .header {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 900;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            color: white;
+            margin-bottom: 3rem;
+            margin-top: 1px;
+            font-size: 50px;
+            font-size: 3.5rem;
+        }
+
+        .container {
+            justify-content: center;
+            align-items: center;
+            border: 10px solid #333;
+            padding-bottom: 10rem;
+            padding-top: 5rem;
+            background: gray;
+            width: 50%;
+            margin: auto;
+            border-radius: 50%;
+        }
+
+        .time {
+            font-variant-numeric: tabular-nums;
+            font-size: clamp(2.2rem, 6vw, 4.5rem);
+            letter-spacing: .04em;
+    
+        }
+
+        .container-2{
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: 900;
+            text-align: center;
+            color: white;
+            padding-top: 25px;
+        }
+
+        .date {
+            opacity: .8;
+            font-size: .95rem;
+        }
+
+        .blink::after {
+            content: ":";
+            animation: blink 1s steps(1, end) infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <h1 class="header">Analog Clock</h1>
+        <div class="clock">
+            <div class="hand hour" id="hour"></div>
+            <div class="hand minute" id="minute"></div>
+            <div class="hand second" id="second"></div>
+        </div>
+        <div class="container-2">
+        <div class="time">
+            <span id="hh">--</span><span class="blink"></span><span id="mm">--</span><span>:</span><span
+                id="ss">--</span>
+        </div>
+        <div class="date" id="date">--</div>
+        </div>
+    </div>
+
+    <script>
+        setInterval(() => {
+            const now = new Date();
+            const sec = now.getSeconds() * 6;
+            const min = now.getMinutes() * 6;
+            const hr = now.getHours() * 30 + now.getMinutes() * 0.5;
+
+            document.getElementById("second").style.transform = `rotate(${sec}deg)`;
+            document.getElementById("minute").style.transform = `rotate(${min}deg)`;
+            document.getElementById("hour").style.transform = `rotate(${hr}deg)`;
+        }, 1000);
+
+        const el = {
+            hh: document.getElementById("hh"),
+            mm: document.getElementById("mm"),
+            ss: document.getElementById("ss"),
+            date: document.getElementById("date"),
+        };
+
+        const locale = "tr-TR"; // İstersen "en-US" vb.
+        const dateFmt = new Intl.DateTimeFormat(locale, { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+
+        function pad(n) { return n.toString().padStart(2, "0"); }
+
+        function tick() {
+            const now = new Date();
+            el.hh.textContent = pad(now.getHours());
+            el.mm.textContent = pad(now.getMinutes());
+            el.ss.textContent = pad(now.getSeconds());
+            el.date.textContent = dateFmt.format(now);
+
+            // Bir sonraki tam saniyeye hizala (drift azaltma)
+            const delay = 1000 - (now.getMilliseconds());
+            setTimeout(tick, delay);
+        }
+
+        tick();
+
+    </script>
+
+
+</body>
+
+</html>

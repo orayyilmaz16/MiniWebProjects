@@ -1,0 +1,166 @@
+:root {
+  --bg: #0f1220;
+  --bg-soft: #141829;
+  --text: #e7e9f7;
+  --muted: #aab0d0;
+  --primary: #6c8cff;
+  --primary-10: rgba(108, 140, 255, 0.1);
+  --accent: #3ee4b6;
+  --danger: #ff6b6b;
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --blur: 12px;
+  --radius: 16px;
+  --shadow: 0 12px 32px rgba(0,0,0,0.35);
+}
+
+/* Light theme */
+html[data-theme="light"] {
+  --bg: #f6f7fb;
+  --bg-soft: #eef0f7;
+  --text: #202332;
+  --muted: #5b6279;
+  --primary: #4c6fff;
+  --primary-10: rgba(76, 111, 255, 0.1);
+  --accent: #12b886;
+  --danger: #e8590c;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --shadow: 0 8px 24px rgba(20,20,40,0.15);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 600px at 10% 10%, var(--bg-soft), var(--bg));
+  color: var(--text);
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(var(--blur));
+  background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0)) ;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; font-weight: 700;
+}
+.app-header h1 { margin: 0; font-size: 1.1rem; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+
+.progress-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.progress-bar {
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  width: 0%;
+  border-radius: 999px;
+  transition: width .3s ease;
+}
+.progress-text { font-size: 0.9rem; color: var(--muted); }
+
+.container {
+  width: min(880px, 92vw);
+  margin: 24px auto;
+  padding: 12px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(var(--blur));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.hidden { display: none; }
+
+.question {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.options {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: grid; gap: 10px;
+}
+.option {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  cursor: pointer;
+  transition: transform .08s ease, border-color .2s ease, background .2s ease;
+}
+.option:hover { transform: translateY(-1px); }
+.option.selected { border-color: var(--primary); background: var(--primary-10); }
+.option.correct { border-color: var(--accent); }
+.option.wrong { border-color: var(--danger); }
+
+.actions {
+  display: flex; justify-content: flex-end; gap: 10px;
+  margin-top: 16px;
+}
+
+.btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.16);
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+  cursor: pointer;
+  transition: background .2s ease, transform .08s ease, border-color .2s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-color: transparent;
+  color: white;
+}
+.btn.ghost { background: transparent; }
+
+.summary {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+.summary-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.16);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+}
+
+.app-footer {
+  padding: 14px 20px;
+  color: var(--muted);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(var(--blur));
+}

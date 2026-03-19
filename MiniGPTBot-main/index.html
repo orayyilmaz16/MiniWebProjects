@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mini GPT Chat UI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">G</div>
+        <div>
+          <div class="title">Mini GPT Chat</div>
+          <div class="subtitle" id="statusText">Demo mod • Offline</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <label class="toggle">
+          <input id="modeToggle" type="checkbox" />
+          <span class="track"></span>
+          <span class="label">API</span>
+        </label>
+
+        <button class="btn ghost" id="clearBtn" title="Sohbeti temizle">Temizle</button>
+      </div>
+    </header>
+
+    <main class="chat" id="chat">
+      <!-- Mesajlar JS ile eklenecek -->
+    </main>
+
+    <footer class="composer">
+      <div class="meta">
+        <div class="pill" id="clockPill">--:--:--</div>
+        <div class="pill" id="tokenPill">~0 chars</div>
+      </div>
+
+      <form id="form" class="form">
+        <textarea
+          id="input"
+          rows="1"
+          placeholder="Mesaj yaz… (Enter = gönder, Shift+Enter = yeni satır)"
+          autocomplete="off"
+        ></textarea>
+
+        <button id="sendBtn" class="btn primary" type="submit">
+          Gönder
+        </button>
+      </form>
+
+      <div class="hint">
+        İpucu: Kod blokları için <code>```</code> kullanabilirsin. Mesaj üzerine gelince kopyala butonu çıkar.
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

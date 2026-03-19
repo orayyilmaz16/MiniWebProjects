@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş Metin Düzenleyici Projesi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <a href="#">✍️ Editor Pro</a>
+        </div>
+       
+    </nav>
+    <div class="container"> 
+        <div class="header-and-mode">
+            <h1>Modern Canlı Metin Düzenleyici</h1>
+            <div class="dark-mode-toggle">
+                <input type="checkbox" id="dark-mode-switch" hidden>
+                <label for="dark-mode-switch" class="switch-label" title="Koyu Modu Aç/Kapat">
+                    <span class="mode-text light-text">LIGHT</span>
+                    <span class="slider"></span>
+                    <span class="mode-text dark-text">DARK</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <h3>Text Ayarları</h3>
+            <label for="font-size">Büyüklük:</label>
+            <select id="font-size" class="control-select">
+                <option value="14px">14px</option>
+                <option value="16px" selected>16px</option>
+                <option value="18px">18px</option>
+                <option value="20px">20px</option>
+            </select>
+
+            <label for="font-family">Font:</label>
+            <select id="font-family" class="control-select">
+                <option value="Arial, sans-serif" selected>Arial</option>
+                <option value="'Times New Roman', serif">Times New Roman</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+            </select>
+
+            <label for="line-height">Satır Aralığı:</label>
+            <select id="line-height" class="control-select">
+                <option value="1.5" selected>Normal (1.5)</option>
+                <option value="1.2">Sıkı (1.2)</option>
+                <option value="2.0">Gevşek (2.0)</option>
+            </select>
+
+            <div class="align-group">
+                <button id="align-left" class="control-btn align-btn active" data-align="left"
+                    title="Sola Hizala">⬅️</button>
+                <button id="align-center" class="control-btn align-btn" data-align="center" title="Ortala">↕️</button>
+                <button id="align-right" class="control-btn align-btn" data-align="right"
+                    title="Sağa Hizala">➡️</button>
+                <button id="align-justify" class="control-btn align-btn" data-align="justify"
+                    title="İki Yana Yasla">⇕</button>
+            </div>
+
+            <label for="color-picker">Renk:</label>
+            <input type="color" id="color-picker" value="#007bff">
+        </div>
+
+        <div class="main-content-area">
+            <div class="editor-area" id="editor-area"> <h2>Giriş (Markdown Destekli)</h2>
+                <textarea id="text-input"
+                    placeholder="Metin yazmaya başlayın... **kalın**, *italik* denemeyi unutmayın!"></textarea>
+            </div>
+
+            <div class="preview-area">
+                <h2>Canlı Önizleme</h2>
+                <div id="live-preview">
+                    <p class="placeholder-text">Yazmaya başladığınızda önizleme burada görünecektir.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Modern Metin Düzenleyici Projesi | Tüm Hakları Saklıdır.</p>
+        
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1592 @@
+<!doctype html>
+<html lang="tr" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Takvim • Yıl/Ay • Local Saat • Etkinlikler</title>
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' rx='14' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' font-size='34' font-family='Arial' fill='%23ffffff'%3E%F0%9F%93%85%3C/text%3E%3C/svg%3E">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
+
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,-50..200" />
+
+  <style>
+    :root{
+      --font: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+      --bg0: #0b1220;
+      --bg1: #0f172a;
+
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.10);
+
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --muted2: rgba(255,255,255,.52);
+
+      --accent: #60a5fa;
+      --accent2: #a78bfa;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --bad: #fb7185;
+
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
+      --radius: 18px;
+
+      --cell: rgba(255,255,255,.06);
+      --cellHover: rgba(255,255,255,.10);
+      --today: rgba(96,165,250,.22);
+      --selected: rgba(167,139,250,.24);
+
+      --focus: 0 0 0 3px rgba(96,165,250,.28);
+      --blur: saturate(140%) blur(14px);
+    }
+
+    html[data-theme="light"]{
+      --bg0:#f6f7fb;
+      --bg1:#eef1f8;
+
+      --panel: rgba(0,0,0,.04);
+      --panel2: rgba(0,0,0,.06);
+      --stroke: rgba(0,0,0,.08);
+
+      --text: rgba(15,23,42,.92);
+      --muted: rgba(15,23,42,.70);
+      --muted2: rgba(15,23,42,.55);
+
+      --cell: rgba(0,0,0,.04);
+      --cellHover: rgba(0,0,0,.06);
+      --today: rgba(96,165,250,.18);
+      --selected: rgba(167,139,250,.18);
+
+      --shadow: 0 16px 36px rgba(15,23,42,.16);
+      --blur: saturate(160%) blur(10px);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 20% 20%, rgba(96,165,250,.22), transparent 60%),
+        radial-gradient(1000px 700px at 90% 10%, rgba(167,139,250,.22), transparent 60%),
+        radial-gradient(900px 700px at 40% 90%, rgba(52,211,153,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    .app{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 16px 22px;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 14px;
+    }
+
+    header{
+      grid-column: 1 / -1;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content: space-between;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      min-width: 260px;
+    }
+    .logo{
+      width:44px;height:44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(96,165,250,.25), rgba(167,139,250,.25));
+      border: 1px solid var(--stroke);
+      display:grid;
+      place-items:center;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+    }
+    .title h1{
+      margin:0;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      line-height: 1.1;
+    }
+    .title p{
+      margin:4px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .rightbar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+
+    .chip{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--panel2);
+      backdrop-filter: var(--blur);
+      min-height: 40px;
+    }
+    .chip .k{ color: var(--muted2); font-size: 12px; white-space: nowrap; }
+    .chip .v{ font-weight: 800; font-size: 13px; white-space: nowrap; }
+
+    .btnrow{ display:flex; gap:8px; align-items:center; }
+    button{
+      appearance:none;
+      border:none;
+      background: var(--panel2);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 800;
+      font-size: 13px;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      transition: transform .12s ease, background .12s ease;
+      backdrop-filter: var(--blur);
+      user-select:none;
+    }
+    button:hover{ transform: translateY(-1px); background: var(--cellHover); }
+    button:active{ transform: translateY(0px); }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+      outline:none; box-shadow: var(--focus);
+    }
+    .btn-primary{
+      background: linear-gradient(135deg, rgba(96,165,250,.25), rgba(167,139,250,.20));
+      border-color: rgba(96,165,250,.24);
+    }
+    .btn-ghost{ background: transparent; }
+
+    .panel{
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
+    }
+
+    aside.panel{
+      padding: 14px;
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 640px;
+    }
+    main.panel{
+      padding: 14px;
+      min-height: 640px;
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 2px 2px 8px;
+      border-bottom: 1px solid var(--stroke);
+    }
+    .section-title h2{
+      margin:0;
+      font-size: 13px;
+      letter-spacing: .2px;
+      color: var(--muted);
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .row{ display:flex; align-items:center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .label{ color: var(--muted); font-size: 12px; }
+    .value{ font-weight: 900; font-size: 13px; }
+
+    .navgrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .mini{
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      cursor: pointer;
+      transition: background .12s ease, transform .12s ease;
+      text-align:left;
+    }
+    .mini:hover{ background: var(--cellHover); transform: translateY(-1px); }
+    .mini .mname{ font-weight: 900; font-size: 12px; letter-spacing:.2px; }
+    .mini .mmeta{ margin-top: 4px; font-size: 12px; color: var(--muted); display:flex; gap:10px; align-items:center; }
+
+    .dot{
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent);
+      display:inline-block;
+      box-shadow: 0 0 0 3px rgba(96,165,250,.14);
+    }
+    .dot.purple{ background: var(--accent2); box-shadow: 0 0 0 3px rgba(167,139,250,.14); }
+
+    .search{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+    }
+    .search i{ color: var(--muted2); }
+    .search input{
+      width:100%;
+      border:none;
+      outline:none;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .hint{ font-size: 12px; color: var(--muted2); margin-top: -6px; line-height: 1.35; }
+
+    .agenda{ display:flex; flex-direction: column; gap: 10px; padding-top: 6px; }
+    .agenda .dayline{ display:flex; justify-content: space-between; align-items:flex-start; gap: 10px; }
+    .agenda .dayline .big{ font-weight: 950; font-size: 16px; }
+    .agenda .dayline .small{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .agenda .list{
+      display:flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 320px;
+      overflow:auto;
+      padding-right: 6px;
+    }
+    .item{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 10px;
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+    }
+    .item .bar{
+      width: 10px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--accent);
+      margin-top: 2px;
+      flex: 0 0 auto;
+      box-shadow: 0 0 0 3px rgba(96,165,250,.12);
+    }
+    .item .meta{ flex: 1 1 auto; }
+    .item .t{ font-weight: 950; font-size: 13px; margin:0; }
+    .item .d{
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .item .x{
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor:pointer;
+      padding: 6px 8px;
+      border-radius: 10px;
+    }
+    .item .x:hover{ background: var(--cellHover); color: var(--text); }
+
+    .badge{
+      font-size: 11px;
+      font-weight: 950;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.12);
+      color: var(--text);
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+    }
+    html[data-theme="light"] .badge{ background: rgba(255,255,255,.55); }
+    .badge.holiday{ border-color: rgba(251,191,36,.30); background: rgba(251,191,36,.14); }
+    .badge.events{ border-color: rgba(96,165,250,.30); background: rgba(96,165,250,.14); }
+
+    .toolbar{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--stroke);
+    }
+    .toolbar .left{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+    .headline{ display:flex; flex-direction: column; gap: 2px; margin-right: 10px; }
+    .headline .h{ margin:0; font-size: 16px; font-weight: 950; }
+    .headline .s{ margin:0; font-size: 12px; color: var(--muted); }
+
+    .seg{
+      display:flex;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      overflow:hidden;
+    }
+    .seg button{
+      border: none;
+      border-right: 1px solid var(--stroke);
+      background: transparent;
+      border-radius: 0;
+      padding: 10px 12px;
+    }
+    .seg button:last-child{ border-right: none; }
+    .seg button.active{
+      background: linear-gradient(135deg, rgba(96,165,250,.20), rgba(167,139,250,.16));
+    }
+
+    /* Month grid (dynamic columns via inline style) */
+    .grid{
+      display:grid;
+      gap: 8px;
+      padding-top: 6px;
+    }
+    .dowRow{
+      display: contents;
+    }
+    .dowCell{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 950;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      text-align:center;
+    }
+
+    .cell{
+      min-height: 78px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--cell);
+      padding: 10px;
+      position:relative;
+      cursor: pointer;
+      transition: background .12s ease, transform .12s ease;
+      overflow:hidden;
+    }
+    .cell:hover{ background: var(--cellHover); transform: translateY(-1px); }
+    .cell.muted{ opacity: .55; }
+    .cell.today{ background: var(--today); border-color: rgba(96,165,250,.35); }
+    .cell.selected{ background: var(--selected); border-color: rgba(167,139,250,.40); }
+    .cell .top{ display:flex; justify-content: space-between; align-items:flex-start; gap: 10px; }
+    .cell .num{ font-weight: 950; font-size: 14px; }
+    .cell .badges{ display:flex; gap: 6px; align-items:center; }
+    .cell .sub{
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow:hidden;
+      word-break: break-word;
+    }
+
+    .yearwrap{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      padding-top: 6px;
+    }
+    .monthcard{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 10px;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .monthcard:hover{ transform: translateY(-1px); background: var(--cellHover); }
+    .monthcard .mhead{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      margin-bottom: 8px;
+    }
+    .monthcard .mhead .name{ font-weight: 950; letter-spacing:.2px; }
+    .monthcard .mhead .count{ font-size: 12px; color: var(--muted); font-weight: 900; }
+
+    .miniCal{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .miniCal .d{
+      text-align:center;
+      font-size: 11px;
+      color: var(--muted2);
+      padding: 5px 0;
+      border-radius: 10px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .miniCal .d.on{ color: var(--text); }
+    .miniCal .d.t{ background: rgba(96,165,250,.14); border-color: rgba(96,165,250,.18); font-weight: 950; }
+    .miniCal .d.e{ background: rgba(167,139,250,.12); border-color: rgba(167,139,250,.16); }
+
+    .footer-note{
+      margin-top:auto;
+      border-top: 1px solid var(--stroke);
+      padding-top: 10px;
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    /* Modal */
+    .modal{
+      position: fixed;
+      inset: 0;
+      display:none;
+      place-items:center;
+      background: rgba(0,0,0,.55);
+      padding: 18px;
+      z-index: 50;
+    }
+    .modal.show{ display:grid; }
+    .modal .box{
+      width: min(720px, 100%);
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal .box header{
+      border-radius: 0;
+      box-shadow: none;
+      margin: 0;
+      border: none;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+    }
+    .modal .content{
+      padding: 14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .field{ display:flex; flex-direction: column; gap: 6px; }
+    .field label{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 950;
+      letter-spacing:.2px;
+    }
+    input, textarea, select{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      outline:none;
+    }
+    textarea{ min-height: 100px; resize: vertical; }
+    .modal .actions{
+      padding: 14px;
+      border-top: 1px solid var(--stroke);
+      display:flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,.02);
+    }
+    .span2{ grid-column: 1 / -1; }
+
+    @media (max-width: 980px){
+      .app{ grid-template-columns: 1fr; }
+      aside.panel{ min-height: auto; }
+      .yearwrap{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px){
+      .yearwrap{ grid-template-columns: 1fr; }
+      .modal .content{ grid-template-columns: 1fr; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{ width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,.16);
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    html[data-theme="light"] ::-webkit-scrollbar-thumb{
+      background: rgba(15,23,42,.20);
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><i class="fa-solid fa-calendar-days"></i></div>
+        <div class="title">
+          <h1>Takvim</h1>
+          <p>Yıl / Ay görünümü • Local saat • Etkinlikler (localStorage)</p>
+        </div>
+      </div>
+
+      <div class="rightbar">
+        <div class="chip" title="Cihaz yerel saat ve saat dilimi">
+          <span class="k"><i class="fa-regular fa-clock"></i> Local</span>
+          <span class="v" id="liveClock">--:--:--</span>
+          <span class="k" id="tzLabel">—</span>
+        </div>
+
+        <div class="btnrow">
+          <button class="btn-ghost" id="btnToday" title="Bugüne git"><i class="fa-solid fa-bullseye"></i> Bugün</button>
+          <button id="btnAdd" title="Seçili güne etkinlik ekle"><i class="fa-solid fa-plus"></i> Etkinlik</button>
+          <button id="btnExport" title="Dışa aktar"><i class="fa-solid fa-file-export"></i></button>
+          <button id="btnImport" title="İçe aktar"><i class="fa-solid fa-file-import"></i></button>
+          <button id="btnTheme" title="Tema değiştir"><i class="fa-solid fa-circle-half-stroke"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <aside class="panel">
+      <div class="section-title">
+        <h2>Navigasyon</h2>
+        <div class="btnrow">
+          <button id="prevYear" title="Önceki yıl"><i class="fa-solid fa-chevron-left"></i></button>
+          <button id="nextYear" title="Sonraki yıl"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="label">Görüntülenen</div>
+          <div class="value" id="navYear">—</div>
+        </div>
+        <div class="label" id="eventCountLabel">—</div>
+      </div>
+
+      <div class="navgrid" id="monthNav"></div>
+
+      <div class="section-title" style="margin-top:6px;">
+        <h2>Arama</h2>
+        <span class="label">başlık / not / konum</span>
+      </div>
+
+      <div class="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchBox" type="text" placeholder="Etkinlik ara..." autocomplete="off" />
+      </div>
+
+      <div class="hint">
+        Etkinlikler tarayıcıda saklanır (localStorage). İstersen JSON olarak içe/dışa aktar.
+      </div>
+
+      <div class="section-title" style="margin-top:8px;">
+        <h2>Gün Ajandası</h2>
+        <button class="btn-primary" id="btnQuickAdd" title="Hızlı ekle"><i class="fa-solid fa-plus"></i> Ekle</button>
+      </div>
+
+      <div class="agenda">
+        <div class="dayline">
+          <div>
+            <div class="big" id="agendaTitle">—</div>
+            <div class="small" id="agendaMeta">—</div>
+          </div>
+          <div class="badge" id="weekBadge" title="ISO hafta numarası">W—</div>
+        </div>
+        <div class="list" id="agendaList"></div>
+      </div>
+
+      <div class="footer-note">
+        <strong>Not:</strong> Bu sürümde sabit TR resmî günleri gösterilir; dini bayramlar otomatik hesaplanmaz.
+      </div>
+    </aside>
+
+    <main class="panel">
+      <div class="toolbar">
+        <div class="left">
+          <div class="headline">
+            <p class="h" id="mainHeadline">—</p>
+            <p class="s" id="mainSub">—</p>
+          </div>
+
+          <div class="seg" role="tablist" aria-label="Görünüm">
+            <button id="tabYear" class="active" role="tab" aria-selected="true"><i class="fa-solid fa-table-cells"></i> Yıl</button>
+            <button id="tabMonth" role="tab" aria-selected="false"><i class="fa-regular fa-calendar"></i> Ay</button>
+          </div>
+
+          <button id="prev" title="Önceki"><i class="fa-solid fa-chevron-left"></i></button>
+          <button id="next" title="Sonraki"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div class="btnrow">
+          <button class="btn-primary" id="btnJump" title="Tarih seç ve git"><i class="fa-solid fa-location-arrow"></i> Git</button>
+          <button id="btnClear" title="Arama ve seçimi temizle"><i class="fa-solid fa-broom"></i></button>
+        </div>
+      </div>
+
+      <div id="mainArea"></div>
+    </main>
+  </div>
+
+  <!-- Event Modal -->
+  <div class="modal" id="eventModal" aria-hidden="true">
+    <div class="box" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+      <header>
+        <div class="brand">
+          <div class="logo"><i class="fa-solid fa-pen-to-square"></i></div>
+          <div class="title">
+            <h1 id="eventModalTitle">Etkinlik</h1>
+            <p id="eventModalSubtitle">—</p>
+          </div>
+        </div>
+        <div class="btnrow">
+          <button id="closeEventModal" title="Kapat"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="field">
+          <label>Başlık</label>
+          <input id="evTitle" type="text" placeholder="Örn: Sprint planlama" maxlength="80" />
+        </div>
+
+        <div class="field">
+          <label>Saat</label>
+          <input id="evTime" type="time" />
+        </div>
+
+        <div class="field">
+          <label>Renk</label>
+          <select id="evColor">
+            <option value="accent">Mavi</option>
+            <option value="accent2">Mor</option>
+            <option value="good">Yeşil</option>
+            <option value="warn">Sarı</option>
+            <option value="bad">Kırmızı</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Konum</label>
+          <input id="evPlace" type="text" placeholder="Örn: Ofis / Online" maxlength="80" />
+        </div>
+
+        <div class="field span2">
+          <label>Not</label>
+          <textarea id="evNote" placeholder="Detaylar..."></textarea>
+        </div>
+
+        <div class="field span2">
+          <label style="display:flex; align-items:center; gap:10px;">
+            <input id="allDay" type="checkbox" />
+            <span>Tüm gün</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="deleteEventBtn" style="display:none;"><i class="fa-solid fa-trash"></i> Sil</button>
+        <button id="cancelEventBtn"><i class="fa-regular fa-circle-xmark"></i> Vazgeç</button>
+        <button class="btn-primary" id="saveEventBtn"><i class="fa-solid fa-check"></i> Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- IO Modal -->
+  <div class="modal" id="ioModal" aria-hidden="true">
+    <div class="box" role="dialog" aria-modal="true" aria-labelledby="ioTitle">
+      <header>
+        <div class="brand">
+          <div class="logo"><i class="fa-solid fa-database"></i></div>
+          <div class="title">
+            <h1 id="ioTitle">İçe / Dışa Aktarma</h1>
+            <p>JSON</p>
+          </div>
+        </div>
+        <div class="btnrow">
+          <button id="closeIOModal" title="Kapat"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </header>
+      <div class="content">
+        <div class="field span2">
+          <label>JSON</label>
+          <textarea id="ioText" placeholder="Dışa aktarmak için buradan kopyalayın; içe aktarmak için buraya yapıştırın..."></textarea>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="ioCopy"><i class="fa-regular fa-copy"></i> Kopyala</button>
+        <button id="ioLoad"><i class="fa-solid fa-file-arrow-up"></i> İçe Aktar</button>
+        <button class="btn-primary" id="ioSave"><i class="fa-solid fa-file-arrow-down"></i> Dışa Aktar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Constants & Holidays
+     ***********************/
+    const TR_FIXED_HOLIDAYS = {
+      "01-01": "Yılbaşı",
+      "04-23": "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
+      "05-01": "Emek ve Dayanışma Günü",
+      "05-19": "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
+      "07-15": "15 Temmuz Demokrasi ve Millî Birlik Günü",
+      "08-30": "30 Ağustos Zafer Bayramı",
+      "10-29": "29 Ekim Cumhuriyet Bayramı"
+    };
+
+    const STORAGE_KEY = "calendar_events_v2";
+
+    /***********************
+     * Helpers
+     ***********************/
+    const $ = (id) => document.getElementById(id);
+    const pad2 = (n) => String(n).padStart(2, "0");
+    const ymd = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+    const sameDay = (a,b) =>
+      a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+
+    const addDays = (date, days) => {
+      const d = new Date(date);
+      d.setDate(d.getDate() + days);
+      d.setHours(0,0,0,0);
+      return d;
+    };
+
+    const startOfMonth = (y,m) => {
+      const d = new Date(y, m, 1);
+      d.setHours(0,0,0,0);
+      return d;
+    };
+
+    const endOfMonth = (y,m) => {
+      const d = new Date(y, m+1, 0);
+      d.setHours(0,0,0,0);
+      return d;
+    };
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function getWeekNumberISO(date){
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+
+    const locale = navigator.language || "tr-TR";
+
+    function monthName(m){
+      return new Intl.DateTimeFormat(locale, { month: "long" }).format(new Date(2026, m, 1));
+    }
+
+    function weekdayShort(mondayStart=true){
+      const base = mondayStart ? [1,2,3,4,5,6,0] : [0,1,2,3,4,5,6];
+      return base.map(dow => new Intl.DateTimeFormat(locale, { weekday:"short" }).format(new Date(2026,0,2+dow)));
+    }
+
+    function holidayFor(date){
+      const key = `${pad2(date.getMonth()+1)}-${pad2(date.getDate())}`;
+      return TR_FIXED_HOLIDAYS[key] || null;
+    }
+
+    /***********************
+     * Storage (events only)
+     ***********************/
+    function loadEvents(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return {};
+        const obj = JSON.parse(raw);
+        return (obj && typeof obj === "object") ? obj : {};
+      }catch(_){
+        return {};
+      }
+    }
+    function saveEvents(map){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+    }
+
+    /***********************
+     * Theme (simple toggle)
+     ***********************/
+    function applyTheme(mode){
+      // mode: auto|dark|light
+      const root = document.documentElement;
+      if(mode === "auto"){
+        const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)")?.matches;
+        root.setAttribute("data-theme", prefersLight ? "light" : "dark");
+        root.dataset.themeMode = "auto";
+        return;
+      }
+      root.setAttribute("data-theme", mode);
+      root.dataset.themeMode = mode;
+    }
+
+    function toggleTheme(){
+      const cur = document.documentElement.dataset.themeMode || "auto";
+      const next = (cur === "auto") ? "dark" : (cur === "dark") ? "light" : "auto";
+      applyTheme(next);
+    }
+
+    /***********************
+     * App State
+     ***********************/
+    const state = {
+      events: loadEvents(),
+      viewMode: "year", // year|month
+      viewYear: new Date().getFullYear(),
+      viewMonth: new Date().getMonth(),
+      selectedDate: new Date(new Date().setHours(0,0,0,0)),
+      edit: { dateKey: null, id: null }
+    };
+
+    const today = new Date(new Date().setHours(0,0,0,0));
+
+    /***********************
+     * DOM Refs
+     ***********************/
+    const dom = {
+      liveClock: $("liveClock"),
+      tzLabel: $("tzLabel"),
+      navYear: $("navYear"),
+      monthNav: $("monthNav"),
+      agendaTitle: $("agendaTitle"),
+      agendaMeta: $("agendaMeta"),
+      agendaList: $("agendaList"),
+      weekBadge: $("weekBadge"),
+      mainArea: $("mainArea"),
+      mainHeadline: $("mainHeadline"),
+      mainSub: $("mainSub"),
+      tabYear: $("tabYear"),
+      tabMonth: $("tabMonth"),
+      searchBox: $("searchBox"),
+      eventCountLabel: $("eventCountLabel"),
+
+      // event modal
+      eventModal: $("eventModal"),
+      eventModalTitle: $("eventModalTitle"),
+      eventModalSubtitle: $("eventModalSubtitle"),
+      evTitle: $("evTitle"),
+      evTime: $("evTime"),
+      evColor: $("evColor"),
+      evPlace: $("evPlace"),
+      evNote: $("evNote"),
+      allDay: $("allDay"),
+      deleteEventBtn: $("deleteEventBtn"),
+
+      // io modal
+      ioModal: $("ioModal"),
+      ioText: $("ioText")
+    };
+
+    /***********************
+     * Events ops
+     ***********************/
+    function getEventsFor(dateKey){
+      const list = state.events[dateKey];
+      return Array.isArray(list) ? list : [];
+    }
+
+    function upsertEvent(dateKey, ev){
+      const list = getEventsFor(dateKey).slice();
+      const idx = list.findIndex(x => x.id === ev.id);
+      if(idx >= 0) list[idx] = ev;
+      else list.push(ev);
+
+      list.sort((a,b) => {
+        const ta = a.allDay ? "00:00" : (a.time || "00:00");
+        const tb = b.allDay ? "00:00" : (b.time || "00:00");
+        return ta.localeCompare(tb);
+      });
+
+      state.events[dateKey] = list;
+      saveEvents(state.events);
+    }
+
+    function removeEvent(dateKey, id){
+      const list = getEventsFor(dateKey).filter(x => x.id !== id);
+      if(list.length === 0) delete state.events[dateKey];
+      else state.events[dateKey] = list;
+      saveEvents(state.events);
+    }
+
+    function totalEventCount(){
+      let c = 0;
+      for(const k of Object.keys(state.events)) c += getEventsFor(k).length;
+      return c;
+    }
+
+    function countEventsInMonth(year, month){
+      const prefix = `${year}-${pad2(month+1)}-`;
+      let c = 0;
+      for(const k of Object.keys(state.events)){
+        if(k.startsWith(prefix)) c += getEventsFor(k).length;
+      }
+      return c;
+    }
+
+    function firstEventPreview(dateKey){
+      const list = getEventsFor(dateKey);
+      if(!list.length) return "";
+      const ev = list[0];
+      const t = ev.allDay ? "Tüm gün" : (ev.time || "");
+      return `${t} • ${ev.title}`;
+    }
+
+    function uuid(){
+      return "ev_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+    }
+
+    /***********************
+     * Clock
+     ***********************/
+    function tickClock(){
+      const now = new Date();
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Local";
+      const fmt = new Intl.DateTimeFormat(locale, {
+        hour:"2-digit", minute:"2-digit", second:"2-digit",
+        hour12: false
+      });
+      dom.liveClock.textContent = fmt.format(now);
+      dom.tzLabel.textContent = tz;
+    }
+
+    /***********************
+     * Rendering helpers
+     ***********************/
+    function formatSelectedMeta(date){
+      const weekday = new Intl.DateTimeFormat(locale, { weekday:"long" }).format(date);
+      const dmy = new Intl.DateTimeFormat(locale, { day:"2-digit", month:"long", year:"numeric" }).format(date);
+      const h = holidayFor(date);
+      return h ? `${weekday} • ${dmy} • ${h}` : `${weekday} • ${dmy}`;
+    }
+
+    function capitalizeTR(s){
+      if(!s) return s;
+      return s.charAt(0).toLocaleUpperCase("tr-TR") + s.slice(1);
+    }
+
+    /***********************
+     * Render: Tabs
+     ***********************/
+    function syncTabs(){
+      const isYear = state.viewMode === "year";
+      dom.tabYear.classList.toggle("active", isYear);
+      dom.tabMonth.classList.toggle("active", !isYear);
+      dom.tabYear.setAttribute("aria-selected", isYear ? "true" : "false");
+      dom.tabMonth.setAttribute("aria-selected", !isYear ? "true" : "false");
+    }
+
+    /***********************
+     * Render: Left month nav
+     ***********************/
+    function renderMonthNav(){
+      dom.navYear.textContent = String(state.viewYear);
+      dom.monthNav.innerHTML = "";
+
+      for(let m=0; m<12; m++){
+        const cnt = countEventsInMonth(state.viewYear, m);
+        const card = document.createElement("div");
+        card.className = "mini";
+        card.setAttribute("role","button");
+        card.setAttribute("tabindex","0");
+
+        // FIX: önceki sürümde burada template string parantez hatası vardı.
+        const dotClass = (m === state.viewMonth && state.viewMode === "month") ? "dot purple" : "dot";
+
+        card.innerHTML = `
+          <div class="mname">${capitalizeTR(monthName(m)).toLocaleUpperCase("tr-TR")}</div>
+          <div class="mmeta">
+            <span class="${dotClass}"></span>
+            <span>${cnt} etkinlik</span>
+          </div>
+        `;
+
+        const go = () => {
+          state.viewMode = "month";
+          state.viewMonth = m;
+          syncTabs();
+          renderAll();
+        };
+
+        card.addEventListener("click", go);
+        card.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            go();
+          }
+        });
+
+        dom.monthNav.appendChild(card);
+      }
+    }
+
+    /***********************
+     * Render: Agenda
+     ***********************/
+    function renderAgenda(){
+      const key = ymd(state.selectedDate);
+      const list = getEventsFor(key);
+
+      dom.agendaTitle.textContent = new Intl.DateTimeFormat(locale, { day:"2-digit", month:"long" }).format(state.selectedDate);
+      dom.agendaMeta.textContent = formatSelectedMeta(state.selectedDate);
+
+      dom.weekBadge.textContent = `W${getWeekNumberISO(state.selectedDate)}`;
+
+      dom.agendaList.innerHTML = "";
+
+      // holiday row (if exists)
+      const h = holidayFor(state.selectedDate);
+      if(h){
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div class="bar" style="background: var(--warn); box-shadow: 0 0 0 3px rgba(251,191,36,.14)"></div>
+          <div class="meta">
+            <p class="t">${escapeHtml(h)}</p>
+            <p class="d">Sabit resmî gün (TR)</p>
+          </div>
+          <button class="x" type="button" title="Bilgi"><i class="fa-solid fa-circle-info"></i></button>
+        `;
+        dom.agendaList.appendChild(div);
+      }
+
+      const q = (dom.searchBox.value || "").trim().toLowerCase();
+      const filtered = q
+        ? list.filter(ev =>
+            (ev.title||"").toLowerCase().includes(q) ||
+            (ev.note||"").toLowerCase().includes(q) ||
+            (ev.place||"").toLowerCase().includes(q)
+          )
+        : list;
+
+      if(!filtered.length){
+        const empty = document.createElement("div");
+        empty.className = "hint";
+        empty.textContent = q ? "Aramaya uygun etkinlik yok." : "Bu gün için etkinlik yok. 'Ekle' ile başlayabilirsiniz.";
+        dom.agendaList.appendChild(empty);
+        return;
+      }
+
+      for(const ev of filtered){
+        const barVar = ev.color === "accent2" ? "--accent2"
+                    : ev.color === "good" ? "--good"
+                    : ev.color === "warn" ? "--warn"
+                    : ev.color === "bad" ? "--bad"
+                    : "--accent";
+
+        const time = ev.allDay ? "Tüm gün" : (ev.time || "—");
+        const place = ev.place ? ` • ${ev.place}` : "";
+        const note = ev.note ? `\n${ev.note}` : "";
+
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div class="bar" style="background: var(${barVar}); box-shadow: 0 0 0 3px rgba(255,255,255,.10)"></div>
+          <div class="meta">
+            <p class="t">${escapeHtml(ev.title || "(Başlıksız)")}</p>
+            <p class="d">${escapeHtml(time + place)}${note ? "\n" + escapeHtml(note) : ""}</p>
+          </div>
+          <button class="x" type="button" title="Düzenle"><i class="fa-solid fa-pen"></i></button>
+        `;
+
+        div.querySelector(".x").addEventListener("click", () => openEventModal(key, ev.id));
+        dom.agendaList.appendChild(div);
+      }
+    }
+
+    /***********************
+     * Render: Main (Year / Month)
+     ***********************/
+    function renderMiniCalendar(year, month){
+      const mondayStart = true; // TR default
+      const first = startOfMonth(year, month);
+      const firstDow = first.getDay(); // 0 Sun..6 Sat
+      const offset = mondayStart ? ((firstDow + 6) % 7) : firstDow;
+      const start = addDays(first, -offset);
+
+      let html = "";
+      for(let i=0; i<42; i++){
+        const d = addDays(start, i);
+        const on = d.getMonth() === month;
+        const key = ymd(d);
+        const has = getEventsFor(key).length > 0;
+        const isT = sameDay(d, today);
+        html += `<div class="d ${on ? "on":""} ${isT ? "t":""} ${has ? "e":""}" title="${escapeHtml(key)}">${d.getDate()}</div>`;
+      }
+      return html;
+    }
+
+    function renderYearView(){
+      dom.mainHeadline.textContent = `${state.viewYear} • Yıl Görünümü`;
+      dom.mainSub.textContent = "Ay kartına tıklayarak ay görünümüne geçebilirsiniz.";
+
+      const wrap = document.createElement("div");
+      wrap.className = "yearwrap";
+
+      for(let m=0; m<12; m++){
+        const cnt = countEventsInMonth(state.viewYear, m);
+        const card = document.createElement("div");
+        card.className = "monthcard";
+        card.innerHTML = `
+          <div class="mhead">
+            <div class="name">${capitalizeTR(monthName(m))}</div>
+            <div class="count">${cnt} etkinlik</div>
+          </div>
+          <div class="miniCal">${renderMiniCalendar(state.viewYear, m)}</div>
+        `;
+        card.addEventListener("click", () => {
+          state.viewMode = "month";
+          state.viewMonth = m;
+          syncTabs();
+          renderAll();
+        });
+        wrap.appendChild(card);
+      }
+
+      dom.mainArea.innerHTML = "";
+      dom.mainArea.appendChild(wrap);
+    }
+
+    function renderMonthView(){
+      const y = state.viewYear;
+      const m = state.viewMonth;
+
+      dom.mainHeadline.textContent = `Ay Görünümü • ${capitalizeTR(monthName(m))} ${y}`;
+      dom.mainSub.textContent = "Tıkla: gün seç • Çift tıkla: hızlı ekle";
+
+      const mondayStart = true; // TR default
+      const showWeekNumbers = true;
+
+      const first = startOfMonth(y, m);
+      const last = endOfMonth(y, m);
+      const firstDow = first.getDay();
+      const offset = mondayStart ? ((firstDow + 6) % 7) : firstDow;
+      const gridStart = addDays(first, -offset);
+
+      const cols = showWeekNumbers ? 8 : 7;
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+      grid.style.gridTemplateColumns = showWeekNumbers
+        ? "48px repeat(7, minmax(0, 1fr))"
+        : "repeat(7, minmax(0, 1fr))";
+
+      // DOW header
+      const dows = weekdayShort(mondayStart);
+      const dowRow = document.createElement("div");
+      dowRow.className = "dowRow";
+
+      if(showWeekNumbers){
+        const wk = document.createElement("div");
+        wk.className = "dowCell";
+        wk.textContent = "W";
+        dowRow.appendChild(wk);
+      }
+
+      for(const name of dows){
+        const d = document.createElement("div");
+        d.className = "dowCell";
+        d.textContent = name;
+        dowRow.appendChild(d);
+      }
+
+      grid.appendChild(dowRow);
+
+      // 6 weeks x 7 days
+      for(let row=0; row<6; row++){
+        const rowStart = addDays(gridStart, row*7);
+
+        if(showWeekNumbers){
+          const wkCell = document.createElement("div");
+          wkCell.className = "cell";
+          wkCell.style.cursor = "default";
+          wkCell.style.background = "rgba(255,255,255,.03)";
+          wkCell.innerHTML = `
+            <div class="top">
+              <div class="num" style="opacity:.85;">W${getWeekNumberISO(rowStart)}</div>
+            </div>
+            <div class="sub">Hafta</div>
+          `;
+          grid.appendChild(wkCell);
+        }
+
+        for(let col=0; col<7; col++){
+          const day = addDays(rowStart, col);
+          const inMonth = day.getMonth() === m;
+
+          const key = ymd(day);
+          const evCount = getEventsFor(key).length;
+          const h = holidayFor(day);
+
+          const cell = document.createElement("div");
+          cell.className =
+            "cell" +
+            (inMonth ? "" : " muted") +
+            (sameDay(day, today) ? " today" : "") +
+            (sameDay(day, state.selectedDate) ? " selected" : "");
+
+          cell.innerHTML = `
+            <div class="top">
+              <div class="num">${day.getDate()}</div>
+              <div class="badges">
+                ${h ? `<span class="badge holiday" title="${escapeHtml(h)}">TR</span>` : ""}
+                ${evCount ? `<span class="badge events" title="${evCount} etkinlik">${evCount}</span>` : ""}
+              </div>
+            </div>
+            <div class="sub">${escapeHtml(h || firstEventPreview(key) || "")}</div>
+          `;
+
+          cell.addEventListener("click", () => {
+            state.selectedDate = new Date(day);
+            state.selectedDate.setHours(0,0,0,0);
+            state.viewYear = state.selectedDate.getFullYear();
+            state.viewMonth = state.selectedDate.getMonth();
+            renderAll();
+          });
+
+          cell.addEventListener("dblclick", () => {
+            state.selectedDate = new Date(day);
+            state.selectedDate.setHours(0,0,0,0);
+            openEventModal(ymd(state.selectedDate), null);
+          });
+
+          grid.appendChild(cell);
+        }
+      }
+
+      dom.mainArea.innerHTML = "";
+      dom.mainArea.appendChild(grid);
+    }
+
+    function renderMain(){
+      if(state.viewMode === "year") renderYearView();
+      else renderMonthView();
+    }
+
+    /***********************
+     * Render All
+     ***********************/
+    function renderAll(){
+      dom.eventCountLabel.textContent = `${totalEventCount()} toplam`;
+      renderMonthNav();
+      renderAgenda();
+      renderMain();
+    }
+
+    /***********************
+     * Modal: Event
+     ***********************/
+    function openEventModal(dateKey, id){
+      state.edit.dateKey = dateKey;
+      state.edit.id = id;
+
+      const date = new Date(dateKey + "T00:00:00");
+      dom.eventModalSubtitle.textContent = formatSelectedMeta(date);
+
+      const list = getEventsFor(dateKey);
+      const ev = id ? list.find(x => x.id === id) : null;
+
+      if(ev){
+        dom.eventModalTitle.textContent = "Etkinliği Düzenle";
+        dom.evTitle.value = ev.title || "";
+        dom.evTime.value = ev.time || "";
+        dom.evColor.value = ev.color || "accent";
+        dom.evPlace.value = ev.place || "";
+        dom.evNote.value = ev.note || "";
+        dom.allDay.checked = !!ev.allDay;
+        dom.deleteEventBtn.style.display = "";
+      }else{
+        dom.eventModalTitle.textContent = "Yeni Etkinlik";
+        dom.evTitle.value = "";
+        dom.evTime.value = "";
+        dom.evColor.value = "accent";
+        dom.evPlace.value = "";
+        dom.evNote.value = "";
+        dom.allDay.checked = false;
+        dom.deleteEventBtn.style.display = "none";
+      }
+
+      dom.evTime.disabled = dom.allDay.checked;
+
+      dom.eventModal.classList.add("show");
+      dom.eventModal.setAttribute("aria-hidden","false");
+      setTimeout(() => dom.evTitle.focus(), 0);
+    }
+
+    function closeModal(modal){
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden","true");
+    }
+
+    function saveEventFromModal(){
+      const dateKey = state.edit.dateKey;
+      if(!dateKey) return;
+
+      const title = (dom.evTitle.value || "").trim();
+      if(!title){
+        dom.evTitle.focus();
+        alert("Başlık zorunlu.");
+        return;
+      }
+
+      const ev = {
+        id: state.edit.id || uuid(),
+        title,
+        time: dom.allDay.checked ? "" : (dom.evTime.value || ""),
+        place: (dom.evPlace.value || "").trim(),
+        note: (dom.evNote.value || "").trim(),
+        color: dom.evColor.value || "accent",
+        allDay: !!dom.allDay.checked,
+        createdAt: Date.now()
+      };
+
+      upsertEvent(dateKey, ev);
+
+      // keep selection consistent
+      state.selectedDate = new Date(dateKey + "T00:00:00");
+      state.viewYear = state.selectedDate.getFullYear();
+      state.viewMonth = state.selectedDate.getMonth();
+
+      closeModal(dom.eventModal);
+      renderAll();
+    }
+
+    function deleteEventFromModal(){
+      const dateKey = state.edit.dateKey;
+      const id = state.edit.id;
+      if(!dateKey || !id) return;
+      if(!confirm("Etkinlik silinsin mi?")) return;
+      removeEvent(dateKey, id);
+      closeModal(dom.eventModal);
+      renderAll();
+    }
+
+    /***********************
+     * Modal: IO
+     ***********************/
+    function openIOModal(mode){
+      dom.ioModal.classList.add("show");
+      dom.ioModal.setAttribute("aria-hidden","false");
+
+      if(mode === "export"){
+        dom.ioText.value = JSON.stringify({ events: state.events }, null, 2);
+        dom.ioText.focus();
+        dom.ioText.select();
+      }else{
+        dom.ioText.value = "";
+        dom.ioText.focus();
+      }
+    }
+
+    function exportJSON(){
+      dom.ioText.value = JSON.stringify({ events: state.events }, null, 2);
+      dom.ioText.focus();
+      dom.ioText.select();
+    }
+
+    function importJSON(){
+      const raw = (dom.ioText.value || "").trim();
+      if(!raw){ alert("JSON boş."); return; }
+
+      try{
+        const parsed = JSON.parse(raw);
+        if(parsed?.events && typeof parsed.events === "object"){
+          state.events = parsed.events;
+          saveEvents(state.events);
+          closeModal(dom.ioModal);
+          renderAll();
+          return;
+        }
+        alert("JSON formatı beklenenden farklı. Örn: {\"events\": {...}}");
+      }catch(e){
+        alert("JSON okunamadı: " + e.message);
+      }
+    }
+
+    /***********************
+     * Actions
+     ***********************/
+    function goToday(){
+      state.selectedDate = new Date(today);
+      state.viewYear = today.getFullYear();
+      state.viewMonth = today.getMonth();
+      renderAll();
+    }
+
+    function step(delta){
+      if(state.viewMode === "year"){
+        state.viewYear += delta;
+      }else{
+        const d = new Date(state.viewYear, state.viewMonth + delta, 1);
+        state.viewYear = d.getFullYear();
+        state.viewMonth = d.getMonth();
+      }
+      renderAll();
+    }
+
+    function jumpToDate(){
+      const cur = ymd(state.selectedDate);
+      const input = prompt("Tarihe git (YYYY-MM-DD):", cur);
+      if(!input) return;
+
+      const m = input.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(!m){ alert("Format: YYYY-MM-DD"); return; }
+
+      const d = new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
+      if(Number.isNaN(d.getTime())){ alert("Geçersiz tarih."); return; }
+
+      d.setHours(0,0,0,0);
+      state.selectedDate = d;
+      state.viewYear = d.getFullYear();
+      state.viewMonth = d.getMonth();
+      state.viewMode = "month";
+      syncTabs();
+      renderAll();
+    }
+
+    /***********************
+     * Wire up UI
+     ***********************/
+    function bind(){
+      $("btnToday").addEventListener("click", goToday);
+      $("btnAdd").addEventListener("click", () => openEventModal(ymd(state.selectedDate), null));
+      $("btnQuickAdd").addEventListener("click", () => openEventModal(ymd(state.selectedDate), null));
+
+      $("prevYear").addEventListener("click", () => { state.viewYear -= 1; renderAll(); });
+      $("nextYear").addEventListener("click", () => { state.viewYear += 1; renderAll(); });
+
+      $("prev").addEventListener("click", () => step(-1));
+      $("next").addEventListener("click", () => step(+1));
+
+      dom.tabYear.addEventListener("click", () => { state.viewMode="year"; syncTabs(); renderAll(); });
+      dom.tabMonth.addEventListener("click", () => { state.viewMode="month"; syncTabs(); renderAll(); });
+
+      $("btnJump").addEventListener("click", jumpToDate);
+      $("btnClear").addEventListener("click", () => { dom.searchBox.value = ""; renderAgenda(); });
+
+      dom.searchBox.addEventListener("input", () => renderAgenda());
+
+      $("btnTheme").addEventListener("click", toggleTheme);
+
+      // Event modal
+      $("closeEventModal").addEventListener("click", () => closeModal(dom.eventModal));
+      $("cancelEventBtn").addEventListener("click", () => closeModal(dom.eventModal));
+      $("saveEventBtn").addEventListener("click", saveEventFromModal);
+      dom.deleteEventBtn.addEventListener("click", deleteEventFromModal);
+
+      dom.allDay.addEventListener("change", () => {
+        dom.evTime.disabled = dom.allDay.checked;
+        if(dom.allDay.checked) dom.evTime.value = "";
+      });
+
+      // IO modal
+      $("btnExport").addEventListener("click", () => openIOModal("export"));
+      $("btnImport").addEventListener("click", () => openIOModal("import"));
+      $("closeIOModal").addEventListener("click", () => closeModal(dom.ioModal));
+      $("ioSave").addEventListener("click", exportJSON);
+      $("ioLoad").addEventListener("click", importJSON);
+      $("ioCopy").addEventListener("click", async () => {
+        try{
+          await navigator.clipboard.writeText(dom.ioText.value || "");
+          alert("Kopyalandı.");
+        }catch(_){
+          alert("Kopyalama başarısız. Manuel kopyalayın.");
+        }
+      });
+
+      // backdrop close
+      [dom.eventModal, dom.ioModal].forEach(modal => {
+        modal.addEventListener("click", (e) => {
+          if(e.target === modal) closeModal(modal);
+        });
+      });
+
+      // esc close
+      window.addEventListener("keydown", (e) => {
+        if(e.key !== "Escape") return;
+        if(dom.eventModal.classList.contains("show")) closeModal(dom.eventModal);
+        if(dom.ioModal.classList.contains("show")) closeModal(dom.ioModal);
+      });
+    }
+
+    /***********************
+     * Init
+     ***********************/
+    (function init(){
+      applyTheme("auto");
+      bind();
+      syncTabs();
+      renderAll();
+      tickClock();
+      setInterval(tickClock, 250);
+    })();
+  </script>
+</body>
+</html>

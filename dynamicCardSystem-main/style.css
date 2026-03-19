@@ -1,0 +1,537 @@
+/* 🌐 Genel Ayarlar */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: linear-gradient(135deg, #1f1c2c, #928dab);
+  color: #fff;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 🔝 Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 8%;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+}
+.logo span {
+  color: #ffcc70;
+}
+
+/* 🌐 Navigation */
+/* 🌐 Navigation */
+.nav {
+  display: flex;
+  gap: 20px;
+}
+
+/* Başlangıç durumu */
+.nav a {
+  position: relative;
+  text-decoration: none;
+  color: #ddd;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeSlideUp 0.6s forwards;
+}
+
+/* Hover efekti (alt çizgi animasyonu) */
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background: #ffcc70;
+  transform: translateY(6px);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.nav a:hover {
+  color: #ffcc70;
+}
+.nav a:hover::after {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ✨ Keyframes */
+@keyframes fadeSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered gecikme */
+.nav a:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.nav a:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.nav a:nth-child(3) {
+  animation-delay: 0.6s;
+}
+.nav a:nth-child(4) {
+  animation-delay: 0.8s;
+}
+
+/* 🍔 Menü Toggle */
+.menu-toggle {
+  display: none;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.menu-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* 📱 Mobil görünüm */
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    position: absolute;
+    top: 70px;
+    right: 8%;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .nav.active {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+}
+
+/* 🎚️ Scrollbar Animasyonu */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ffcc70, #ff9966);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffd98e, #ffb380);
+}
+/* 🎯 Hero */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 8%;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.hero-content {
+  flex: 1;
+  min-width: 300px;
+}
+.hero-content h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 15px;
+}
+.hero-content h1 span {
+  color: #ffcc70;
+}
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+  color: #eee;
+}
+.hero-visual {
+  flex: 1;
+  min-width: 280px;
+  text-align: center;
+}
+.hero-visual img {
+  max-width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.typewriter {
+  font-family: Inter, sans-serif;
+  font-size: 20px; /* daha küçük yazı */
+  font-weight: 1000;
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 6px;
+}
+
+.cursor {
+  width: 2px;
+  height: 1.2em;
+  background: #facc15; /* sarı cursor */
+  display: inline-block;
+  animation: blink 0.9s steps(1) infinite;
+  transform: translateY(2px);
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* sarı-beyaz gradient + parıltı */
+.typewriter span#tw {
+  background: linear-gradient(90deg, #facc15, #ffffff); /* sarı → beyaz */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.08));
+}
+
+
+
+/* ✨ Scroll Animasyonları */
+.hero-content,
+.hero-visual,
+.portfolio-section h2,
+.section-subtitle,
+.card,
+.skills,
+.about,
+.contact {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 🔍 Search & Filters */
+.search-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+#search {
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: none;
+  width: min(100%, 320px);
+  outline: none;
+  font-size: 1rem;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.filters button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.filters button.active,
+.filters button:hover {
+  background: #ffcc70;
+  color: #1f1c2c;
+}
+
+/* 🗂️ Portfolio Section */
+.portfolio-section {
+  padding: 80px 8%;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.portfolio-section h2 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #ffcc70;
+  letter-spacing: 1px;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #ddd;
+  margin-bottom: 50px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Grid düzeni */
+/* 🗂️ Kart Grid */
+.portfolio-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  align-items: stretch;
+}
+
+/* 📦 Kart */
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+  min-height: 100%; /* grid hücresini tamamen doldur */
+  width: 100%; /* tüm kartlar eşit genişlikte */
+  box-sizing: border-box;
+  opacity: 1;
+  max-height: 1000px; /* animasyon için başlangıç yüksekliği */
+}
+
+/* 🚫 Gizlenen kart */
+.card.hidden {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+  max-height: 0;       /* yükseklik sıfırlanır */
+  margin: 0;           /* boşluk bırakmaz */
+  padding: 0;          /* iç boşluk sıfırlanır */
+  overflow: hidden;    /* içerik taşmaz */
+}
+
+/* ✨ Hover efekti */
+.card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.35);
+}
+
+/* 🖼️ Görsel */
+.card img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+/* 🧩 Başlık */
+.card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+  color: #fff;
+  text-align: center;
+}
+
+/* 📄 Açıklama */
+.card p {
+  font-size: 0.95rem;
+  color: #ccc;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+/* 🏷️ Etiketler */
+.tags {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.tags span {
+  background: rgba(255,255,255,0.08);
+  color: #ffcc70;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+/* 🔘 Buton */
+.card a {
+  margin-top: auto;
+  padding: 14px 0;
+  background: #ffcc70;
+  color: #1f1c2c;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.3s, transform 0.3s;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.card a:hover {
+  background: #ffd98e;
+  transform: scale(1.02);
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .portfolio-container {
+    gap: 20px;
+  }
+  .card {
+    padding: 15px;
+  }
+  .card h3 {
+    font-size: 1.1rem;
+  }
+}
+/* 🛠️ Skills Section */
+.skills {
+  padding: 80px 8%;
+  background: rgba(255,255,255,0.05);
+  text-align: center;
+}
+.skills h2 {
+  font-size: 2rem;
+  margin-bottom: 25px;
+}
+.skills ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px 30px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.skills li {
+  background: rgba(255,255,255,0.08);
+  padding: 12px 20px;
+  border-radius: 20px;
+  font-size: 1rem;
+  color: #eee;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+.skills li:hover {
+  transform: translateY(-5px);
+  background: #ffcc70;
+  color: #1f1c2c;
+}
+
+/* ℹ️ About Section */
+.about {
+  padding: 80px 8%;
+  text-align: center;
+}
+.about h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+.about p {
+  max-width: 750px;
+  margin: 0 auto;
+  font-size: 1.05rem;
+  color: #eee;
+  line-height: 1.8;
+}
+
+/* 📩 Contact Section */
+.contact {
+  padding: 80px 8%;
+  text-align: center;
+  background: rgba(255,255,255,0.05);
+}
+.contact h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+.contact p {
+  max-width: 600px;
+  margin: 0 auto 20px;
+  color: #eee;
+}
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 30px;
+  background: #ffcc70;
+  color: #1f1c2c;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s, transform 0.3s;
+}
+.btn:hover {
+  background: #ffd98e;
+  transform: translateY(-3px);
+}
+
+/* 🔻 Footer */
+.footer {
+  text-align: center;
+  padding: 25px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+/* 📱 Responsive Düzen */
+@media (max-width: 992px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+  .search-filter {
+    align-items: center;
+  }
+}
+@media (max-width: 768px) {
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  .hero p {
+    font-size: 1rem;
+  }
+  .card {
+    padding: 15px;
+  }
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz Uygulaması</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="logo">QZ</span>
+      <h1>Quiz</h1>
+    </div>
+    <div class="controls">
+      <button id="themeToggle" class="btn ghost">Tema</button>
+    </div>
+    <div class="progress-wrap">
+      <div id="progressBar" class="progress-bar"></div>
+      <span id="progressText" class="progress-text">Soru 1 / 10</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="quizCard" class="card">
+      <div id="questionText" class="question">Soru metni yükleniyor...</div>
+      <ul id="optionsList" class="options"></ul>
+      <div class="actions">
+        <button id="skipBtn" class="btn ghost">Atla</button>
+        <button id="nextBtn" class="btn primary" disabled>Sonraki</button>
+      </div>
+    </section>
+
+    <section id="resultCard" class="card hidden">
+      <h2>Sonuç</h2>
+      <p id="scoreText">Puanınız: 0 / 10</p>
+      <p id="timeText">Süre: 00:00</p>
+      <div id="summaryList" class="summary"></div>
+      <div class="actions">
+        <button id="restartBtn" class="btn primary">Tekrar Başlat</button>
+        <button id="reviewBtn" class="btn ghost">Yanıtları Göster/Gizle</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>Hazırlayan: Quiz örneği — Vanilla JS</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

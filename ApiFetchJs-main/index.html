@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinamik API İçerik Yükleyici</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Başlık Alanı -->
+        <header class="header">
+            <h1>Dinamik API İçerik Yükleyici</h1>
+            <p class="subtitle">1–100 arasında bir ID girerek içerik yükleyebilirsin.</p>
+        </header>
+
+        <!-- Input + Button -->
+        <div class="input-row">
+            <input id="postId" type="number" placeholder="Post ID (1-100)" />
+            <button id="loadBtn">Veriyi Getir</button>
+        </div>
+
+        <!-- Durum Mesajı -->
+        <div id="status" class="status"></div>
+
+        <!-- Kart Alanı -->
+        <section id="card" class="card hidden">
+            <div class="post-wrapper">
+                <h2 id="title"></h2>
+                <p id="body"></p>
+
+                <div class="meta" id="meta"></div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>JSONPlaceholder API kullanılarak dinamik içerik yüklenmektedir.</p>
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

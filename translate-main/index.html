@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Web Translator</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        p.desc {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            /* kartlar arası boşluk */
+        }
+
+        .card {
+            flex: 1;
+            min-width: 280px;
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        .card textarea {
+            width: 100%;
+            min-height: 160px;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            font-size: 1rem;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .card textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 6px rgba(102, 126, 234, 0.5);
+            outline: none;
+        }
+
+
+
+
+        .col {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 160px;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            font-size: 1rem;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 6px rgba(102, 126, 234, 0.5);
+            outline: none;
+        }
+
+        select,
+        button {
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin-top: 0.8rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .status {
+            margin-top: 1.2rem;
+            font-size: 0.95rem;
+            color: #555;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ccc;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 6px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🌐 Web Translator</h1>
+        <p class="desc">Metni yaz, dili seç ve anında çevirini gör.</p>
+
+        <div class="row">
+            <div class="card">
+                <label for="src">Source</label>
+                <textarea id="src" placeholder="Metni buraya yaz..."></textarea>
+            </div>
+            <div class="card">
+                <label for="out">Target</label>
+                <textarea id="out" readonly placeholder="Çeviri burada görünecek..."></textarea>
+            </div>
+        </div>
+
+        <label for="target">Target language</label>
+        <select id="target">
+            <option value="tr">Turkish</option>
+            <option value="en">English</option>
+            <option value="de">German</option>
+            <option value="es">Spanish</option>
+        </select>
+
+        <button id="translateBtn">Translate</button>
+
+        <div class="status" id="status">Status: idle</div>
+    </div>
+
+    <script>
+        const src = document.getElementById('src');
+        const out = document.getElementById('out');
+        const target = document.getElementById('target');
+        const statusEl = document.getElementById('status');
+        const btn = document.getElementById('translateBtn');
+
+        async function translateCloud(text, targetLang = 'tr') {
+            statusEl.innerHTML = "Status: translating <span class='loader'></span>";
+            try {
+                const r = await fetch('http://localhost:3000/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, target: targetLang })
+                });
+                const result = await r.json();
+                out.value = result.translatedText; // artık direkt API cevabını kullan
+                statusEl.textContent = "Status: done ✅";
+            } catch (e) {
+                console.error("Translation error:", e);
+                statusEl.textContent = "Status: error ❌ (detay için konsola bak)";
+            }
+        }
+
+        btn.addEventListener('click', () => {
+            if (src.value.trim()) {
+                translateCloud(src.value, target.value);
+            } else {
+                statusEl.textContent = "Status: please enter text!";
+            }
+        });
+    </script>
+</body>
+
+</html>

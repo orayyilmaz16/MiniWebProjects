@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sistem Bilgisi</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand">SysScope</div>
+    <div class="nav-actions">
+      <input id="search" type="search" placeholder="Kartlarda ara…" aria-label="Ara" />
+      <button id="refresh" class="btn">Yenile</button>
+      <button id="exportJson" class="btn">JSON Dışa Aktar</button>
+      <button id="toggleTheme" class="btn">Tema</button>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <h1>Bilgisayar Özellikleri</h1>
+    <p>Tarayıcı tarafından erişilebilen tüm sistem bilgileri aşağıda toplanır.</p>
+  </header>
+
+  <main class="container">
+    <section id="cards" class="cards-grid" aria-live="polite"></section>
+  </main>
+
+  <footer class="footer">
+    <small>Veriler yalnızca tarayıcıda işlenir. İzin gerektiren özellikler talep edildiğinde açıklanır.</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>

@@ -1,0 +1,440 @@
+/* ========================================================== */
+/* 1. CSS Değişkenleri (Theme Variables) */
+/* ========================================================== */
+:root {
+    --background-color: #f4f7f9;
+    --container-bg: #ffffff;
+    --text-color: #333333;
+    --border-color: #e0e0e0;
+    --primary-color: #007bff; /* Mavi Vurgu */
+    --secondary-bg: #f8f8f8;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --input-bg: #ffffff;
+    --btn-text-color: #333333;
+}
+
+body.dark-mode {
+    --background-color: #1a1a2e;
+    --container-bg: #2b2b4d;
+    --text-color: #f0f0f0;
+    --border-color: #44446a;
+    --primary-color: #7affc9; /* Açık Turkuaz Vurgu */
+    --secondary-bg: #1f1f3a;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    --input-bg: #1f1f3a;
+    --btn-text-color: #1a1a2e; 
+}
+
+/* ========================================================== */
+/* 2. ANA KART ORTALAMA ve SAYFA YAPISI */
+/* ========================================================== */
+body {
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.5s, color 0.5s;
+    margin: 0;
+    padding: 0; 
+}
+
+.container {
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    
+    width: 100%; 
+    max-width: 1200px;
+    
+    margin: 30px auto; 
+    padding: 30px;
+    background-color: var(--container-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    
+    opacity: 1; 
+    transition: opacity 0.5s ease; /* JS Animasyonu için */
+}
+
+/* Başlık ve Koyu Mod Geçiş Alanı */
+.header-and-mode {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* İçeriği tam genişlikte tutar */
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+h1 {
+    color: var(--primary-color);
+    margin: 0;
+    font-size: 28px;
+}
+h2 {
+    color: var(--primary-color);
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* ========================================================== */
+/* 3. NAV BAR STİLİ */
+/* ========================================================== */
+.navbar {
+    width: 100%;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    padding: 15px 30px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.navbar-logo a {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-links li a {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 0 15px;
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+
+.navbar-links li a:hover {
+    color: var(--primary-color);
+}
+
+/* ========================================================== */
+/* 4. FOOTER STİLİ */
+/* ========================================================== */
+.footer {
+    width: 100%;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+    border-top: 1px solid var(--border-color);
+    transition: background-color 0.5s, color 0.5s;
+    opacity: 1; 
+}
+
+.footer-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+/* ========================================================== */
+/* 5. GELİŞMİŞ KONTROL PANELİ STİLİ */
+/* ========================================================== */
+
+.controls-panel {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; 
+    gap: 15px 35px;
+    padding: 20px 30px;
+    width: 100%; /* Navbar altında tam genişlik */
+    background-color: var(--secondary-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.03);
+    margin-bottom: 30px;
+}
+
+.controls-panel h3 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 17px;
+    font-weight: 700;
+    border-right: 3px solid var(--border-color);
+    padding-right: 30px;
+    letter-spacing: 0.5px;
+}
+
+.controls-panel label {
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    opacity: 0.85;
+}
+
+.control-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease-out; 
+    min-width: 120px;
+}
+
+.control-select:focus,
+.controls-panel input[type="color"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+    outline: none;
+    transform: translateY(-1px); 
+}
+
+.controls-panel input[type="color"] {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.align-group {
+    display: flex;
+    border: none; 
+    border-radius: 8px; 
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.align-btn {
+    padding: 10px 12px;
+    border: none;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 1;
+}
+
+.align-btn:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: var(--border-color);
+}
+
+.align-btn.active {
+    background-color: var(--primary-color);
+    color: var(--btn-text-color); 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+    border: 1px solid var(--primary-color);
+    transform: scale(1.05);
+}
+
+body.dark-mode .align-btn.active {
+    color: black;
+}
+
+/* ========================================================== */
+/* 6. KOYU MOD TOGGLE STİLİ (Yazılı Switch) */
+/* ========================================================== */
+.dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    background-color: var(--secondary-bg);
+    border-radius: 30px;
+    padding: 3px;
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.switch-label {
+    display: flex;
+    position: relative;
+    width: 140px; 
+    height: 38px;
+    border-radius: 30px;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 68px; 
+    height: 34px;
+    border-radius: 28px;
+    background-color: var(--container-bg); 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.mode-text {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+    opacity: 0.6;
+    z-index: 10;
+    transition: color 0.3s, opacity 0.3s;
+}
+
+#dark-mode-switch:checked + .switch-label .slider {
+    transform: translateX(70px); 
+    background-color: var(--primary-color);
+}
+
+/* Aktiflik Vurgusu */
+#dark-mode-switch:checked + .switch-label .dark-text {
+    color: var(--btn-text-color); 
+    opacity: 1;
+    font-weight: 700;
+}
+
+#dark-mode-switch:checked + .switch-label .light-text {
+    opacity: 0.6;
+}
+
+/* Varsayılan Aktiflik (Light Mode) */
+.dark-mode-toggle .light-text {
+    opacity: 1;
+    font-weight: 700;
+}
+
+.dark-mode-toggle .dark-text {
+    opacity: 0.6;
+}
+
+/* Koyu Mod Aktifken Yazı Renklerinin Kontrolü */
+body.dark-mode .light-text {
+    opacity: 0.6 !important;
+    font-weight: 600;
+}
+body.dark-mode .dark-text {
+    opacity: 1 !important;
+    font-weight: 700;
+    color: var(--btn-text-color); 
+}
+
+/* ========================================================== */
+/* 7. İKİLİ SÜTUN DÜZENİ (Textarea & Önizleme) */
+/* ========================================================== */
+.main-content-area {
+    display: flex;
+    gap: 30px;
+    width: 100%; /* Tam genişlik */
+    /* height kaldırıldı, içeriğe göre büyüyecek */
+}
+
+.editor-area, .preview-area {
+    flex: 1;
+    min-width: 0;
+}
+
+#text-input, #live-preview {
+    width: 100%;
+    height: 300px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 1.6;
+    resize: none;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    transition: background-color 0.5s, border-color 0.5s;
+}
+
+#live-preview {
+    border: 2px solid var(--primary-color);
+}
+
+/* ========================================================== */
+/* 8. DUYARLILIK (Responsive Design) */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        margin: 15px auto;
+    }
+    
+    .header-and-mode {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 10px;
+    }
+
+    .dark-mode-toggle {
+        margin-top: 10px;
+    }
+
+    .main-content-area {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Navbar Mobil */
+    .navbar {
+        flex-direction: column;
+        padding: 15px 10px;
+    }
+    .navbar-links {
+        margin-top: 10px;
+    }
+    .navbar-links li a {
+        padding: 0 8px;
+        font-size: 14px;
+    }
+    
+    /* Kontrol Paneli Mobil */
+    .controls-panel {
+        padding: 15px;
+        justify-content: flex-start;
+        gap: 10px 20px;
+    }
+
+    .controls-panel h3 {
+        width: 100%; 
+        border-right: none;
+        padding-right: 0;
+        margin-bottom: 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+    
+    .align-group {
+        margin-left: 0;
+        flex-shrink: 0; 
+    }
+    
+    .controls-panel input[type="color"] {
+        height: 30px;
+        width: 30px;
+    }
+}

@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Match-3 (Candy Crush Benzeri) - Web</title>
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0f1b3d;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --accent: #7c5cff;
+      --danger: #ff4d6d;
+      --ok: #26d07c;
+      --cell: clamp(42px, 7vw, 64px);
+      --gap: 8px;
+      --radius: 18px;
+      --shadow: 0 18px 40px rgba(0,0,0,.40);
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(124,92,255,.35), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(38,208,124,.20), transparent 60%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 24px;
+    }
+
+    .app{
+      width:min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .topbar{
+      display:flex;
+      gap: 12px;
+      align-items: stretch;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .panel{
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .stats{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      padding: 14px 16px;
+      flex: 1 1 auto;
+      min-width: 280px;
+    }
+
+    .stat{
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      min-width: 120px;
+    }
+    .stat .k{ font-size: 12px; color: var(--muted); letter-spacing:.2px; }
+    .stat .v{ font-size: 20px; font-weight: 700; margin-top: 2px; }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      padding: 14px 16px;
+      align-items:center;
+      justify-content: flex-end;
+      flex: 0 0 auto;
+    }
+
+    button{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight: 700;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    button:hover{ transform: translateY(-1px); background: rgba(255,255,255,.11); }
+    button:active{ transform: translateY(0px) scale(.99); }
+    button.primary{
+      background: rgba(124,92,255,.18);
+      border-color: rgba(124,92,255,.35);
+    }
+    button.danger{
+      background: rgba(255,77,109,.14);
+      border-color: rgba(255,77,109,.35);
+    }
+
+    .main{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 920px){
+      .main{ grid-template-columns: 1fr; }
+    }
+
+    .boardWrap{
+      padding: 16px;
+    }
+
+    .boardHeader{
+      display:flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 0 4px 10px 4px;
+    }
+    .title{
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      text-align:right;
+    }
+
+    .board{
+      display:grid;
+      grid-template-columns: repeat(8, var(--cell));
+      grid-auto-rows: var(--cell);
+      gap: var(--gap);
+      justify-content:center;
+      padding: 12px;
+      border-radius: calc(var(--radius) - 6px);
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      touch-action: manipulation;
+      user-select:none;
+    }
+
+    .cell{
+      width: var(--cell);
+      height: var(--cell);
+      border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+      transition: transform .12s ease, outline-color .12s ease, box-shadow .12s ease;
+    }
+
+    .cell.select{
+      outline: 2px solid rgba(124,92,255,.85);
+      box-shadow: 0 0 0 6px rgba(124,92,255,.12);
+      transform: translateY(-1px);
+    }
+
+    .candy{
+      width: 78%;
+      height: 78%;
+      border-radius: 18px;
+      position:relative;
+      transform: translateZ(0);
+      box-shadow:
+        0 10px 16px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.25);
+      transition: transform .16s ease, opacity .16s ease;
+    }
+    .candy::before{
+      content:"";
+      position:absolute;
+      inset: 10% 14% auto 14%;
+      height: 22%;
+      border-radius: 999px;
+      background: rgba(255,255,255,.28);
+      filter: blur(.3px);
+      transform: rotate(-8deg);
+    }
+    .candy.pop{
+      animation: pop .18s ease forwards;
+    }
+    @keyframes pop{
+      to{ transform: scale(.70); opacity: 0; }
+    }
+
+    /* 6 candy tipi (renkleri serbestçe değiştirebilirsin) */
+    .t0{ background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 35%), linear-gradient(160deg,#ff5c7a,#ff2d55); }
+    .t1{ background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 35%), linear-gradient(160deg,#ffb703,#ff7b00); }
+    .t2{ background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 35%), linear-gradient(160deg,#ffd166,#ffe66d); }
+    .t3{ background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 35%), linear-gradient(160deg,#2dd4bf,#22c55e); }
+    .t4{ background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 35%), linear-gradient(160deg,#3b82f6,#06b6d4); }
+    .t5{ background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 35%), linear-gradient(160deg,#a78bfa,#7c5cff); }
+
+    .side{
+      padding: 16px;
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card{
+      padding: 14px 14px;
+      border-radius: calc(var(--radius) - 6px);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .card h3{
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .card p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .badge{
+      display:inline-flex;
+      gap: 6px;
+      align-items:center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(124,92,255,.14);
+      border: 1px solid rgba(124,92,255,.25);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .toast{
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      color: var(--muted);
+      font-size: 12px;
+      min-height: 40px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .toast strong{ color: var(--text); }
+    .toast .ok{ color: var(--ok); font-weight: 800; }
+    .toast .bad{ color: var(--danger); font-weight: 800; }
+
+    .disabled{
+      pointer-events:none;
+      opacity:.75;
+      filter: saturate(.95);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="panel stats">
+        <div class="stat">
+          <div class="k">Skor</div>
+          <div class="v" id="score">0</div>
+        </div>
+        <div class="stat">
+          <div class="k">Hamle</div>
+          <div class="v" id="moves">20</div>
+        </div>
+        <div class="stat">
+          <div class="k">Hedef</div>
+          <div class="v" id="target">1500</div>
+        </div>
+      </div>
+
+      <div class="panel actions">
+        <button class="primary" id="newGameBtn">Yeni Oyun</button>
+        <button id="shuffleBtn">Karıştır</button>
+        <button class="danger" id="helpBtn">Yardım</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="panel boardWrap">
+        <div class="boardHeader">
+          <div class="title">Match-3</div>
+          <div class="hint">
+            1) Taşa tıkla<br/>
+            2) Komşusuna tıkla (veya sürükle)<br/>
+            3) 3+ eşleşme yap
+          </div>
+        </div>
+        <div class="board" id="board" aria-label="match3 board"></div>
+      </div>
+
+      <div class="panel side">
+        <div class="card">
+          <h3>Oyun Kuralları</h3>
+          <p>
+            Komşu iki taşı yer değiştir. Eğer değişim 3 veya daha fazla aynı taşı
+            yan yana / alt alta getirirse taşlar temizlenir, üsttekiler düşer ve
+            yeni taşlar eklenir. Hamle bitince hedef skoru geçmeye çalış.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>İpuçları</h3>
+          <p>
+            Büyük zincir (cascade) daha fazla skor getirir. Karıştır düğmesi,
+            hamle sıkışınca yardımcı olur (küçük skor cezası uygular).
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Durum</h3>
+          <div class="toast" id="toast">
+            <span><strong>Hazır.</strong> İlk hamleni yap.</span>
+            <span class="badge">v1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  "use strict";
+
+  // ---- Oyun Ayarları ----
+  const SIZE = 8;
+  const TYPES = 6;
+  const START_MOVES = 20;
+  const TARGET_SCORE = 1500;
+
+  // Skorlama: basit (istersen combo çarpanı ekle)
+  const SCORE_PER_TILE = 10;
+  const SHUFFLE_PENALTY = 100;
+
+  // ---- State ----
+  /** @type {(number|null)[][]} */
+  let board = [];
+  let score = 0;
+  let movesLeft = START_MOVES;
+  let busy = false;
+
+  /** @type {{r:number,c:number} | null} */
+  let selected = null;
+
+  // ---- DOM ----
+  const boardEl = document.getElementById("board");
+  const scoreEl = document.getElementById("score");
+  const movesEl = document.getElementById("moves");
+  const targetEl = document.getElementById("target");
+  const toastEl = document.getElementById("toast");
+  const newGameBtn = document.getElementById("newGameBtn");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+  const helpBtn = document.getElementById("helpBtn");
+
+  /** @type {HTMLDivElement[][]} */
+  let cellEls = [];
+
+  // ---- Utils ----
+  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+  const keyOf = (r,c) => `${r},${c}`;
+
+  function inBounds(r,c){
+    return r>=0 && r<SIZE && c>=0 && c<SIZE;
+  }
+  function isAdj(a,b){
+    const dr = Math.abs(a.r - b.r);
+    const dc = Math.abs(a.c - b.c);
+    return (dr + dc) === 1;
+  }
+
+  function toast(msg, kind="info"){
+    // kind: info | ok | bad
+    const tag = kind === "ok" ? "ok" : kind === "bad" ? "bad" : "";
+    toastEl.innerHTML = `
+      <span><strong class="${tag}">${kind==="ok"?"Başarılı":kind==="bad"?"Uyarı":"Bilgi"}.</strong> ${msg}</span>
+      <span class="badge">v1</span>
+    `;
+  }
+
+  function updateHUD(){
+    scoreEl.textContent = String(score);
+    movesEl.textContent = String(movesLeft);
+    targetEl.textContent = String(TARGET_SCORE);
+  }
+
+  function randType(forbid = new Set()){
+    // basit random, yasak tipleri atla
+    let tries = 0;
+    while (tries++ < 50){
+      const t = Math.floor(Math.random() * TYPES);
+      if (!forbid.has(t)) return t;
+    }
+    // worst case
+    return Math.floor(Math.random() * TYPES);
+  }
+
+  // Başlangıçta hazır match oluşmasın diye yerleştiriyoruz
+  function generateBoard(){
+    board = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
+    for (let r=0; r<SIZE; r++){
+      for (let c=0; c<SIZE; c++){
+        const forbid = new Set();
+        if (c >= 2 && board[r][c-1] === board[r][c-2] && board[r][c-1] !== null){
+          forbid.add(board[r][c-1]);
+        }
+        if (r >= 2 && board[r-1][c] === board[r-2][c] && board[r-1][c] !== null){
+          forbid.add(board[r-1][c]);
+        }
+        board[r][c] = randType(forbid);
+      }
+    }
+  }
+
+  // ---- Match Bulma ----
+  /** @returns {Set<string>} */
+  function findMatches(){
+    const marked = new Set();
+
+    // satırlar
+    for (let r=0; r<SIZE; r++){
+      let runType = board[r][0];
+      let runStart = 0;
+      let runLen = 1;
+
+      for (let c=1; c<=SIZE; c++){
+        const t = (c < SIZE) ? board[r][c] : null; // sentinel
+        if (t !== null && t === runType){
+          runLen++;
+        } else {
+          if (runType !== null && runLen >= 3){
+            for (let k=runStart; k<runStart+runLen; k++){
+              marked.add(keyOf(r,k));
+            }
+          }
+          runType = t;
+          runStart = c;
+          runLen = 1;
+        }
+      }
+    }
+
+    // sütunlar
+    for (let c=0; c<SIZE; c++){
+      let runType = board[0][c];
+      let runStart = 0;
+      let runLen = 1;
+
+      for (let r=1; r<=SIZE; r++){
+        const t = (r < SIZE) ? board[r][c] : null; // sentinel
+        if (t !== null && t === runType){
+          runLen++;
+        } else {
+          if (runType !== null && runLen >= 3){
+            for (let k=runStart; k<runStart+runLen; k++){
+              marked.add(keyOf(k,c));
+            }
+          }
+          runType = t;
+          runStart = r;
+          runLen = 1;
+        }
+      }
+    }
+
+    return marked;
+  }
+
+  function animatePop(marked){
+    for (const k of marked){
+      const [r,c] = k.split(",").map(Number);
+      const candy = cellEls[r][c].querySelector(".candy");
+      if (candy) candy.classList.add("pop");
+    }
+  }
+
+  function clearMatches(marked){
+    for (const k of marked){
+      const [r,c] = k.split(",").map(Number);
+      board[r][c] = null;
+    }
+    score += marked.size * SCORE_PER_TILE;
+    updateHUD();
+  }
+
+  function applyGravity(){
+    for (let c=0; c<SIZE; c++){
+      let write = SIZE - 1;
+      for (let r=SIZE-1; r>=0; r--){
+        if (board[r][c] !== null){
+          board[write][c] = board[r][c];
+          if (write !== r) board[r][c] = null;
+          write--;
+        }
+      }
+      for (let r=write; r>=0; r--){
+        board[r][c] = randType();
+      }
+    }
+  }
+
+  async function resolveCascades(){
+    let chain = 0;
+    while (true){
+      const matches = findMatches();
+      if (matches.size === 0) break;
+
+      chain++;
+      animatePop(matches);
+      await sleep(170);
+
+      clearMatches(matches);
+      render(); // pop sonrası boşlukları göster
+      await sleep(60);
+
+      applyGravity();
+      render();
+      await sleep(120);
+    }
+    if (chain > 1){
+      // basit combo bonus
+      const bonus = (chain - 1) * 60;
+      score += bonus;
+      updateHUD();
+      toast(`Zincirleme temizlik: x${chain} (+${bonus} bonus)`, "ok");
+    }
+  }
+
+  // ---- Render ----
+  function buildBoardDOM(){
+    boardEl.innerHTML = "";
+    cellEls = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
+
+    for (let r=0; r<SIZE; r++){
+      for (let c=0; c<SIZE; c++){
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.dataset.r = String(r);
+        cell.dataset.c = String(c);
+
+        cell.addEventListener("click", () => onCellClick(r,c));
+
+        // sürükle-bırak için pointer
+        cell.addEventListener("pointerdown", (e) => onPointerDown(e, r, c));
+        cell.addEventListener("pointerup", (e) => onPointerUp(e, r, c));
+
+        boardEl.appendChild(cell);
+        cellEls[r][c] = cell;
+      }
+    }
+  }
+
+  function render(){
+    for (let r=0; r<SIZE; r++){
+      for (let c=0; c<SIZE; c++){
+        const cell = cellEls[r][c];
+        const val = board[r][c];
+
+        // seçili görünüm
+        if (selected && selected.r === r && selected.c === c) cell.classList.add("select");
+        else cell.classList.remove("select");
+
+        cell.innerHTML = "";
+        if (val === null) continue;
+
+        const candy = document.createElement("div");
+        candy.className = `candy t${val}`;
+        cell.appendChild(candy);
+      }
+    }
+  }
+
+  function setBusy(v){
+    busy = v;
+    if (busy) boardEl.classList.add("disabled");
+    else boardEl.classList.remove("disabled");
+  }
+
+  // ---- Input / Move ----
+  async function trySwap(a,b){
+    if (!isAdj(a,b)) return;
+
+    setBusy(true);
+
+    // swap
+    const tmp = board[a.r][a.c];
+    board[a.r][a.c] = board[b.r][b.c];
+    board[b.r][b.c] = tmp;
+
+    selected = null;
+    render();
+    await sleep(120);
+
+    const matches = findMatches();
+    if (matches.size === 0){
+      // swap back
+      const tmp2 = board[a.r][a.c];
+      board[a.r][a.c] = board[b.r][b.c];
+      board[b.r][b.c] = tmp2;
+      render();
+      await sleep(120);
+      toast("Bu hamle eşleşme üretmiyor.", "bad");
+      setBusy(false);
+      return;
+    }
+
+    movesLeft--;
+    updateHUD();
+    toast("Eşleşme bulundu, temizleniyor…", "ok");
+
+    await resolveCascades();
+    setBusy(false);
+
+    // oyun bitti mi?
+    if (movesLeft <= 0){
+      if (score >= TARGET_SCORE) toast("Hamleler bitti. Hedefi geçtin, kazandın!", "ok");
+      else toast("Hamleler bitti. Hedefe ulaşamadın.", "bad");
+      setBusy(true);
+    } else {
+      if (score >= TARGET_SCORE){
+        toast("Hedefe ulaştın. İstersen devam edip skoru artırabilirsin.", "ok");
+      }
+    }
+  }
+
+  function onCellClick(r,c){
+    if (busy) return;
+    const cur = {r,c};
+
+    if (!selected){
+      selected = cur;
+      render();
+      return;
+    }
+
+    if (selected.r === r && selected.c === c){
+      selected = null;
+      render();
+      return;
+    }
+
+    // ikinci seçim komşuysa swap dene
+    if (isAdj(selected, cur)){
+      const a = selected;
+      const b = cur;
+      trySwap(a,b);
+      return;
+    }
+
+    // komşu değilse seçimi değiştir
+    selected = cur;
+    render();
+  }
+
+  // drag (pointer) desteği: basılı tutup komşuya bırakınca swap
+  let dragStart = null;
+
+  function onPointerDown(e, r, c){
+    if (busy) return;
+    dragStart = { r, c };
+    // seçili göster
+    selected = { r, c };
+    render();
+    try { e.target.setPointerCapture(e.pointerId); } catch {}
+  }
+
+  function onPointerUp(e, r, c){
+    if (busy) return;
+    if (!dragStart) return;
+
+    // pointerup hedefini elementFromPoint ile daha doğru bul
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const cell = el?.closest?.(".cell");
+    if (cell && cell.dataset){
+      const tr = Number(cell.dataset.r);
+      const tc = Number(cell.dataset.c);
+      const a = dragStart;
+      const b = { r: tr, c: tc };
+      dragStart = null;
+
+      if (isAdj(a,b)){
+        trySwap(a,b);
+      } else {
+        // sürükleme komşu değilse sadece seçimi kaldır
+        selected = null;
+        render();
+      }
+    } else {
+      dragStart = null;
+      selected = null;
+      render();
+    }
+  }
+
+  // ---- Shuffle ----
+  function shuffleBoard(){
+    if (busy) return;
+    // Küçük ceza ile karıştır
+    score = Math.max(0, score - SHUFFLE_PENALTY);
+    updateHUD();
+
+    // Flatten -> shuffle -> fill
+    const flat = [];
+    for (let r=0; r<SIZE; r++) for (let c=0; c<SIZE; c++) flat.push(board[r][c]);
+    for (let i=flat.length-1; i>0; i--){
+      const j = Math.floor(Math.random() * (i+1));
+      [flat[i], flat[j]] = [flat[j], flat[i]];
+    }
+    let idx=0;
+    for (let r=0; r<SIZE; r++){
+      for (let c=0; c<SIZE; c++){
+        board[r][c] = flat[idx++];
+      }
+    }
+    selected = null;
+    render();
+    toast(`Tahtayı karıştırdın (-${SHUFFLE_PENALTY} skor).`, "info");
+  }
+
+  // ---- New Game ----
+  async function newGame(){
+    setBusy(false);
+    score = 0;
+    movesLeft = START_MOVES;
+    selected = null;
+    updateHUD();
+
+    generateBoard();
+    render();
+
+    // Güvenlik: oluşmuş match varsa (teorik olarak engelliyoruz) temizle
+    setBusy(true);
+    await resolveCascades();
+    setBusy(false);
+
+    toast("Yeni oyun başladı.", "ok");
+  }
+
+  function showHelp(){
+    alert(
+      "Nasıl oynanır:\n\n" +
+      "• Bir taşa tıkla, sonra komşu taşa tıkla (veya sürükle-bırak).\n" +
+      "• 3+ aynı taş yan yana / alt alta olursa temizlenir.\n" +
+      "• Hamleler bitmeden hedef skoru geç.\n\n" +
+      "Geliştirme fikri: 4’lü/5’li eşleşmede özel taş üret, seviye sistemi ekle."
+    );
+  }
+
+  // ---- Events ----
+  newGameBtn.addEventListener("click", newGame);
+  shuffleBtn.addEventListener("click", shuffleBoard);
+  helpBtn.addEventListener("click", showHelp);
+
+  // ---- Boot ----
+  buildBoardDOM();
+  updateHUD();
+  newGame();
+})();
+</script>
+</body>
+</html>

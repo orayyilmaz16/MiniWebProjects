@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IP Adresi Sorgulama</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>IP Adresi Sorgulama</h1>
+      <p class="subtitle">Kendi IP’nizi görün veya bir IP girip detayları alın.</p>
+
+      <div class="own-ip">
+        <button id="btnMyIp" class="btn">Kendi IP’mi Göster</button>
+        <span id="myIp" class="badge"></span>
+      </div>
+
+      <form id="ipForm" class="form">
+        <label for="ipInput">IP adresi:</label>
+        <input id="ipInput" name="ip" type="text" placeholder="Örn: 8.8.8.8 veya 2001:4860:4860::8888" />
+        <button type="submit" class="btn">Sorgula</button>
+      </form>
+
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <div id="result" class="grid">
+        <!-- Sonuç kartları buraya doldurulacak -->
+      </div>
+    </section>
+    <footer class="footer">
+      <small>Kaynaklar: ipify ve ipapi • Demo amaçlıdır.</small>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

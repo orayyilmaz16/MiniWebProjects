@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VKI Hesaplama</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+
+        }
+        
+        .container{
+          
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .container h2{
+            color: #ffffff;
+            padding-top: 10px;
+        }
+
+        .container-in{
+            background-color: midnightblue;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid gray;
+            border-radius: 25px;
+            width: 25%;
+            margin: auto
+        }
+
+        input,
+        button {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            width: 50%;
+            margin-bottom: 15px;
+        }
+
+        #sonuc {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="container-in">
+        <h2>Vücut-Kitle Indeksi</h2>
+        <input type="number" id="boy" placeholder="Boyunuzu girin(cm)">
+        <input type="number" id="kilo" placeholder="Kilonuzu girin(kg)">
+        <button onclick="hesapla()">Hesapla</button>
+        <div id="sonuc"></div>
+        </div>
+    </div>
+
+    <script>
+        function hesapla() {
+            const boyCm = document.getElementById("boy").value;
+            const kiloKg = document.getElementById("kilo").value;
+            const boyM = boyCm / 100;
+            const vki = (kiloKg / (boyM * boyM)).toFixed(2);
+
+            let durum = "";
+            if (vki < 18.5) durum = "Zayıf";
+            else if (vki < 25) durum = "Normal";
+            else if (vki < 30) durum = "Kilolu";
+            else if (vki < 35) durum = "1. Derece Obez";
+            else if (vki < 40) durum = "2. Derece Obez";
+            else durum = "3. Derece Obez";
+
+            document.getElementById("sonuc").innerText = `VKİ: ${vki} → ${durum}`;
+
+        }
+    </script>
+
+</body>
+
+</html>

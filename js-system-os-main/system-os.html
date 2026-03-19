@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bilgisayar Özellikleri</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            background: #f0f0f0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #fff;
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Bilgisayarınızın Özellikleri</h1>
+    <ul id="infoList"></ul>
+
+    <script>
+        const infoList = document.getElementById("infoList");
+
+        const systemInfo = {
+            "Tarayıcı": navigator.userAgent,
+            "Platform": navigator.platform,
+            "Dil": navigator.language,
+            "Çevrimiçi mi?": navigator.onLine ? "Evet" : "Hayır",
+            "Ekran çözünürlüğü": `${screen.width} x ${screen.height}`,
+            "Renk derinliği": `${screen.colorDepth} bit`
+        };
+
+        for (let key in systemInfo) {
+            const li = document.createElement("li");
+            li.textContent = `${key}: ${systemInfo[key]}`;
+            infoList.appendChild(li);
+        }
+
+
+    </script>
+
+</body>
+
+</html>

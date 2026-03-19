@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Flappy — Modern Web Edition</title>
+  <style>
+    /* ============== Modern CSS Temeli (Değişkenler + Reset) ============== */
+    :root{
+      --bg0:#0b1020;
+      --bg1:#0b1b34;
+      --glass: rgba(255,255,255,.10);
+      --glass2: rgba(255,255,255,.16);
+      --stroke: rgba(255,255,255,.18);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --accent: #7c5cff;
+      --accent2:#00d4ff;
+      --danger:#ff4d6d;
+      --ok:#2ee59d;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 10%, #2a2fff22, transparent 55%),
+                  radial-gradient(900px 700px at 80% 15%, #00d4ff1f, transparent 55%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow:hidden;
+    }
+
+    /* ============== Canvas Katmanı ============== */
+    #stage{
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      display:block;
+    }
+
+    /* ============== UI Overlay (Modern Glass) ============== */
+    .ui{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding: max(16px, env(safe-area-inset-top)) 16px 16px;
+    }
+    .topbar{
+      width:min(980px, 100%);
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      pointer-events:none;
+    }
+    .pill{
+      pointer-events:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: linear-gradient(180deg, var(--glass2), var(--glass));
+      border:1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      user-select:none;
+    }
+    .score{
+      font-weight:800;
+      letter-spacing:.2px;
+      display:flex;
+      gap:10px;
+      align-items:baseline;
+    }
+    .score b{
+      font-size:18px;
+    }
+    .score span{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .kbd{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      white-space:nowrap;
+    }
+    .keycap{
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.22);
+      padding:4px 8px;
+      border-radius:10px;
+      color:var(--text);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    /* ============== Orta Modal ============== */
+    .modalWrap{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      pointer-events:none;
+    }
+    .modal{
+      pointer-events:auto;
+      width:min(520px, 100%);
+      border-radius: calc(var(--radius) + 6px);
+      background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
+      border:1px solid var(--stroke);
+      box-shadow: 0 28px 80px rgba(0,0,0,.50);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transform: translateY(10px) scale(.985);
+      opacity:0;
+      transition: opacity .25s ease, transform .25s ease;
+      overflow:hidden;
+    }
+    .modal.show{
+      opacity:1;
+      transform: translateY(0) scale(1);
+    }
+    .modalHeader{
+      padding:16px 18px 10px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .title h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .title p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .stats{
+      padding: 10px 18px 16px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .card{
+      border-radius: 16px;
+      padding: 12px 12px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .card .label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .card .value{
+      margin-top:6px;
+      font-size:22px;
+      font-weight:900;
+    }
+
+    .actions{
+      padding: 0 18px 18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      appearance:none;
+      border:0;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight:900;
+      letter-spacing:.2px;
+      cursor:pointer;
+      pointer-events:auto;
+      user-select:none;
+      transition: transform .12s ease, filter .12s ease;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+
+    .btnPrimary{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #071018;
+      box-shadow: 0 16px 40px rgba(124,92,255,.24);
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.10);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .hintRow{
+      padding: 0 18px 18px;
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    /* ============== Küçük Toast ============== */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom: max(14px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.30);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      color: var(--muted);
+      font-size: 12px;
+      pointer-events:none;
+      opacity:0;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-6px);
+    }
+
+    /* Erişilebilirlik: hareket azaltma */
+    @media (prefers-reduced-motion: reduce){
+      .modal, .toast, .btn { transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+
+  <!-- Üst Skor Barı -->
+  <div class="ui" aria-hidden="true">
+    <div class="topbar">
+      <div class="pill score">
+        <b id="scoreNow">0</b>
+        <span>SKOR</span>
+      </div>
+      <div class="pill score">
+        <b id="scoreBest">0</b>
+        <span>EN İYİ</span>
+      </div>
+      <div class="pill kbd">
+        <span class="keycap">Boşluk</span>
+        <span>/</span>
+        <span class="keycap">Tık</span>
+        <span>/</span>
+        <span class="keycap">Dokun</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Başlangıç / Game Over Modal -->
+  <div class="modalWrap">
+    <div class="modal show" id="modal">
+      <div class="modalHeader">
+        <div class="title">
+          <h1 id="modalTitle">Flappy — Modern Web</h1>
+          <p id="modalDesc">Boşluk / tık / dokun ile uç. Borulara çarpmadan geçmeye çalış.</p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <div class="label">SKOR</div>
+          <div class="value" id="modalScore">0</div>
+        </div>
+        <div class="card">
+          <div class="label">EN İYİ</div>
+          <div class="value" id="modalBest">0</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btnPrimary" id="btnStart">Başlat / Tekrar</button>
+        <button class="btn btnGhost" id="btnHard">Zorluk: Normal</button>
+      </div>
+
+      <div class="hintRow">
+        İpucu: Zıplamaları kısa ve ritmik yap. Uzun basmana gerek yok; tek dokunuş yeterli.
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Hazır: Boşluk / tık / dokun</div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      /* ============================ DOM ============================ */
+      const canvas = document.getElementById("stage");
+      const ctx = canvas.getContext("2d", { alpha: false });
+
+      const elScoreNow = document.getElementById("scoreNow");
+      const elScoreBest = document.getElementById("scoreBest");
+      const modal = document.getElementById("modal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalDesc = document.getElementById("modalDesc");
+      const modalScore = document.getElementById("modalScore");
+      const modalBest = document.getElementById("modalBest");
+      const btnStart = document.getElementById("btnStart");
+      const btnHard = document.getElementById("btnHard");
+      const toast = document.getElementById("toast");
+
+      /* ============================ Helpers ============================ */
+      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+      const lerp = (a,b,t) => a + (b-a)*t;
+      const rand = (a,b) => a + Math.random()*(b-a);
+
+      /* ============================ Resize ============================ */
+      let W = 1280, H = 720, DPR = 1;
+      function resize() {
+        DPR = Math.min(2, window.devicePixelRatio || 1);
+        W = Math.floor(window.innerWidth);
+        H = Math.floor(window.innerHeight);
+        canvas.width = Math.floor(W * DPR);
+        canvas.height = Math.floor(H * DPR);
+        canvas.style.width = W + "px";
+        canvas.style.height = H + "px";
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+      window.addEventListener("resize", resize, { passive:true });
+      resize();
+
+      /* ============================ Game Config ============================ */
+      const STORE_KEY = "flappy_modern_best_v1";
+      let best = Number(localStorage.getItem(STORE_KEY) || 0);
+
+      const Difficulty = {
+        NORMAL: {
+          name: "Normal",
+          gravity: 1700,       // px/s^2
+          jump: 540,           // px/s
+          baseSpeed: 280,      // px/s
+          gap: 168,            // px
+          spawnEvery: 1.30     // s
+        },
+        HARD: {
+          name: "Zor",
+          gravity: 1850,
+          jump: 560,
+          baseSpeed: 320,
+          gap: 150,
+          spawnEvery: 1.18
+        }
+      };
+      let difficulty = Difficulty.NORMAL;
+
+      function updateDifficultyUI(){
+        btnHard.textContent = `Zorluk: ${difficulty.name}`;
+      }
+      updateDifficultyUI();
+
+      /* ============================ Game State ============================ */
+      const State = { READY:"READY", PLAYING:"PLAYING", DEAD:"DEAD" };
+      let state = State.READY;
+
+      let t = 0;              // global time
+      let last = performance.now();
+      let score = 0;
+
+      const world = {
+        groundY: () => Math.floor(H * 0.86),
+        pipeW: 78,
+        pipeMinH: 80,
+        pipePadTop: 60,
+        pipePadBottom: 90
+      };
+
+      const bird = {
+        x: () => Math.floor(W * 0.28),
+        y: 0,
+        vy: 0,
+        r: 16,
+        flap: 0,          // animation
+        tilt: 0
+      };
+
+      const pipes = [];    // {x, gapY, passed}
+      let spawnTimer = 0;
+
+      const particles = []; // {x,y,vx,vy,life,maxLife,size}
+      function puff(x,y,n=10,spread=1){
+        for(let i=0;i<n;i++){
+          particles.push({
+            x, y,
+            vx: rand(-120, 120) * spread,
+            vy: rand(-180, 80) * spread,
+            life: 0,
+            maxLife: rand(0.35, 0.8),
+            size: rand(2, 6)
+          });
+        }
+      }
+
+      /* ============================ UI ============================ */
+      function showToast(msg){
+        toast.textContent = msg;
+        toast.classList.add("show");
+        window.clearTimeout(showToast._t);
+        showToast._t = window.setTimeout(() => toast.classList.remove("show"), 1100);
+      }
+
+      function syncScoresUI(){
+        elScoreNow.textContent = String(score);
+        elScoreBest.textContent = String(best);
+        modalScore.textContent = String(score);
+        modalBest.textContent = String(best);
+      }
+      syncScoresUI();
+
+      function openModal(title, desc){
+        modalTitle.textContent = title;
+        modalDesc.textContent = desc;
+        modal.classList.add("show");
+      }
+      function closeModal(){
+        modal.classList.remove("show");
+      }
+
+      /* ============================ Reset / Start ============================ */
+      function resetGame(){
+        score = 0;
+        pipes.length = 0;
+        particles.length = 0;
+        spawnTimer = 0;
+        bird.y = Math.floor(H * 0.45);
+        bird.vy = 0;
+        bird.flap = 0;
+        bird.tilt = 0;
+        syncScoresUI();
+      }
+
+      function startGame(){
+        resetGame();
+        state = State.PLAYING;
+        closeModal();
+        showToast("Başladı");
+      }
+
+      function gameOver(){
+        state = State.DEAD;
+        if(score > best){
+          best = score;
+          localStorage.setItem(STORE_KEY, String(best));
+        }
+        syncScoresUI();
+        openModal("Oyun Bitti", "Tekrar dene: Başlat / Tekrar butonuna bas veya boşluğa dokun.");
+        showToast("Çarptın");
+      }
+
+      /* ============================ Input ============================ */
+      function actionJump(){
+        if(state === State.READY){
+          startGame();
+        }
+        if(state === State.PLAYING){
+          bird.vy = -difficulty.jump;
+          bird.flap = 1;
+          puff(bird.x()+10, bird.y, 10, 1);
+        }else if(state === State.DEAD){
+          startGame();
+        }
+      }
+
+      window.addEventListener("keydown", (e) => {
+        if(e.code === "Space" || e.code === "ArrowUp"){
+          e.preventDefault();
+          actionJump();
+        }
+      }, { passive:false });
+
+      window.addEventListener("pointerdown", (e) => {
+        // UI butonlarına tıklanınca oyun zıplamasın:
+        const path = e.composedPath ? e.composedPath() : [];
+        if(path.some(n => n && n.classList && (n.classList.contains("btn") || n.id === "btnStart" || n.id === "btnHard"))){
+          return;
+        }
+        actionJump();
+      }, { passive:true });
+
+      btnStart.addEventListener("click", () => startGame());
+      btnHard.addEventListener("click", () => {
+        difficulty = (difficulty === Difficulty.NORMAL) ? Difficulty.HARD : Difficulty.NORMAL;
+        updateDifficultyUI();
+        showToast(`Zorluk: ${difficulty.name}`);
+      });
+
+      /* ============================ Spawn Pipes ============================ */
+      function spawnPipe(){
+        const ground = world.groundY();
+        const gap = difficulty.gap;
+        const topMin = world.pipePadTop;
+        const bottomMax = ground - world.pipePadBottom;
+        const gapY = rand(topMin + gap/2, bottomMax - gap/2);
+        pipes.push({ x: W + 40, gapY, passed:false });
+      }
+
+      /* ============================ Collision ============================ */
+      function hitCircleRect(cx, cy, r, rx, ry, rw, rh){
+        const nx = clamp(cx, rx, rx+rw);
+        const ny = clamp(cy, ry, ry+rh);
+        const dx = cx - nx;
+        const dy = cy - ny;
+        return (dx*dx + dy*dy) <= (r*r);
+      }
+
+      /* ============================ Rendering Helpers ============================ */
+      function roundedRect(x,y,w,h,rad){
+        const r = Math.min(rad, w/2, h/2);
+        ctx.beginPath();
+        ctx.moveTo(x+r,y);
+        ctx.arcTo(x+w,y, x+w,y+h, r);
+        ctx.arcTo(x+w,y+h, x,y+h, r);
+        ctx.arcTo(x,y+h, x,y, r);
+        ctx.arcTo(x,y, x+w,y, r);
+        ctx.closePath();
+      }
+
+      function drawBackground(speed, dt){
+        // Sky gradient (canvas)
+        const g = ctx.createLinearGradient(0,0,0,H);
+        g.addColorStop(0, "#0b1b34");
+        g.addColorStop(0.55, "#0b1020");
+        g.addColorStop(1, "#070913");
+        ctx.fillStyle = g;
+        ctx.fillRect(0,0,W,H);
+
+        // Soft glow orbs
+        ctx.globalAlpha = 0.18;
+        for(const orb of [
+          {x: W*0.18, y: H*0.15, r: 220},
+          {x: W*0.78, y: H*0.20, r: 260}
+        ]){
+          const og = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.r);
+          og.addColorStop(0, "#7c5cff");
+          og.addColorStop(1, "transparent");
+          ctx.fillStyle = og;
+          ctx.beginPath();
+          ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        // Parallax city silhouettes
+        const ground = world.groundY();
+        const layers = [
+          {y: ground-160, h: 160, a: 0.18, k: 0.15},
+          {y: ground-220, h: 220, a: 0.26, k: 0.23},
+          {y: ground-300, h: 300, a: 0.33, k: 0.32},
+        ];
+        for(const L of layers){
+          const offset = -(t * speed * L.k) % 260;
+          ctx.globalAlpha = L.a;
+          ctx.fillStyle = "#0a0f1a";
+          for(let x = offset - 260; x < W + 260; x += 260){
+            // simplified skyline blocks
+            for(let i=0;i<8;i++){
+              const bw = rand(18, 44);
+              const bh = rand(40, L.h-16);
+              const bx = x + i*32 + rand(-6,6);
+              const by = L.y + (L.h - bh);
+              ctx.fillRect(bx, by, bw, bh);
+            }
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        // Moving clouds (subtle)
+        ctx.globalAlpha = 0.12;
+        const cloudY = H*0.18;
+        const cloudOffset = -(t * speed * 0.12) % 520;
+        for(let x=cloudOffset-520; x<W+520; x+=520){
+          const cx = x + 90;
+          const cy = cloudY + Math.sin((x+t)*0.002)*12;
+          ctx.fillStyle = "#cfe6ff";
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, 90, 30, 0, 0, Math.PI*2);
+          ctx.ellipse(cx+70, cy+10, 70, 26, 0, 0, Math.PI*2);
+          ctx.ellipse(cx-60, cy+8, 60, 22, 0, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        // Ground
+        const grd = ctx.createLinearGradient(0, ground, 0, H);
+        grd.addColorStop(0, "#08101e");
+        grd.addColorStop(1, "#050713");
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, ground, W, H-ground);
+
+        // Ground pattern line
+        ctx.globalAlpha = 0.25;
+        ctx.strokeStyle = "#00d4ff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, ground+12);
+        ctx.lineTo(W, ground+12);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        // Moving stripes
+        ctx.globalAlpha = 0.12;
+        const stripeOffset = -(t * speed * 0.55) % 60;
+        ctx.fillStyle = "#ffffff";
+        for(let x = stripeOffset-60; x < W+60; x += 60){
+          ctx.fillRect(x, ground+26, 26, 6);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function drawPipe(x, topH, bottomY){
+        const w = world.pipeW;
+        // Body gradient
+        const pg = ctx.createLinearGradient(x,0,x+w,0);
+        pg.addColorStop(0, "#2ee59d");
+        pg.addColorStop(0.45, "#00d4ff");
+        pg.addColorStop(1, "#7c5cff");
+        ctx.fillStyle = pg;
+
+        // Top pipe
+        roundedRect(x, 0, w, topH, 16);
+        ctx.fill();
+
+        // Bottom pipe
+        roundedRect(x, bottomY, w, H - bottomY, 16);
+        ctx.fill();
+
+        // Inner highlight
+        ctx.globalAlpha = 0.18;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(x+10, 0, 8, topH);
+        ctx.fillRect(x+10, bottomY, 8, H-bottomY);
+        ctx.globalAlpha = 1;
+
+        // Cap rings
+        ctx.globalAlpha = 0.18;
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(x, topH-14, w, 6);
+        ctx.fillRect(x, bottomY+8, w, 6);
+        ctx.globalAlpha = 1;
+      }
+
+      function drawBird(dt){
+        const bx = bird.x();
+        const by = bird.y;
+        const r = bird.r;
+
+        // Tilt from velocity
+        bird.tilt = lerp(bird.tilt, clamp(bird.vy / 700, -0.8, 1.2), 0.12);
+
+        ctx.save();
+        ctx.translate(bx, by);
+        ctx.rotate(bird.tilt);
+
+        // Shadow
+        ctx.globalAlpha = 0.22;
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        ctx.ellipse(6, r+10, r*1.05, r*0.55, 0, 0, Math.PI*2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        // Body gradient
+        const bg = ctx.createRadialGradient(-6, -6, 6, 0, 0, r*2.1);
+        bg.addColorStop(0, "#ffffff");
+        bg.addColorStop(0.2, "#bff3ff");
+        bg.addColorStop(0.55, "#7c5cff");
+        bg.addColorStop(1, "#00d4ff");
+        ctx.fillStyle = bg;
+
+        ctx.beginPath();
+        ctx.ellipse(0, 0, r*1.08, r*0.92, 0, 0, Math.PI*2);
+        ctx.fill();
+
+        // Wing flap (small animation)
+        bird.flap = Math.max(0, bird.flap - dt*3.2);
+        const flapAngle = (-0.55 + bird.flap * 1.1) + Math.sin(t*0.02)*0.06;
+
+        ctx.save();
+        ctx.translate(-6, 2);
+        ctx.rotate(flapAngle);
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = "rgba(255,255,255,.85)";
+        ctx.beginPath();
+        ctx.ellipse(-10, 0, 14, 8, 0, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+
+        // Eye
+        ctx.fillStyle = "#071018";
+        ctx.beginPath();
+        ctx.arc(10, -6, 4.1, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,.9)";
+        ctx.beginPath();
+        ctx.arc(11.4, -7.2, 1.4, 0, Math.PI*2);
+        ctx.fill();
+
+        // Beak
+        ctx.fillStyle = "#ffcc66";
+        ctx.beginPath();
+        ctx.moveTo(18, 0);
+        ctx.lineTo(30, 4);
+        ctx.lineTo(18, 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 0.2;
+        ctx.fillStyle = "#000";
+        ctx.fillRect(18, 7.2, 12, 1.6);
+        ctx.globalAlpha = 1;
+
+        ctx.restore();
+      }
+
+      function drawParticles(dt){
+        for(let i=particles.length-1;i>=0;i--){
+          const p = particles[i];
+          p.life += dt;
+          const u = p.life / p.maxLife;
+          if(u >= 1){
+            particles.splice(i,1);
+            continue;
+          }
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.vy += 520 * dt;
+          ctx.globalAlpha = (1-u) * 0.7;
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size*(1-u), 0, Math.PI*2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      function drawStartHint(){
+        if(state !== State.PLAYING){
+          // subtle floating text
+          const ground = world.groundY();
+          ctx.save();
+          ctx.globalAlpha = 0.62;
+          ctx.fillStyle = "rgba(255,255,255,.82)";
+          ctx.font = "700 16px ui-sans-serif, system-ui";
+          const msg = "Zıplamak için boşluk / tık / dokun";
+          const w = ctx.measureText(msg).width;
+          const y = ground - 90 + Math.sin(t*0.02)*8;
+          ctx.fillText(msg, (W-w)/2, y);
+          ctx.restore();
+        }
+      }
+
+      /* ============================ Main Loop ============================ */
+      function step(now){
+        const dt = Math.min(0.033, (now - last) / 1000);
+        last = now;
+        t += dt*1000; // milliseconds-like time for nice sin waves
+
+        // Difficulty-based scrolling speed (slight increase with score)
+        const speed = difficulty.baseSpeed * (1 + Math.min(0.35, score * 0.015));
+
+        // Update (state machine)
+        if(state === State.PLAYING){
+          // Bird physics
+          bird.vy += difficulty.gravity * dt;
+          bird.y += bird.vy * dt;
+
+          // Spawn pipes
+          spawnTimer += dt;
+          if(spawnTimer >= difficulty.spawnEvery){
+            spawnTimer = 0;
+            spawnPipe();
+          }
+
+          // Move pipes
+          for(const p of pipes){
+            p.x -= speed * dt;
+            // scoring
+            const passX = bird.x() - world.pipeW;
+            if(!p.passed && p.x < passX){
+              p.passed = true;
+              score++;
+              syncScoresUI();
+              puff(bird.x()+8, bird.y+6, 6, 0.8);
+              showToast(`Skor: ${score}`);
+            }
+          }
+          // Remove offscreen
+          while(pipes.length && pipes[0].x < -world.pipeW - 40){
+            pipes.shift();
+          }
+
+          // Collisions
+          const ground = world.groundY();
+          if(bird.y + bird.r > ground){
+            bird.y = ground - bird.r;
+            puff(bird.x(), bird.y, 24, 1.2);
+            gameOver();
+          }
+          if(bird.y - bird.r < 0){
+            bird.y = bird.r;
+            bird.vy = 0;
+          }
+
+          // Pipe collision test
+          for(const p of pipes){
+            const gapY = p.gapY;
+            const gap = difficulty.gap;
+            const topH = gapY - gap/2;
+            const bottomY = gapY + gap/2;
+
+            const bx = bird.x();
+            const by = bird.y;
+
+            // top rect
+            if(hitCircleRect(bx, by, bird.r, p.x, 0, world.pipeW, topH)){
+              puff(bx, by, 28, 1.2);
+              gameOver();
+              break;
+            }
+            // bottom rect
+            if(hitCircleRect(bx, by, bird.r, p.x, bottomY, world.pipeW, H-bottomY)){
+              puff(bx, by, 28, 1.2);
+              gameOver();
+              break;
+            }
+          }
+        } else {
+          // idle bobbing
+          bird.y = lerp(bird.y, Math.floor(H*0.45) + Math.sin(t*0.004)*10, 0.08);
+          bird.vy = 0;
+        }
+
+        // Draw
+        drawBackground(speed, dt);
+
+        // Pipes
+        if(pipes.length){
+          for(const p of pipes){
+            const gapY = p.gapY;
+            const gap = difficulty.gap;
+            const topH = gapY - gap/2;
+            const bottomY = gapY + gap/2;
+            drawPipe(p.x, topH, bottomY);
+          }
+        }
+
+        // Bird + particles
+        drawBird(dt);
+        drawParticles(dt);
+        drawStartHint();
+
+        requestAnimationFrame(step);
+      }
+
+      /* ============================ Boot ============================ */
+      function init(){
+        best = Number(localStorage.getItem(STORE_KEY) || 0);
+        syncScoresUI();
+        resetGame();
+        openModal("Flappy — Modern Web", "Boşluk / tık / dokun ile uç. Borulara çarpmadan geç.");
+        showToast("Hazır");
+        requestAnimationFrame(step);
+      }
+      init();
+
+      // READY state on load
+      state = State.READY;
+
+    })();
+  </script>
+</body>
+</html>

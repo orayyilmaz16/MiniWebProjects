@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Card List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🛍️ Card List</h1>
+    <div class="controls">
+
+      <div class="filter-controls">
+        <div class="search-wrapper">
+          <input type="text" id="search" class="search-input" placeholder="Ürün ara...">
+          <span class="search-icon">🔍</span>
+        </div>
+        <select id="category-filter" class="filter-select">
+          <option value="all">Tüm Kategoriler</option>
+          <option value="Elektronik">Elektronik</option>
+          <option value="Aksesuar">Aksesuar</option>
+        </select>
+      </div>
+
+      <button id="dark-toggle">🌙 Dark Mode</button>
+      <div id="cart-icon">
+        Sepet (<span id="cart-count">0</span>)
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="products"></section>
+
+    <aside id="cart-section">
+      <h2>Sepetim</h2>
+      
+      <ul id="cart"></ul>
+      
+      <p>
+        <strong>Toplam:</strong> 
+        <span id="total">0.00 ₺</span>
+      </p>
+      
+      <button id="clear-cart" class="secondary-danger">Sepeti Temizle</button>
+    </aside>
+  </main>
+
+  <footer>
+    <nav class="footer-nav">
+      <a href="#">Hakkımızda</a>
+      <a href="#">İletişim</a>
+      <a href="#">S.S.S.</a>
+      <a href="#">Kariyer</a>
+    </nav>
+    <p>© 2025 Online Mağaza. Tüm hakları saklıdır.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Sayı Tahmin Oyunu</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 10px;
+      width: 70%;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    input:focus {
+      border-color: #74b9ff;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      margin-top: 25px;
+      background: #0984e3;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #74b9ff;
+    }
+
+    #sonuc {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #2d3436;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sayı Tahmin Oyunu 🎲</h1>
+    <p>1 ile 100 arasında bir sayı tuttum. Tahmin et bakalım!</p>
+    
+    <input type="number" id="tahmin" placeholder="Tahminini gir">
+    <button onclick="tahminEt()">Tahmin Et</button>
+    
+    <p id="sonuc"></p>
+  </div>
+
+  <script>
+    const gizliSayi = Math.floor(Math.random() * 100) + 1;
+    let denemeSayisi = 0;
+
+    function tahminEt() {
+      const tahmin = parseInt(document.getElementById("tahmin").value);
+      denemeSayisi++;
+      const sonuc = document.getElementById("sonuc");
+
+      if (isNaN(tahmin)) {
+        sonuc.textContent = "⚠️ Lütfen geçerli bir sayı gir!";
+        sonuc.style.color = "red";
+        return;
+      }
+
+      if (tahmin === gizliSayi) {
+        sonuc.textContent = `🎉 Tebrikler! ${denemeSayisi} denemede doğru bildin.`;
+        sonuc.style.color = "green";
+      } else if (tahmin < gizliSayi) {
+        sonuc.textContent = "⬆️ Daha büyük bir sayı dene!";
+        sonuc.style.color = "#0984e3";
+      } else if (tahmin > gizliSayi) {
+        sonuc.textContent = "⬇️ Daha küçük bir sayı dene!";
+        sonuc.style.color = "#d63031";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+body{
+    background: linear-gradient(to right, #000000, #ffffff);
+    padding: 2rem;
+}
+
+
+.container {
+  text-align: center;
+  margin-top: 100px;
+  font-family: sans-serif;
+
+
+  border: 1px solid gray;
+  margin: auto;
+  padding: auto;
+  width: 35%;
+  border-radius: 50px;
+  background-color: gray;
+}
+
+#display {
+  font-size: 40px;
+  margin: 20px 0;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 900;
+}
+
+
+h1{
+    color: white;
+    font-weight: 900;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 25px;
+  border-radius: 25px;
+  background-color: whitesmoke;
+  border: 1px solid gray;
+}
+
+button:hover{
+    transition-duration: 0.5s;
+    background-color: black;
+    color: white;
+}

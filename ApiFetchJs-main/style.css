@@ -1,0 +1,168 @@
+/* ----------------------------- */
+/* GENEL GÖRÜNÜM */
+/* ----------------------------- */
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: linear-gradient(135deg, #e8edf1, #f5f7fa);
+  margin: 0;
+  padding: 40px;
+  color: #2d3748;
+}
+
+/* ----------------------------- */
+/* CONTAINER */
+/* ----------------------------- */
+.container {
+  max-width: 680px;
+  margin: auto;
+  text-align: center;
+  background: #ffffff;
+  padding: 40px 45px;
+  border-radius: 18px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+  border: 1px solid #edf2f7;
+}
+
+/* ----------------------------- */
+/* BAŞLIK */
+/* ----------------------------- */
+.header h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  color: #1a202c;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #718096;
+}
+
+/* ----------------------------- */
+/* INPUT + BUTTON ROW */
+/* ----------------------------- */
+.input-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 25px;
+}
+
+/* ----------------------------- */
+/* INPUT */
+/* ----------------------------- */
+input {
+  padding: 12px 14px;
+  width: 200px;
+  font-size: 16px;
+  border: 2px solid #cbd5e0;
+  border-radius: 10px;
+  transition: 0.25s ease;
+  background: #f7fafc;
+}
+
+input:focus {
+  border-color: #3182ce;
+  background: #ffffff;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(49,130,206,0.25);
+}
+
+/* ----------------------------- */
+/* BUTTON */
+/* ----------------------------- */
+button {
+  padding: 12px 22px;
+  background: #3182ce;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+button:hover {
+  background: #2b6cb0;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* ----------------------------- */
+/* STATUS */
+/* ----------------------------- */
+.status {
+  margin-top: 20px;
+  font-size: 17px;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+/* ----------------------------- */
+/* KART */
+/* ----------------------------- */
+.card {
+  margin-top: 30px;
+  padding: 28px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.07);
+  text-align: left;
+  border: 1px solid #e2e8f0;
+  animation: fadeIn 0.35s ease;
+}
+
+/* Kart içi layout */
+.post-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post-wrapper h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #2d3748;
+}
+
+.post-wrapper p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #4a5568;
+}
+
+/* ----------------------------- */
+/* META ALANI */
+/* ----------------------------- */
+.meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.meta span {
+  background: #edf2f7;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+/* ----------------------------- */
+/* HIDDEN */
+/* ----------------------------- */
+.hidden {
+  display: none;
+}
+
+/* ----------------------------- */
+/* ANİMASYON */
+/* ----------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
