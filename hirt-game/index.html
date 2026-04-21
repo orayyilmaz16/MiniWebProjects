@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hırt Avcısı: Sokakların Kontrolü</title>
+    <title>Hırt Avcısı: Sokakların Kontrolü - PRO V10</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -48,7 +48,7 @@
             <div class="menu-content">
                 <img src="hırtescape.jpg" alt="Hırt Avcısı Başlangıç" class="menu-image">
                 <h1 class="game-title">HIRT AVCISI</h1>
-                <p class="subtitle">SOKAKLARIN KONTROLÜ</p>
+                <p class="subtitle">PRO V10: SOKAKLARIN KONTROLÜ</p>
                 <button class="menu-btn" onclick="initAudioAndStart()">Oyuna Başla</button>
                 <button class="menu-btn" onclick="showMenu('menu-settings')">Ayarlar</button>
             </div>
@@ -70,6 +70,14 @@
                 <div class="setting-group">
                     <label>Arka Plan Müziği</label>
                     <select id="music-select" class="setting-select" onchange="updateSettings()">
+                        <option value="on" selected>Açık</option>
+                        <option value="off">Kapalı</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label>İç Sesler (Efektler)</label>
+                    <select id="sfx-select" class="setting-select" onchange="updateSettings()">
                         <option value="on" selected>Açık</option>
                         <option value="off">Kapalı</option>
                     </select>
@@ -108,7 +116,14 @@
         <div id="menu-pause" class="menu-overlay hidden">
             <div class="menu-content">
                 <h2 class="menu-title">SİSTEM DURAKLATILDI</h2>
-                <button class="menu-btn" onclick="togglePause()">Geri Dön</button>
+                <button class="menu-btn" onclick="togglePause()">Oyuna Devam Et</button>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <button id="btn-pause-music" class="menu-btn" style="margin-bottom: 0; font-size: 15px;" onclick="toggleMusic()">🎵 Müzik: AÇIK</button>
+                    <button id="btn-pause-sfx" class="menu-btn" style="margin-bottom: 0; font-size: 15px;" onclick="toggleSFX()">🔊 Efekt: AÇIK</button>
+                </div>
+                <button id="btn-pause-muteall" class="menu-btn" style="border-color: #f1c40f; color: #f1c40f;" onclick="toggleMuteAll()">Tüm Sesleri Kapat</button>
+
                 <button class="menu-btn btn-red" onclick="switchState('MENU')">Ana Menüye Çık</button>
             </div>
         </div>

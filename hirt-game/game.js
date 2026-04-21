@@ -25,6 +25,10 @@ const ui = {
     rainSelect: document.getElementById('rain-select'),
     gfxSelect: document.getElementById('gfx-select'),
     musicSelect: document.getElementById('music-select'), 
+    sfxSelect: document.getElementById('sfx-select'), 
+    musicBtnPause: document.getElementById('btn-pause-music'), // Yeni
+    sfxBtnPause: document.getElementById('btn-pause-sfx'),     // Yeni
+    muteAllBtnPause: document.getElementById('btn-pause-muteall'), // Yeni
     godModeWarning: document.getElementById('godmode-warning'), 
     levelUpScreen: document.getElementById('level-up-screen'),
     levelUpText: document.getElementById('level-up-text'),
@@ -46,7 +50,8 @@ function initAudio() {
 }
 
 function playSound(type) {
-    if (!audioCtx) return;
+    if (!audioCtx || !gameData.sfxEnabled) return;
+
     const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     osc.connect(gainNode);
@@ -117,7 +122,8 @@ let gameData = {
     godMode: false,
     rainMode: 'heavy',
     gfxQuality: 'high',
-    musicEnabled: true 
+    musicEnabled: true,
+    sfxEnabled: true 
 };
 
 const levelColors = [
@@ -518,6 +524,47 @@ function checkLevelUp() {
     }
 }
 
+// --- YENİ: Sesleri Senkronize Etme Fonksiyonları ---
+
+function syncAudioUI() {
+    ui.sfxSelect.value = gameData.sfxEnabled ? "on" : "off";
+    ui.musicSelect.value = gameData.musicEnabled ? "on" : "off";
+
+    ui.sfxBtnPause.innerText = gameData.sfxEnabled ? "🔊 Efekt: AÇIK" : "🔊 Efekt: KAPALI";
+    ui.sfxBtnPause.style.color = gameData.sfxEnabled ? "#fff" : "#e74c3c";
+    ui.sfxBtnPause.style.borderColor = gameData.sfxEnabled ? "rgba(255,255,255,0.2)" : "#e74c3c";
+
+    ui.musicBtnPause.innerText = gameData.musicEnabled ? "🎵 Müzik: AÇIK" : "🎵 Müzik: KAPALI";
+    ui.musicBtnPause.style.color = gameData.musicEnabled ? "#fff" : "#e74c3c";
+    ui.musicBtnPause.style.borderColor = gameData.musicEnabled ? "rgba(255,255,255,0.2)" : "#e74c3c";
+
+    let allMuted = (!gameData.musicEnabled && !gameData.sfxEnabled);
+    ui.muteAllBtnPause.innerText = allMuted ? "Tüm Sesleri Aç" : "Tüm Sesleri Kapat";
+    ui.muteAllBtnPause.style.color = allMuted ? "#2ecc71" : "#f1c40f";
+    ui.muteAllBtnPause.style.borderColor = allMuted ? "#2ecc71" : "#f1c40f";
+}
+
+function toggleSFX() {
+    gameData.sfxEnabled = !gameData.sfxEnabled;
+    syncAudioUI();
+}
+
+function toggleMusic() {
+    gameData.musicEnabled = !gameData.musicEnabled;
+    syncAudioUI();
+    if (gameData.musicEnabled && gameState === 'PLAYING') bgMusic.play().catch(()=>{});
+    else bgMusic.pause();
+}
+
+function toggleMuteAll() {
+    let turnOn = !(gameData.musicEnabled || gameData.sfxEnabled);
+    gameData.musicEnabled = turnOn;
+    gameData.sfxEnabled = turnOn;
+    syncAudioUI();
+    if(turnOn && gameState === 'PLAYING') bgMusic.play().catch(()=>{});
+    else bgMusic.pause();
+}
+
 function updateSettings() {
     let diff = ui.diffSelect.value;
     if(diff === 'easy') { gameData.baseSpeed = 2.0; gameData.spawnRate = 80; }
@@ -527,7 +574,11 @@ function updateSettings() {
     gameData.godMode = ui.godModeSelect.value === 'on';
     gameData.rainMode = ui.rainSelect.value;
     gameData.gfxQuality = ui.gfxSelect.value;
+    
     gameData.musicEnabled = ui.musicSelect.value === 'on';
+    gameData.sfxEnabled = ui.sfxSelect.value === 'on';
+    
+    syncAudioUI();
 
     if (gameData.musicEnabled && gameState === 'PLAYING') {
         bgMusic.play().catch(e => console.log("Müzik izni bekleniyor..."));
@@ -581,10 +632,10 @@ function switchState(newState) {
                 localStorage.setItem('hirtAvcisiHighscore', savedHighscore);
                 ui.highscore.innerText = savedHighscore;
                 ui.highscoreAlert.innerText = "YENİ REKOR!";
-                ui.highscoreAlert.style.color = "#2ecc71"; // Yeşil
+                ui.highscoreAlert.style.color = "#2ecc71"; 
             }
         } else {
-            ui.highscoreAlert.style.color = "#e74c3c"; // Kırmızı
+            ui.highscoreAlert.style.color = "#e74c3c"; 
             ui.highscoreAlert.innerText = "Ölümsüzlük açık. Skor kaydedilmedi.";
         }
 
@@ -613,7 +664,6 @@ function initGame() {
     gameData.score = 0; gameData.lives = 3; gameData.level = 1; gameData.combo = 0;
     gameData.energy = 0; gameData.frameCount = 0; gameData.timeScale = 1.0; gameData.baseGridColor = levelColors[0];
     
-    // MÜZİĞİ BAŞA SAR
     bgMusic.currentTime = 0;
 
     if (gameData.godMode) {
@@ -663,12 +713,24 @@ function updateHUD() {
     }
     
     ui.energyFill.style.width = gameData.energy + '%';
-    ui.energyText.innerText = Math.round(gameData.energy) + '%';
     
-    if(gameData.energy >= 100) ui.energyFill.classList.add('energy-ready');
-    else ui.energyFill.classList.remove('energy-ready');
+    // YENİ: Ulti Hazır Animasyonu Tetikleyici
+    if(gameData.energy >= 100) {
+        ui.energyText.innerText = 'HAZIR! [E]';
+        ui.energyText.style.color = '#fff';
+        ui.energyText.style.textShadow = '0 0 10px #ff0055';
+        
+        ui.energyFill.classList.add('ulti-ready');
+        ui.energyFill.parentElement.parentElement.classList.add('ulti-ready');
+    } else {
+        ui.energyText.innerText = Math.round(gameData.energy) + '%';
+        ui.energyText.style.color = 'var(--energy)';
+        ui.energyText.style.textShadow = 'none';
+        
+        ui.energyFill.classList.remove('ulti-ready');
+        ui.energyFill.parentElement.parentElement.classList.remove('ulti-ready');
+    }
 }
-
 // ==========================================
 // DÖNGÜ (GAME LOOP)
 // ==========================================

@@ -52,20 +52,37 @@ canvas { display: block; width: 100%; height: 100%; }
 .stat-level { border-left: 4px solid var(--warning); color: var(--warning); font-size: 24px;}
 .stat-lives { border-right: 4px solid var(--primary); color: var(--primary); text-align: right;}
 
+/* YENİ: Ulti Animasyonları */
 .energy-container {
     width: 200px; background: rgba(0,0,0,0.8); border: 1px solid var(--energy);
-    border-radius: 6px; padding: 4px; pointer-events: auto;
+    border-radius: 6px; padding: 4px; pointer-events: auto; transition: all 0.3s ease;
 }
-.energy-text { font-size: 14px; color: var(--energy); margin-bottom: 2px; display: flex; justify-content: space-between; }
+.energy-text { font-size: 14px; color: var(--energy); margin-bottom: 2px; display: flex; justify-content: space-between; font-weight: bold;}
 .energy-bar-bg { width: 100%; height: 12px; background: #222; border-radius: 3px; overflow: hidden; }
 .energy-fill {
     height: 100%; width: 0%; background: linear-gradient(90deg, #8e44ad, #e74c3c);
-    transition: width 0.2s; box-shadow: 0 0 10px var(--energy);
+    transition: width 0.2s, background 0.3s; box-shadow: 0 0 10px var(--energy);
 }
-.energy-ready { animation: pulse-energy 0.5s infinite alternate; }
 
-@keyframes pulse-energy {
-    from { box-shadow: 0 0 5px var(--energy); } to { box-shadow: 0 0 20px var(--energy), 0 0 40px var(--primary); }
+/* Ulti Hazır Olduğunda Kutuya ve Bara Uygulanacak Sınıflar */
+.energy-container.ulti-ready {
+    border-color: #fff;
+    animation: ulti-pulse 0.5s infinite alternate;
+}
+.energy-fill.ulti-ready {
+    background: linear-gradient(90deg, #ff0055, #ffffff);
+    box-shadow: 0 0 20px #fff;
+}
+
+@keyframes ulti-pulse {
+    from { 
+        box-shadow: 0 0 10px var(--energy), inset 0 0 10px var(--primary); 
+        transform: scale(1); 
+    }
+    to { 
+        box-shadow: 0 0 25px var(--energy), 0 0 40px var(--primary), inset 0 0 20px #fff; 
+        transform: scale(1.05); 
+    }
 }
 
 .btn-pause {
