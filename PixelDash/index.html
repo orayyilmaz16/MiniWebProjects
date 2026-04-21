@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⭐ PixelDash</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="gameWrapper">
+        <canvas id="gameCanvas" width="960" height="640"></canvas>
+        
+        <div id="uiLayer">
+            <div id="hud">
+                <div class="hud-panel">
+                    <div id="livesContainer" style="display:flex; gap:3px; align-items:center;"></div>
+                    <span id="livesText" style="color:#ff4757; font-weight:700; margin-left:5px;">x3</span>
+                </div>
+                
+                <div class="hud-panel">
+                    <span class="coin-icon">🪙</span> <span id="scoreText" style="width: 45px; display:inline-block; text-align:right;">0</span>
+                    <span style="color:#8892b0; margin: 0 10px;">|</span>
+                    <span title="Rekor">👑</span> <span id="highScoreText" style="color: #ffd700; margin-left: 5px;">0</span>
+                </div>
+
+                <div class="hud-panel" style="min-width: 250px; justify-content: center;">
+                    <span style="color:#8892b0; font-size: 14px;">Süre:</span> 
+                    <span id="levelTimeText" style="color: #4ecdc4; width: 45px; margin-left: 5px;">00:00</span>
+                    <span style="color:#8892b0; margin: 0 8px;">|</span>
+                    <span style="color:#8892b0; font-size: 14px;">Toplam:</span> 
+                    <span id="totalTimeText" style="color: #ffd700; width: 45px; margin-left: 5px;">00:00</span>
+                </div>
+
+                <div class="hud-panel">
+                    <span style="color:#8892b0; font-size: 14px; margin-right: 5px;">Bölüm:</span> <span id="levelText">1 / 10</span>
+                </div>
+            </div>
+            <div id="powerups-bar"></div>
+        </div>
+
+        <div id="loadingScreen" class="screen">
+            <h1 style="font-size: 40px; animation: pulse 1s infinite;">YÜKLENİYOR...</h1>
+            <div class="loading-bar-container">
+                <div id="loadingProgress" class="loading-bar"></div>
+            </div>
+        </div>
+        
+        <div id="startScreen" class="screen hidden">
+            <h1>⭐ PixelDash</h1>
+            
+            <div style="color: #ffd700; font-size: 24px; margin-bottom: 5px;">En Yüksek Skor: <span id="menuHighScore">0</span></div>
+            <div style="color: #8892b0; font-size: 14px; margin-bottom: 20px;">(Sesi başlatmak için ekrana tıklayın)</div>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="btnStart">🎮 OYNA</button>
+                <button class="btn btn-secondary" id="btnSettings">⚙️ AYARLAR</button>
+            </div>
+            <div class="controls-hint">
+                <div class="hint-item"><kbd>A</kbd><kbd>D</kbd> veya oklar: Hareket</div>
+                <div class="hint-item"><kbd>W</kbd> Zıpla (Çift!)</div>
+                <div class="hint-item"><kbd>SHIFT</kbd> Hızlı Koş</div>
+                <div class="hint-item"><kbd>ESC</kbd> Duraklat</div>
+            </div>
+        </div>
+
+        <div id="levelSelectScreen" class="screen hidden">
+            <h1 style="font-size: 42px; margin-bottom: 30px;">🗺️ BÖLÜM SEÇİMİ</h1>
+            <div id="levelGrid" class="level-grid"></div>
+            <div class="btn-row" style="margin-top: 30px;">
+                <button class="btn btn-secondary" id="btnBackToMenu">🏠 ANA MENÜ</button>
+            </div>
+        </div>
+        
+        <div id="settingsScreen" class="screen hidden">
+            <h1 style="font-size: 42px; margin-bottom: 30px;">⚙️ AYARLAR</h1>
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label>Tam Ekran</label>
+                    <div class="toggle" id="fullscreenToggle"><div class="toggle-switch"></div><span class="toggle-label">Kapalı</span></div>
+                </div>
+                <div class="setting-item">
+                    <label>Zorluk Seviyesi</label>
+                    <select id="difficulty">
+                        <option value="easy">🌱 Kolay</option>
+                        <option value="normal" selected>⚔️ Normal</option>
+                        <option value="hard">🔥 Zor</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label>Ses Efektleri</label>
+                    <div class="toggle active" id="soundToggle"><div class="toggle-switch"></div><span class="toggle-label">Açık</span></div>
+                </div>
+                <div class="setting-item">
+                    <label>Oyun Müziği</label>
+                    <div class="toggle active" id="musicToggle"><div class="toggle-switch"></div><span class="toggle-label">Açık</span></div>
+                </div>
+                <div class="setting-item">
+                    <label>Parçacık Efektleri</label>
+                    <div class="toggle active" id="particlesToggle"><div class="toggle-switch"></div><span class="toggle-label">Yüksek</span></div>
+                </div>
+                <div class="setting-item">
+                    <label>Ekran Sarsıntısı</label>
+                    <div class="toggle active" id="shakeToggle"><div class="toggle-switch"></div><span class="toggle-label">Açık</span></div>
+                </div>
+            </div>
+            <div class="btn-row"><button class="btn btn-primary" id="btnSaveSettings">✓ KAYDET & DÖN</button></div>
+        </div>
+        
+        <div id="pauseScreen" class="screen hidden">
+            <h1 style="font-size: 48px;">⏸️ DURAKLATILDI</h1>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="btnResume">▶️ DEVAM ET</button>
+                <button class="btn btn-secondary" id="btnPauseSettings">⚙️ AYARLAR</button>
+                <button class="btn btn-secondary" id="btnPauseRestart">🔄 BÖLÜMÜ BAŞA SAR</button>
+                <button class="btn btn-secondary" id="btnPauseLevels">🗺️ BÖLÜMLER</button>
+                <button class="btn btn-secondary" id="btnPauseMenu" style="border-color: #ff4757; color: #ff4757;">🏠 ANA MENÜ</button>
+            </div>
+        </div>
+
+        <div id="levelCompleteScreen" class="screen hidden">
+            <h1 style="color: #2ed573; font-size: 48px;">BÖLÜM TAMAMLANDI!</h1>
+            <div style="background: rgba(0,0,0,0.5); padding: 20px 40px; border-radius: 15px; margin: 20px 0; text-align: center; border: 1px solid rgba(46, 213, 115, 0.3);">
+                <div style="color: #8892b0; font-size: 18px; margin-bottom: 10px;">Bölüm Süresi: <span id="lcTime" style="color: #4ecdc4; font-weight: bold; font-size: 24px;">00:00</span></div>
+                <div style="color: #8892b0; font-size: 18px;">Kazanılan Altın: <span id="lcCoins" style="color: #ffd700; font-weight: bold; font-size: 24px;">0</span></div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="btnNextLevel">➡️ SONRAKİ BÖLÜM</button>
+                <button class="btn btn-secondary" id="btnLCRetry">🔄 TEKRAR OYNA</button>
+                <button class="btn btn-secondary" id="btnLCLevels">🗺️ BÖLÜMLER</button>
+            </div>
+        </div>
+        
+        <div id="gameOverScreen" class="screen hidden">
+            <h1 style="color: #ff4757;">💀 OYUN BİTTİ</h1>
+            <div style="color: #8892b0; font-size: 20px; margin: 10px 0;">Puan: <span id="finalScore" style="color: #ffd700; font-size: 32px; font-weight: 700;">0</span></div>
+            <div style="color: #8892b0; font-size: 16px; margin-bottom: 5px;">Altın: <span id="finalCoins" style="color: #ffd700;">0</span></div>
+            <div style="color: #8892b0; font-size: 16px; margin-bottom: 20px;">Geçen Süre: <span id="gameOverTime" style="color: #4ecdc4;">00:00</span></div>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="btnGameOverRestart">🔄 TEKRAR DENE</button>
+                <button class="btn btn-secondary" id="btnGameOverLevels">🗺️ BÖLÜMLER</button> 
+                <button class="btn btn-secondary" id="btnGameOverMenu">🏠 ANA MENÜ</button>
+            </div>
+        </div>
+        
+        <div id="winScreen" class="screen hidden">
+            <h1 style="color: #2ed573;">🏆 TEBRİKLER!</h1>
+            <div style="color: #8892b0; font-size: 20px; margin: 10px 0; text-align: center;">
+                <p>Oyunu Başarıyla Tamamladın!</p>
+                <p style="margin-top: 15px;">Toplam Puan: <span id="winScore" style="color: #ffd700; font-size: 36px; font-weight: 700;">0</span></p>
+                <p style="margin-top: 10px; font-size: 16px;">Toplam Süre: <span id="winTime" style="color: #4ecdc4;">00:00</span></p>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="btnWinRestart">🗺️ BÖLÜMLERE DÖN</button>
+                <button class="btn btn-secondary" id="btnWinMenu">🏠 ANA MENÜ</button>
+            </div>
+        </div>
+        
+        <div id="levelTransition">
+            <h2 id="transitionTitle">SEVİYE <span id="nextLevelNum">2</span></h2>
+            <p style="color: #8892b0; margin-top: 10px;">Hazırlan...</p>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
